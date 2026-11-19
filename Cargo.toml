@@ -1,0 +1,26 @@
+[package]
+name = "seqdedupe"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+scc = "3.8"
+
+[dev-dependencies]
+libc = "0.2"
+
+[profile.release]
+debug = 1
+codegen-units = 1
+lto = "thin"
+
+[profile.bench]
+inherits = "release"
+
+[[bench]]
+name = "register"
+harness = false
+
+[[bench]]
+name = "latency"
+harness = false
