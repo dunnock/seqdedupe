@@ -2,9 +2,9 @@
 //! abstraction over the bitmap deduper and the scc baseline.
 #![allow(dead_code)]
 
-pub mod naive;
+pub mod hashset;
 
-use naive::NaiveWorker;
+use hashset::HashSetWorker;
 use seqdedupe::*;
 use std::collections::BTreeSet;
 use std::hint::black_box;
@@ -47,7 +47,7 @@ impl Reg for Worker {
     }
 }
 
-impl Reg for NaiveWorker {
+impl Reg for HashSetWorker {
     #[inline(always)]
     fn reg(&mut self, s: u64) -> Registration {
         self.register(s)

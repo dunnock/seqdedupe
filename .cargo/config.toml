@@ -1,0 +1,6 @@
+# The 128-bit modes (Last64..Last512) are only compiled when the target
+# guarantees CMPXCHG16B; without this, new_workers returns
+# InitError::MissingTargetFeature for them. Crates depending on seqdedupe need
+# the same flag (or -C target-cpu=x86-64-v2 / native) in their own config.
+[target.x86_64-unknown-linux-gnu]
+rustflags = ["-C", "target-feature=+cmpxchg16b"]

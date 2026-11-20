@@ -1,9 +1,15 @@
 //! 128-bit atomic header for x86-64 with `CX16`.
 //!
-//! Rust's `AtomicU128` is unstable, and `core::intrinsics` may fall back to a
-//! lock on some targets, so the two primitives we need are written directly in
-//! inline assembly. Both are lock-free by construction: each is a single
-//! instruction with no loop and no library call.
+//! Rust's `AtomicU128` is unstable, and the usual fallbacks compile a 16-byte
+//! atomic into a runtime-library call that may take a lock, so the two
+//! primitives we need are written directly in inline assembly. Both are
+//! lock-free by construction: each is a single instruction with no loop and
+//! no library call.
+//!
+//! The implementation is compiled only when the target enables `cmpxchg16b`
+//! (e.g. `-C target-feature=+cmpxchg16b`, `-C target-cpu=x86-64-v2` or
+//! `native`). Otherwise `new_workers` refuses every 128-bit mode with
+//! `InitError::MissingTargetFeature`.
 //!
 //! * CAS: `LOCK CMPXCHG16B`. A locked RMW with full-barrier (SeqCst) semantics.
 //! * Load, two strategies (benchmarked against each other):
@@ -24,7 +30,7 @@ use core::cell::UnsafeCell;
 pub(crate) struct Pair {
     /// High watermark.
     pub lo: u64,
-    /// Inline mask (`Bits64`) or slot id (`Bits128+`).
+    /// Inline mask (`Last64`) or slot id (`Last128+`).
     pub hi: u64,
 }
 
@@ -74,7 +80,7 @@ impl Header {
     }
 }
 
-#[cfg(target_arch = "x86_64")]
+#[cfg(all(target_arch = "x86_64", target_feature = "cmpxchg16b"))]
 mod imp {
     use super::Pair;
     use core::arch::asm;
@@ -96,7 +102,7 @@ mod imp {
         //
         // CMPXCHG16B leaves RDX:RAX == expected on success and loads the
         // differing current value on failure, so `prev == current` <=> success.
-        // Only constructed when the CPU reports CX16 (checked in new_workers).
+        // Only compiled when the target enables cmpxchg16b.
         unsafe {
             asm!(
                 "xchg {rbx_tmp}, rbx",
@@ -159,18 +165,18 @@ mod imp {
     }
 }
 
-#[cfg(not(target_arch = "x86_64"))]
+#[cfg(not(all(target_arch = "x86_64", target_feature = "cmpxchg16b")))]
 mod imp {
     use super::Pair;
-    // new_workers refuses every 128-bit mode on other architectures, so these
-    // are never reached.
+    // new_workers refuses every 128-bit mode unless the target enables
+    // cmpxchg16b, so these are never reached.
     pub fn cas(_: *mut u64, _: Pair, _: Pair) -> Result<(), Pair> {
-        unreachable!("128-bit modes require x86-64 CX16")
+        unreachable!("128-bit modes require target_feature = \"cmpxchg16b\"")
     }
     pub unsafe fn load_avx(_: *const u64) -> Pair {
-        unreachable!("128-bit modes require x86-64 CX16")
+        unreachable!("128-bit modes require target_feature = \"cmpxchg16b\"")
     }
     pub unsafe fn load_prefetchw_avx(_: *const u64) -> Pair {
-        unreachable!("128-bit modes require x86-64 CX16")
+        unreachable!("128-bit modes require target_feature = \"cmpxchg16b\"")
     }
 }

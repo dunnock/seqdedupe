@@ -4,11 +4,11 @@ use std::sync::Barrier;
 use std::thread;
 
 const ALL: [Window; 5] = [
-    Window::WatermarkOnly,
-    Window::Bits64,
-    Window::Bits128,
-    Window::Bits256,
-    Window::Bits512,
+    Window::Latest,
+    Window::Last64,
+    Window::Last128,
+    Window::Last256,
+    Window::Last512,
 ];
 
 fn nz(n: usize) -> NonZeroUsize {
@@ -271,6 +271,28 @@ fn zero_and_max_explicit() {
     }
 }
 
+/// Jumps whose low 32 bits are small: catches a shift amount truncated to
+/// `u32` before clamping (the history must be cleared, not shifted by `k`).
+#[test]
+fn huge_jumps_clear_history() {
+    use Registration::*;
+    for w in ALL.into_iter().skip(1) {
+        for t in tunings() {
+            for k in [0u64, 1, 2, 63, 64, 65] {
+                let base = 1000;
+                let mut ws = new_workers_with(w, nz(1), 0, base, t).unwrap();
+                let wk = &mut ws[0];
+                let far = base + (1u64 << 32) + k;
+                assert_eq!(wk.register(far), New, "{w:?} k={k}");
+                assert_eq!(wk.register(base), TooOld, "{w:?} k={k} {t:?}");
+                assert_eq!(wk.register(far - 1), New, "{w:?} k={k} {t:?}");
+                let miss: Vec<u64> = wk.snapshot().missing().unwrap().collect();
+                assert_eq!(miss.len() as u64, w.bits() as u64 - 1, "{w:?} k={k}");
+            }
+        }
+    }
+}
+
 #[test]
 fn jumps_n_minus_1_n_n_plus_1() {
     use Registration::*;
@@ -309,7 +331,7 @@ fn jumps_n_minus_1_n_n_plus_1() {
 #[test]
 fn init_errors() {
     assert!(matches!(
-        new_workers(Window::Bits64, nz(1), 5, 4),
+        new_workers(Window::Last64, nz(1), 5, 4),
         Err(InitError::InvalidBounds {
             expected_start: 5,
             first_seen: 4
@@ -321,22 +343,22 @@ fn init_errors() {
     };
     // Hazard pools grow with P (P - 1 + R each); optimistic pools are R.
     assert!(matches!(
-        new_workers_with(Window::Bits512, nz(100_000), 0, 0, hazard),
+        new_workers_with(Window::Last512, nz(100_000), 0, 0, hazard),
         Err(InitError::TooManyParticipants { max: 2044, .. })
     ));
-    assert!(new_workers(Window::Bits512, nz(100_000), 0, 0).is_ok());
+    assert!(new_workers(Window::Last512, nz(100_000), 0, 0).is_ok());
     assert!(matches!(
-        new_workers(Window::Bits512, nz(1_000_000), 0, 0),
+        new_workers(Window::Last512, nz(1_000_000), 0, 0),
         Err(InitError::TooManyParticipants { max: 524_287, .. })
     ));
-    assert!(new_workers(Window::WatermarkOnly, nz(100_000), 0, 0).is_ok());
+    assert!(new_workers(Window::Latest, nz(100_000), 0, 0).is_ok());
     if !Features::detect().avx512f {
         let t = Tuning {
             shift: ShiftImpl::Avx512,
             ..Tuning::default()
         };
         assert!(matches!(
-            new_workers_with(Window::Bits512, nz(1), 0, 0, t),
+            new_workers_with(Window::Last512, nz(1), 0, 0, t),
             Err(InitError::MissingCpuFeature("avx512f"))
         ));
     }
@@ -466,7 +488,7 @@ fn snapshots_are_consistent_under_writes() {
 /// the writers must never block.
 #[test]
 fn stalled_reader_blocks_only_one_slot() {
-    for w in [Window::Bits128, Window::Bits256, Window::Bits512] {
+    for w in [Window::Last128, Window::Last256, Window::Last512] {
         for batch in [1, 4] {
             let t = Tuning {
                 reclaim_batch: nz(batch),
@@ -540,9 +562,9 @@ fn random_traffic_at_most_one_new() {
 }
 
 #[test]
-fn naive_matches_model_single_threaded() {
+fn hashset_matches_model_single_threaded() {
     for w in ALL.into_iter().skip(1) {
-        let mut nv = naive::new_workers(w.bits() as u64, 1, 100, 150);
+        let mut nv = hashset::new_workers(w.bits() as u64, 1, 100, 150);
         let mut m = Model::new(w, 100, 150);
         let mut rng = Rng(3);
         for _ in 0..20_000 {
@@ -599,7 +621,7 @@ fn cas_register_allocation() {
 /// the stale header must notice and return the fresh one.
 #[test]
 fn protect_revalidates_stale_header() {
-    for w in [Window::Bits128, Window::Bits256, Window::Bits512] {
+    for w in [Window::Last128, Window::Last256, Window::Last512] {
         let t = Tuning {
             reclaim_batch: nz(1),
             protection: SlotProtection::Hazard,
@@ -680,4 +702,21 @@ fn shift_impls_agree() {
         }
     }
     let _ = f;
+}
+
+/// Without `target_feature = "cmpxchg16b"` the 128-bit modes are not
+/// compiled in and initialization must refuse them (run with
+/// `RUSTFLAGS="-C target-feature=-cmpxchg16b" cargo test target_feature`).
+#[cfg(not(all(target_arch = "x86_64", target_feature = "cmpxchg16b")))]
+#[test]
+fn target_feature_required_for_128_bit_modes() {
+    for w in ALL.into_iter().skip(1) {
+        assert_eq!(
+            new_workers(w, nz(2), 0, 0).err(),
+            Some(InitError::MissingTargetFeature("cmpxchg16b")),
+            "{w:?}"
+        );
+    }
+    let mut ws = new_workers(Window::Latest, nz(1), 0, 0).unwrap();
+    assert_eq!(ws[0].register(1), Registration::New);
 }

@@ -6,7 +6,7 @@ print("| workload | target | "+" | ".join(f"{t}T Mops/s (p50/p99 ns, retr/op, Ne
 print("|---|---|"+"---|"*len(ths))
 d={(r['workload'],r['target'],int(r['threads'])):r for r in main}
 for wl in ['Seq','Gaps','Late','Dups']:
-    for tg in ['WatermarkOnly','Bits64','Bits128','Bits256','Bits512','naive-scc/64','naive-scc/512']:
+    for tg in ['Latest','Last64','Last128','Last256','Last512','HashSet64','HashSet512']:
         cells=[]
         for t in ths:
             r=d.get((wl,tg,t))

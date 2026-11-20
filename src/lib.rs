@@ -2,6 +2,13 @@
 //!
 //! See `DESIGN.md` for the slot/reclamation protocol, the pool capacity bound
 //! and the progress argument.
+//!
+//! **Build requirement.** `Window::Last64` and wider use a 128-bit
+//! `LOCK CMPXCHG16B` that is compiled only when the target enables
+//! `cmpxchg16b`. Applications must enable it in their own build, e.g.
+//! `rustflags = ["-C", "target-feature=+cmpxchg16b"]` in `.cargo/config.toml`
+//! (or `-C target-cpu=x86-64-v2` / `native`); otherwise `new_workers`
+//! returns [`InitError::MissingTargetFeature`] for those modes.
 
 mod atomic128;
 // The scc baseline lives with the benchmarks (scc is a dev-dependency); the
@@ -9,8 +16,8 @@ mod atomic128;
 #[cfg(test)]
 extern crate self as seqdedupe;
 #[cfg(test)]
-#[path = "../benches/common/naive.rs"]
-mod naive;
+#[path = "../benches/common/hashset.rs"]
+mod hashset;
 mod shift;
 #[cfg(test)]
 mod tests;
@@ -28,22 +35,22 @@ use std::sync::atomic::{AtomicU64, Ordering};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Window {
-    WatermarkOnly,
-    Bits64,
-    Bits128,
-    Bits256,
-    Bits512,
+    Latest,
+    Last64,
+    Last128,
+    Last256,
+    Last512,
 }
 
 impl Window {
     /// Number of retained predecessors.
     pub const fn bits(self) -> u32 {
         match self {
-            Window::WatermarkOnly => 0,
-            Window::Bits64 => 64,
-            Window::Bits128 => 128,
-            Window::Bits256 => 256,
-            Window::Bits512 => 512,
+            Window::Latest => 0,
+            Window::Last64 => 64,
+            Window::Last128 => 128,
+            Window::Last256 => 256,
+            Window::Last512 => 512,
         }
     }
 }
@@ -64,6 +71,10 @@ pub enum InitError {
     },
     /// The selected mode or tuning needs a CPU feature this machine lacks.
     MissingCpuFeature(&'static str),
+    /// The selected mode needs a target feature the crate was not compiled
+    /// with. The 128-bit modes need `cmpxchg16b`: build with
+    /// `-C target-feature=+cmpxchg16b` (or `-C target-cpu=x86-64-v2`/`native`).
+    MissingTargetFeature(&'static str),
     /// The slot pool (`1 + P * (P - 1 + reclaim_batch)` slots) would not fit
     /// in 32-bit slot ids / a sane amount of memory.
     TooManyParticipants { requested: usize, max: usize },
@@ -80,6 +91,10 @@ impl std::fmt::Display for InitError {
                 "expected_start ({expected_start}) must be <= first_seen ({first_seen})"
             ),
             InitError::MissingCpuFeature(feat) => write!(f, "CPU feature `{feat}` is required"),
+            InitError::MissingTargetFeature(feat) => write!(
+                f,
+                "compiled without target feature `{feat}`; rebuild with `-C target-feature=+{feat}`"
+            ),
             InitError::TooManyParticipants { requested, max } => {
                 write!(
                     f,
@@ -95,7 +110,14 @@ impl std::error::Error for InitError {}
 /// How 128-bit header loads are performed.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum HeaderLoad {
-    /// `Avx` when the CPU has AVX, otherwise `LockCmpxchg16b`.
+    /// `LockCmpxchg16b` for `Last64`. For the slot modes, `Avx` when the CPU
+    /// has AVX, otherwise `LockCmpxchg16b`.
+    ///
+    /// In `Last64` almost every load is followed by a CAS on the same line.
+    /// A locked load takes the line exclusive up front, which lowers the
+    /// multi-thread p99 (BENCHMARKS.md, "Header load"). The slot modes also
+    /// reload the header to validate a `Duplicate`, and there a write is
+    /// pure cost.
     Auto,
     /// `LOCK CMPXCHG16B` with expected == desired == 0.
     LockCmpxchg16b,
@@ -106,18 +128,18 @@ pub enum HeaderLoad {
     PrefetchwAvx,
 }
 
-/// Implementation of the multi-word shift used by `Bits256` / `Bits512`.
-/// `Bits128` always uses scalar code.
+/// Implementation of the multi-word shift used by `Last256` / `Last512`.
+/// `Last128` always uses scalar code.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ShiftImpl {
     Auto,
     Scalar,
-    /// AVX2 for `Bits256` and `Bits512`.
+    /// AVX2 for `Last256` and `Last512`.
     Avx2,
-    /// AVX-512F for `Bits512`; `Bits256` falls back to AVX2.
+    /// AVX-512F for `Last512`; `Last256` falls back to AVX2.
     Avx512,
     /// AVX-512 VBMI2 (+VL): the history is shifted in one zmm/ymm register
-    /// with `VPERMQ` + `VPSHLDVQ`. `Bits256` and `Bits512`.
+    /// with `VPERMQ` + `VPSHLDVQ`. `Last256` and `Last512`.
     Avx512Vbmi2,
 }
 
@@ -141,7 +163,8 @@ pub enum SlotProtection {
 pub struct Tuning {
     pub header_load: HeaderLoad,
     pub shift: ShiftImpl,
-    /// Special-case `seq == high + 1`.
+    /// Special-case `seq == high + 1` in the slot modes (`Last64` is
+    /// branch-free and ignores it).
     pub delta1_fast_path: bool,
     /// Slots each participant reclaims per hazard scan, at least. Each
     /// participant owns `participants - 1 + reclaim_batch` slots.
@@ -190,7 +213,7 @@ pub struct WorkerStats {
 pub struct Snapshot {
     high: u64,
     expected_start: u64,
-    /// 0 when history is unavailable (`WatermarkOnly`).
+    /// 0 when history is unavailable (`Latest`).
     nbits: u32,
     bits: [u64; 8],
 }
@@ -307,10 +330,18 @@ pub fn new_workers_with(
     let p = participants.get();
     let feats = Features::detect();
 
-    if window != Window::WatermarkOnly && !feats.cx16 {
-        return Err(InitError::MissingCpuFeature("cmpxchg16b"));
+    if window != Window::Latest {
+        // The 128-bit CAS is only compiled in when the target guarantees
+        // CMPXCHG16B (see atomic128.rs).
+        if !cfg!(all(target_arch = "x86_64", target_feature = "cmpxchg16b")) {
+            return Err(InitError::MissingTargetFeature("cmpxchg16b"));
+        }
+        if !feats.cx16 {
+            return Err(InitError::MissingCpuFeature("cmpxchg16b"));
+        }
     }
     let load = match tuning.header_load {
+        HeaderLoad::Auto if window == Window::Last64 => LoadKind::Locked,
         HeaderLoad::Auto if feats.avx => LoadKind::Avx,
         HeaderLoad::Auto | HeaderLoad::LockCmpxchg16b => LoadKind::Locked,
         HeaderLoad::Avx if feats.avx => LoadKind::Avx,
@@ -319,26 +350,26 @@ pub fn new_workers_with(
         HeaderLoad::PrefetchwAvx => return Err(InitError::MissingCpuFeature("avx+prfchw")),
     };
     let shift = match tuning.shift {
-        // Benchmarks (BENCHMARKS.md): only Bits512 gains from SIMD (+8% on
+        // Benchmarks (BENCHMARKS.md): only Last512 gains from SIMD (+8% on
         // Zen 5c, up to +30% on Zen 2). VBMI2 and AVX2 are within noise of
         // each other; VBMI2 is preferred as it reads no guard words.
         ShiftImpl::Auto => match window {
-            Window::Bits512 if feats.avx512vbmi2 => ShiftKind::Vbmi2,
-            Window::Bits512 if feats.avx2 => ShiftKind::Avx2,
+            Window::Last512 if feats.avx512vbmi2 => ShiftKind::Vbmi2,
+            Window::Last512 if feats.avx2 => ShiftKind::Avx2,
             _ => ShiftKind::Scalar,
         },
         ShiftImpl::Scalar => ShiftKind::Scalar,
         ShiftImpl::Avx2 if feats.avx2 => ShiftKind::Avx2,
         ShiftImpl::Avx2 => return Err(InitError::MissingCpuFeature("avx2")),
         ShiftImpl::Avx512 => match window {
-            Window::Bits512 if feats.avx512f => ShiftKind::Avx512,
-            Window::Bits512 => return Err(InitError::MissingCpuFeature("avx512f")),
+            Window::Last512 if feats.avx512f => ShiftKind::Avx512,
+            Window::Last512 => return Err(InitError::MissingCpuFeature("avx512f")),
             _ if feats.avx2 => ShiftKind::Avx2,
             _ => return Err(InitError::MissingCpuFeature("avx2")),
         },
         ShiftImpl::Avx512Vbmi2 => match window {
-            Window::Bits256 | Window::Bits512 if feats.avx512vbmi2 => ShiftKind::Vbmi2,
-            Window::Bits256 | Window::Bits512 => {
+            Window::Last256 | Window::Last512 if feats.avx512vbmi2 => ShiftKind::Vbmi2,
+            Window::Last256 | Window::Last512 => {
                 return Err(InitError::MissingCpuFeature("avx512f+avx512vl+avx512vbmi2"));
             }
             _ => ShiftKind::Scalar,
@@ -346,11 +377,11 @@ pub fn new_workers_with(
     };
     let optimistic = tuning.protection == SlotProtection::Optimistic;
     let kind = match window {
-        Window::WatermarkOnly => Kind::Watermark,
-        Window::Bits64 => Kind::Inline64,
-        Window::Bits128 => Kind::S2,
-        Window::Bits256 => Kind::S4(shift),
-        Window::Bits512 => Kind::S8(shift),
+        Window::Latest => Kind::Watermark,
+        Window::Last64 => Kind::Inline64,
+        Window::Last128 => Kind::S2,
+        Window::Last256 => Kind::S4(shift),
+        Window::Last512 => Kind::S8(shift),
     };
 
     let words = window.bits() as usize / 64;
@@ -382,7 +413,7 @@ pub fn new_workers_with(
 
     let arena = Arena::new(words, nslots);
     let (hdr, wm) = match window {
-        Window::WatermarkOnly => (
+        Window::Latest => (
             Pair {
                 lo: first_seen,
                 hi: 0,
@@ -528,7 +559,7 @@ impl Worker {
         }
     }
 
-    // -- WatermarkOnly -----------------------------------------------------
+    // -- Latest -----------------------------------------------------
 
     #[inline(always)]
     fn reg_watermark(&mut self, seq: u64) -> Registration {
@@ -551,7 +582,7 @@ impl Worker {
         }
     }
 
-    // -- Bits64 (inline mask) ---------------------------------------------
+    // -- Last64 (inline mask) ---------------------------------------------
 
     #[inline(always)]
     fn reg_inline64(&mut self, seq: u64) -> Registration {
@@ -559,16 +590,11 @@ impl Worker {
         loop {
             let Pair { lo: h, hi: m } = cur;
             let new = if seq > h {
-                let d = seq - h;
-                let m2 = if self.delta1 && d == 1 {
-                    (m << 1) | 1
-                } else if d < 64 {
-                    (m << d) | (1 << (d - 1))
-                } else if d == 64 {
-                    1 << 63
-                } else {
-                    0
-                };
+                // Branch-free: `unbounded_shl` gives 0 for shifts >= 64, so
+                // d == 64 leaves only the old watermark at bit 63 and d > 64
+                // clears the history. Clamp first: shift amounts are u32.
+                let d = (seq - h).min(65) as u32;
+                let m2 = m.unbounded_shl(d) | 1u64.unbounded_shl(d - 1);
                 Pair { lo: seq, hi: m2 }
             } else if seq == h {
                 return Registration::Duplicate;
@@ -604,7 +630,7 @@ impl Worker {
         }
     }
 
-    // -- Bits128 / 256 / 512 (slots) ----------------------------------------
+    // -- Last128 / 256 / 512 (slots) ----------------------------------------
 
     #[cfg(target_arch = "x86_64")]
     #[target_feature(enable = "avx2")]
@@ -924,7 +950,7 @@ struct CachePadded<T>(T);
 struct Shared {
     /// 128-bit header: `{high, mask}` or `{high, slot_id}`.
     header: Header,
-    /// `WatermarkOnly` state.
+    /// `Latest` state.
     wm: CachePadded<AtomicU64>,
     /// One hazard entry per participant.
     hazards: Box<[CachePadded<AtomicU64>]>,

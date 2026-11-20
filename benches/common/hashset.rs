@@ -1,4 +1,4 @@
-//! Naive baseline for benchmarks and tests (not part of the library): an `scc::HashSet<u64>` of seen sequence
+//! Hash-set baseline for benchmarks and tests (not part of the library): an `scc::HashSet<u64>` of seen sequence
 //! numbers plus an `AtomicU64` watermark. Entries that fall `N` below the
 //! watermark are rotated out by whichever thread advanced it.
 //!
@@ -21,11 +21,11 @@ struct Shared {
     last_sweep: AtomicU64,
 }
 
-pub struct NaiveWorker {
+pub struct HashSetWorker {
     shared: Arc<Shared>,
 }
 
-pub struct NaiveSnapshot {
+pub struct HashSetSnapshot {
     pub high: u64,
     pub missing: Vec<u64>,
 }
@@ -35,7 +35,7 @@ pub fn new_workers(
     participants: usize,
     expected_start: u64,
     first_seen: u64,
-) -> Vec<NaiveWorker> {
+) -> Vec<HashSetWorker> {
     assert!(window_bits > 0 && expected_start <= first_seen);
     let set = scc::HashSet::with_capacity(2 * window_bits as usize);
     let _ = set.insert_sync(first_seen);
@@ -47,13 +47,13 @@ pub fn new_workers(
         last_sweep: AtomicU64::new(first_seen),
     });
     (0..participants)
-        .map(|_| NaiveWorker {
+        .map(|_| HashSetWorker {
             shared: shared.clone(),
         })
         .collect()
 }
 
-impl NaiveWorker {
+impl HashSetWorker {
     pub fn register(&mut self, seq: u64) -> Registration {
         let s = &*self.shared;
         if seq < s.expected_start {
@@ -93,11 +93,11 @@ impl NaiveWorker {
         }
     }
 
-    pub fn snapshot(&mut self) -> NaiveSnapshot {
+    pub fn snapshot(&mut self) -> HashSetSnapshot {
         let s = &*self.shared;
         let high = s.high.load(Ordering::Acquire);
         let lo = high.saturating_sub(s.n).max(s.expected_start);
         let missing = (lo..high).filter(|k| !s.set.contains_sync(k)).collect();
-        NaiveSnapshot { high, missing }
+        HashSetSnapshot { high, missing }
     }
 }

@@ -22,12 +22,12 @@
 //!
 //! cargo bench --bench latency -- [--rates 10,50,200] [--streams 2,4] [--secs 5]
 //!     [--burst-mean 8] [--gap-ns 1000] [--jitter-ns 2000] [--loss 0.01]
-//!     [--targets Bits512,naive-scc/512] [--out bench-results/latency-HOST]
+//!     [--targets Last512,HashSet512] [--out bench-results/latency-HOST]
 
 mod common;
 
 use common::*;
-use common::naive;
+use common::hashset;
 use seqdedupe::*;
 use std::io::Write as _;
 use std::num::NonZeroUsize;
@@ -38,14 +38,14 @@ const FIRST: u64 = 1_000_000;
 #[derive(Clone, Copy)]
 enum Target {
     D(Window),
-    Naive(u64),
+    HashSet(u64),
 }
 
 impl Target {
     fn label(&self) -> String {
         match self {
             Target::D(w) => format!("{w:?}"),
-            Target::Naive(n) => format!("naive-scc/{n}"),
+            Target::HashSet(n) => format!("HashSet{n}"),
         }
     }
 }
@@ -249,12 +249,12 @@ fn main() {
     writeln!(curves, "target,streams,rate_kps,quantile,ns").unwrap();
 
     let targets = [
-        Target::D(Window::WatermarkOnly),
-        Target::D(Window::Bits64),
-        Target::D(Window::Bits128),
-        Target::D(Window::Bits256),
-        Target::D(Window::Bits512),
-        Target::Naive(512),
+        Target::D(Window::Latest),
+        Target::D(Window::Last64),
+        Target::D(Window::Last128),
+        Target::D(Window::Last256),
+        Target::D(Window::Last512),
+        Target::HashSet(512),
     ];
     for &streams in &stream_counts {
         let cores = &all_cores[..streams];
@@ -278,8 +278,8 @@ fn main() {
                             .unwrap();
                         run(ws, &scheds, cores, clock.tpn, warmup_ns)
                     }
-                    Target::Naive(n) => {
-                        let ws = naive::new_workers(n, streams, 0, FIRST);
+                    Target::HashSet(n) => {
+                        let ws = hashset::new_workers(n, streams, 0, FIRST);
                         run(ws, &scheds, cores, clock.tpn, warmup_ns)
                     }
                 };

@@ -2,7 +2,7 @@
 //!
 //! cargo bench --bench register -- [--quick] [--only main,shift,delta1,load,preprotect,protection,recheck,best,batch]
 //!                                 [--threads 1,2,4,8] [--ops N] [--csv PATH]
-//!                                 [--targets Bits512,naive-scc/512] [--loads Seq,Dups]
+//!                                 [--targets Last512,HashSet512] [--loads Seq,Dups] [--variants hazard]
 //!                                 [--reps N]   (extra untimed passes, for perf record)
 //!
 //! Each configuration runs twice on a fresh deduper: a throughput pass (no
@@ -13,7 +13,7 @@
 mod common;
 
 use common::*;
-use common::naive;
+use common::hashset;
 use seqdedupe::*;
 use std::hint::black_box;
 use std::io::Write as _;
@@ -28,20 +28,20 @@ use std::time::{Duration, Instant};
 #[derive(Clone, Copy)]
 enum Target {
     D(Window, Tuning),
-    Naive(u64),
+    HashSet(u64),
 }
 
 impl Target {
     fn nbits(&self) -> u64 {
         match self {
             Target::D(w, _) => w.bits() as u64,
-            Target::Naive(n) => *n,
+            Target::HashSet(n) => *n,
         }
     }
     fn label(&self) -> String {
         match self {
             Target::D(w, _) => format!("{w:?}"),
-            Target::Naive(n) => format!("naive-scc/{n}"),
+            Target::HashSet(n) => format!("HashSet{n}"),
         }
     }
 }
@@ -189,8 +189,8 @@ fn build(
                 .map_err(|e| e.to_string())?;
             Ok(Box::new(move |s, c, timed| run_pass(ws, s, c, timed)))
         }
-        Target::Naive(n) => {
-            let ws = naive::new_workers(n, threads, 0, FIRST);
+        Target::HashSet(n) => {
+            let ws = hashset::new_workers(n, threads, 0, FIRST);
             Ok(Box::new(move |s, c, timed| run_pass(ws, s, c, timed)))
         }
     }
@@ -201,6 +201,8 @@ struct Ctx {
     /// `--targets`/`--loads` filters (substring of the label / exact name).
     targets: Option<Vec<String>>,
     loads: Option<Vec<String>>,
+    /// `--variants` filter (exact variant name, e.g. `hazard`).
+    variants: Option<Vec<String>>,
     /// Extra throughput-only passes (for profiling: `--reps N`).
     reps: usize,
     ops: usize,
@@ -219,6 +221,11 @@ fn measure(ctx: &mut Ctx, exp: &str, variant: &str, t: Target, load: Load, threa
     }
     if let Some(ls) = &ctx.loads
         && !ls.iter().any(|x| format!("{load:?}") == *x)
+    {
+        return;
+    }
+    if let Some(vs) = &ctx.variants
+        && !vs.iter().any(|x| variant == x)
     {
         return;
     }
@@ -250,11 +257,15 @@ fn measure(ctx: &mut Ctx, exp: &str, variant: &str, t: Target, load: Load, threa
     let total: u64 = thr.counts.iter().sum();
     let mops = total as f64 / thr.wall.as_secs_f64() / 1e6;
     let ns_per_op = thr.wall.as_nanos() as f64 / (total as f64 / threads as f64);
+    // Throughput, ns/op, retries and the answer mix come from the untimed
+    // pass; mean and percentiles from the timed pass's own histogram, so a
+    // row never mixes the two.
+    let mean = ctx.clock.mean(&lat.lats);
     let (p50, p99, p999) = (pct(0.50), pct(0.99), pct(0.999));
     let rpo = thr.retries as f64 / total as f64;
     let mix = thr.counts.map(|c| 100.0 * c as f64 / total as f64);
     println!(
-        "| {exp} | {} | {variant} | {load:?} | {threads} | {mops:.1} | {ns_per_op:.1} | {p50:.0} | {p99:.0} | {p999:.0} | {rpo:.3} | {:.0}/{:.0}/{:.0} |",
+        "| {exp} | {} | {variant} | {load:?} | {threads} | {mops:.1} | {ns_per_op:.1} | {rpo:.3} | {mean:.0} | {p50:.0} | {p99:.0} | {p999:.0} | {:.0}/{:.0}/{:.0} |",
         t.label(),
         mix[0],
         mix[1],
@@ -262,7 +273,7 @@ fn measure(ctx: &mut Ctx, exp: &str, variant: &str, t: Target, load: Load, threa
     );
     writeln!(
         ctx.csv,
-        "{exp},{},{variant},{load:?},{threads},{mops:.3},{ns_per_op:.2},{p50:.1},{p99:.1},{p999:.1},{rpo:.4},{:.2},{:.2},{:.2}",
+        "{exp},{},{variant},{load:?},{threads},{mops:.3},{ns_per_op:.2},{rpo:.4},{mean:.1},{p50:.1},{p99:.1},{p999:.1},{:.2},{:.2},{:.2}",
         t.label(),
         mix[0],
         mix[1],
@@ -291,7 +302,7 @@ fn main() {
     let host = std::fs::read_to_string("/proc/sys/kernel/hostname").unwrap_or_default();
     let csv_path = arg("--csv").unwrap_or_else(|| format!("target/bench-{}.csv", host.trim()));
     let mut csv = std::fs::File::create(&csv_path).unwrap();
-    writeln!(csv, "experiment,target,variant,workload,threads,mops,ns_per_op,p50_ns,p99_ns,p999_ns,retries_per_op,new_pct,dup_pct,old_pct").unwrap();
+    writeln!(csv, "experiment,target,variant,workload,threads,mops,ns_per_op,retries_per_op,mean_ns,p50_ns,p99_ns,p999_ns,new_pct,dup_pct,old_pct").unwrap();
 
     let cpu = std::fs::read_to_string("/proc/cpuinfo")
         .unwrap_or_default()
@@ -307,15 +318,16 @@ fn main() {
     );
     println!("# {ops} ops per thread; results also in {csv_path}\n");
     println!(
-        "| exp | target | variant | workload | thr | Mops/s | ns/op/thr | p50 ns | p99 ns | p99.9 ns | retries/op | New/Dup/Old % |"
+        "| exp | target | variant | workload | thr | untimed: Mops/s | ns/op/thr | retries/op | timed: mean ns | p50 ns | p99 ns | p99.9 ns | New/Dup/Old % (untimed) |"
     );
-    println!("|---|---|---|---|---|---|---|---|---|---|---|---|");
+    println!("|---|---|---|---|---|---|---|---|---|---|---|---|---|");
 
     let split = |s: String| s.split(',').map(String::from).collect::<Vec<_>>();
     let mut ctx = Ctx {
         cores,
         targets: arg("--targets").map(split),
         loads: arg("--loads").map(split),
+        variants: arg("--variants").map(split),
         reps: arg("--reps").map(|s| s.parse().unwrap()).unwrap_or(0),
         ops,
         clock,
@@ -326,16 +338,16 @@ fn main() {
 
     if want("main") {
         let mut targets: Vec<Target> = [
-            Window::WatermarkOnly,
-            Window::Bits64,
-            Window::Bits128,
-            Window::Bits256,
-            Window::Bits512,
+            Window::Latest,
+            Window::Last64,
+            Window::Last128,
+            Window::Last256,
+            Window::Last512,
         ]
         .map(|w| Target::D(w, def))
         .to_vec();
-        targets.push(Target::Naive(64));
-        targets.push(Target::Naive(512));
+        targets.push(Target::HashSet(64));
+        targets.push(Target::HashSet(512));
         for &load in &loads {
             for &t in &targets {
                 for &th in &threads {
@@ -347,10 +359,10 @@ fn main() {
     let th2: Vec<usize> = threads
         .iter()
         .copied()
-        .filter(|&t| t == 1 || t == 4)
+        .filter(|&t| t <= 4)
         .collect();
     if want("shift") {
-        for w in [Window::Bits256, Window::Bits512] {
+        for w in [Window::Last256, Window::Last512] {
             for (name, shift) in [
                 ("scalar", ShiftImpl::Scalar),
                 ("avx2", ShiftImpl::Avx2),
@@ -373,7 +385,7 @@ fn main() {
         }
     }
     if want("delta1") {
-        for w in [Window::Bits64, Window::Bits128, Window::Bits512] {
+        for w in [Window::Last64, Window::Last128, Window::Last512] {
             for (name, on) in [("delta1-off", false), ("delta1-on", true)] {
                 for &th in &th2 {
                     let t = Target::D(
@@ -389,7 +401,7 @@ fn main() {
         }
     }
     if want("load") {
-        for w in [Window::Bits64, Window::Bits512] {
+        for w in [Window::Last64, Window::Last512] {
             for (name, hl) in [
                 ("lock-cmpxchg16b", HeaderLoad::LockCmpxchg16b),
                 ("vmovdqa", HeaderLoad::Avx),
@@ -411,7 +423,7 @@ fn main() {
         }
     }
     if want("preprotect") {
-        for w in [Window::Bits128, Window::Bits512] {
+        for w in [Window::Last128, Window::Last512] {
             for (name, on) in [("pre_protect-off", false), ("pre_protect-on", true)] {
                 for load in [Load::Seq, Load::Dups] {
                     for &th in &th2 {
@@ -419,6 +431,8 @@ fn main() {
                             w,
                             Tuning {
                                 pre_protect: on,
+                                // pre_protect only affects the hazard protocol.
+                                protection: SlotProtection::Hazard,
                                 ..def
                             },
                         );
@@ -429,18 +443,24 @@ fn main() {
         }
     }
     if want("protection") {
-        let vbmi2 = Tuning {
-            shift: ShiftImpl::Avx512Vbmi2,
+        // Explicit settings: the defaults are optimistic + Auto shift.
+        let hazard = Tuning {
+            protection: SlotProtection::Hazard,
+            shift: ShiftImpl::Scalar,
             ..def
         };
-        for w in [Window::Bits128, Window::Bits256, Window::Bits512] {
+        let vbmi2 = Tuning {
+            shift: ShiftImpl::Avx512Vbmi2,
+            ..hazard
+        };
+        for w in [Window::Last128, Window::Last256, Window::Last512] {
             for (name, t) in [
-                ("hazard", def),
+                ("hazard", hazard),
                 (
                     "optimistic",
                     Tuning {
                         protection: SlotProtection::Optimistic,
-                        ..def
+                        ..hazard
                     },
                 ),
                 ("hazard+vbmi2", vbmi2),
@@ -466,7 +486,7 @@ fn main() {
             shift: ShiftImpl::Avx512Vbmi2,
             ..def
         };
-        for w in [Window::Bits64, Window::Bits512] {
+        for w in [Window::Last64, Window::Last512] {
             for (name, on) in [("recheck-off", false), ("recheck-on", true)] {
                 for load in [Load::Seq, Load::Late, Load::Dups] {
                     for &th in &threads {
@@ -483,7 +503,7 @@ fn main() {
     if want("best") {
         // Candidate defaults: optimistic protection + VBMI2 shift, with each
         // header load.
-        for w in [Window::Bits128, Window::Bits256, Window::Bits512] {
+        for w in [Window::Last128, Window::Last256, Window::Last512] {
             for (name, hl) in [
                 ("opt+vbmi2+vmovdqa", HeaderLoad::Avx),
                 ("opt+vbmi2+prefetchw", HeaderLoad::PrefetchwAvx),
@@ -506,7 +526,7 @@ fn main() {
         for b in [1usize, 4, 16, 64] {
             for &th in &threads {
                 let t = Target::D(
-                    Window::Bits512,
+                    Window::Last512,
                     Tuning {
                         reclaim_batch: NonZeroUsize::new(b).unwrap(),
                         ..def
