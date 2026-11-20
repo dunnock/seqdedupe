@@ -4,7 +4,7 @@
 usage: scripts/latency_charts.py bench-results/latency-HOST [out_dir]
 
 Reads <prefix>.csv and <prefix>-curves.csv (written by benches/latency.rs)
-and writes <out_dir>/latency-tails.svg and <out_dir>/latency-p99.svg.
+and writes <out_dir>/latency-tails.svg and <out_dir>/latency-summary.svg.
 
 Palette: the validated categorical order (blue, orange, aqua, yellow,
 magenta, green), light and dark steps; dark mode via prefers-color-scheme.
@@ -132,27 +132,38 @@ for ri, ns_ in enumerate(streams):
 svg.append('</svg>')
 open(os.path.join(out_dir, "latency-tails.svg"), "w").write("\n".join(svg))
 
-# ---------------------------------------------------- chart 2: p99 bars
-# One panel per stream count, stacked, with a shared y-scale.
+# ------------------------------------------- chart 2: p50 / mean / p99 bars
+# One panel per stream count, at one rate (rate barely matters). Showing the
+# mean and p50 next to p99 keeps a mode with a good tail but a slower
+# typical call (Last64's locked load) from looking better than it is.
+RATE = 50.0 if 50.0 in rates else rates[len(rates) // 2]
+STATS = [("p50", "p50_ns", "r1"), ("mean", "mean_ns", "r2"), ("p99", "p99_ns", "r3")]
 left2, top2, plot_w, plot_h, row_gap2 = 56, 110, 900, 160, 70
 W2, H2 = 980, top2 + len(streams) * (plot_h + row_gap2) - 20
-vals = {(t, n, r): float(summary[(t, n, r)]["p99_ns"])
-        for t in targets for n in streams for r in rates if (t, n, r) in summary}
+vals = {(t, n, k): float(summary[(t, n, RATE)][col])
+        for t in targets for n in streams for k, col, _ in STATS if (t, n, RATE) in summary}
 vmax = max(vals.values())
 step = 50 if vmax <= 300 else 100
 ymax2 = math.ceil(vmax * 1.1 / step) * step
 
+
+def fmt_ns(v):
+    # The timer reads in 10 ns steps, so 10 and 20 are upper bounds.
+    if v <= 20:
+        return f"&lt;{10 if v <= 10 else 20} ns"
+    return f"{v:.0f} ns"
+
+
 svg = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W2} {H2}" width="{W2}" height="{H2}" role="img" '
-       f'aria-label="p99 register() latency per deduper mode at each message rate, one panel per stream count">', STYLE,
+       f'aria-label="register() latency per deduper mode: p50, mean and p99 at {fmt_rate(RATE)}, one panel per stream count">', STYLE,
        f'<rect class="bg" width="{W2}" height="{H2}" rx="8"/>',
-       f'<text class="title" x="{left2}" y="30">p99 register() latency per mode and rate</text>',
-       f'<text class="sub" x="{left2}" y="50">ns per call, {streams_txt} redundant streams; lower is better. Rate barely matters, the mode does.</text>']
-rate_colors = ["r1", "r2", "r3"]
+       f'<text class="title" x="{left2}" y="30">register() latency per mode: typical call and tail</text>',
+       f'<text class="sub" x="{left2}" y="50">ns per call at {fmt_rate(RATE)}, {streams_txt} redundant streams; lower is better. Other rates are within 10–30 ns.</text>']
 lx = left2
-for k, r in enumerate(rates):
-    svg.append(f'<rect x="{lx}" y="68" width="12" height="12" rx="3" class="f-{rate_colors[k]}"/>')
-    svg.append(f'<text class="leg" x="{lx + 18}" y="78">{fmt_rate(r)}</text>')
-    lx += 18 + 7.2 * len(fmt_rate(r)) + 24
+for name, _, color in STATS:
+    svg.append(f'<rect x="{lx}" y="68" width="12" height="12" rx="3" class="f-{color}"/>')
+    svg.append(f'<text class="leg" x="{lx + 18}" y="78">{name}</text>')
+    lx += 18 + 7.2 * len(name) + 24
 group_w = plot_w / len(targets)
 bar_w = 26
 for ri, ns_ in enumerate(streams):
@@ -171,11 +182,11 @@ for ri, ns_ in enumerate(streams):
     for gi, t in enumerate(targets):
         gx = left2 + gi * group_w + group_w / 2
         svg.append(f'<text class="tick" x="{gx:.1f}" y="{y0 + plot_h + 20}" text-anchor="middle">{LABEL.get(t, t)}</text>')
-        n = len(rates)
-        for k, r in enumerate(rates):
-            if (t, ns_, r) not in vals:
+        n = len(STATS)
+        for k, (name, _, color) in enumerate(STATS):
+            if (t, ns_, name) not in vals:
                 continue
-            val = vals[(t, ns_, r)]
+            val = vals[(t, ns_, name)]
             x = gx - (n * bar_w + (n - 1) * 2) / 2 + k * (bar_w + 2)
             y = y2(val)
             h = y0 + plot_h - y
@@ -184,13 +195,13 @@ for ri, ns_ in enumerate(streams):
             d = (f"M{x:.1f},{y0 + plot_h:.1f} L{x:.1f},{y + rr:.1f} Q{x:.1f},{y:.1f} {x + rr:.1f},{y:.1f} "
                  f"L{x + bar_w - rr:.1f},{y:.1f} Q{x + bar_w:.1f},{y:.1f} {x + bar_w:.1f},{y + rr:.1f} "
                  f"L{x + bar_w:.1f},{y0 + plot_h:.1f} Z")
-            svg.append(f'<g><title>{LABEL.get(t, t)}, {ns_} streams, {fmt_rate(r)}: p99 = {val:.0f} ns</title>'
-                       f'<path d="{d}" class="f-{rate_colors[k]}"/></g>')
-        # One value label per group: the highest bar.
-        got = [vals[(t, ns_, r)] for r in rates if (t, ns_, r) in vals]
-        if got:
-            worst = max(got)
-            svg.append(f'<text class="val" x="{gx:.1f}" y="{y2(worst) - 6:.1f}" text-anchor="middle">{worst:.0f} ns</text>')
+            svg.append(f'<g><title>{LABEL.get(t, t)}, {ns_} streams, {fmt_rate(RATE)}: {name} = {fmt_ns(val)}</title>'
+                       f'<path d="{d}" class="f-{color}"/></g>')
+        # One label per group, above its tallest bar: mean and p99.
+        if (t, ns_, "p99") in vals:
+            m, p = vals[(t, ns_, "mean")], vals[(t, ns_, "p99")]
+            svg.append(f'<text class="val" x="{gx:.1f}" y="{y2(p) - 6:.1f}" text-anchor="middle">'
+                       f'mean {m:.0f} · p99 {p:.0f} ns</text>')
 svg.append('</svg>')
-open(os.path.join(out_dir, "latency-p99.svg"), "w").write("\n".join(svg))
-print("wrote", os.path.join(out_dir, "latency-tails.svg"), os.path.join(out_dir, "latency-p99.svg"))
+open(os.path.join(out_dir, "latency-summary.svg"), "w").write("\n".join(svg))
+print("wrote", os.path.join(out_dir, "latency-tails.svg"), os.path.join(out_dir, "latency-summary.svg"))

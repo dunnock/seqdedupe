@@ -110,18 +110,21 @@ impl std::error::Error for InitError {}
 /// How 128-bit header loads are performed.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum HeaderLoad {
-    /// `LockCmpxchg16b` for `Last64`. For the slot modes, `Avx` when the CPU
-    /// has AVX, otherwise `LockCmpxchg16b`.
+    /// `LockCmpxchg16b` for `Latest` and `Last64`. For the slot modes, `Avx`
+    /// when the CPU has AVX, otherwise `LockCmpxchg16b`.
     ///
-    /// In `Last64` almost every load is followed by a CAS on the same line.
+    /// In `Latest` and `Last64` almost every load is followed by a CAS on the
+    /// same line.
     /// A locked load takes the line exclusive up front, which lowers the
     /// multi-thread p99 (BENCHMARKS.md, "Header load"). The slot modes also
     /// reload the header to validate a `Duplicate`, and there a write is
     /// pure cost.
     Auto,
-    /// `LOCK CMPXCHG16B` with expected == desired == 0.
+    /// `LOCK CMPXCHG16B` with expected == desired == 0. For `Latest`, a
+    /// `LOCK CMPXCHG` on its 64-bit watermark.
     LockCmpxchg16b,
-    /// Aligned `VMOVDQA` (atomic on AVX-capable Intel and AMD CPUs).
+    /// Aligned `VMOVDQA` (atomic on AVX-capable Intel and AMD CPUs). For
+    /// `Latest`, a plain 64-bit load.
     Avx,
     /// `PREFETCHW` then `VMOVDQA`: request the line in exclusive state up
     /// front, so a following CAS does not need a second coherence round trip.
@@ -341,7 +344,7 @@ pub fn new_workers_with(
         }
     }
     let load = match tuning.header_load {
-        HeaderLoad::Auto if window == Window::Last64 => LoadKind::Locked,
+        HeaderLoad::Auto if matches!(window, Window::Latest | Window::Last64) => LoadKind::Locked,
         HeaderLoad::Auto if feats.avx => LoadKind::Avx,
         HeaderLoad::Auto | HeaderLoad::LockCmpxchg16b => LoadKind::Locked,
         HeaderLoad::Avx if feats.avx => LoadKind::Avx,
@@ -564,7 +567,16 @@ impl Worker {
     #[inline(always)]
     fn reg_watermark(&mut self, seq: u64) -> Registration {
         let wm = &self.shared.wm.0;
-        let mut cur = wm.load(Ordering::Acquire);
+        let mut cur = if self.load == LoadKind::Locked {
+            // `LOCK CMPXCHG` as a load: takes the line exclusive like the
+            // CAS that may follow. (`fetch_add(0)` would be lowered to
+            // `mfence; mov`, which does not.)
+            match wm.compare_exchange(0, 0, Ordering::AcqRel, Ordering::Acquire) {
+                Ok(v) | Err(v) => v,
+            }
+        } else {
+            wm.load(Ordering::Acquire)
+        };
         loop {
             if seq < cur {
                 return Registration::TooOld;

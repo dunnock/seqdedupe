@@ -33,7 +33,7 @@ The harness is `benches/register.rs`.
   20 ns of timer and histogram work between calls, which lowers contention,
   so the two passes do not describe the same calls: with 4 threads on Dups,
   `Last64` takes 114 ns per call untimed (4 / 35 M ops/s) against a timed
-  mean of 68 ns. The tables below label throughput as untimed and latency as
+  mean of 43 ns. The tables below label throughput as untimed and latency as
   timed; the live-feed benchmark paces calls like a real feed.
 * **Variance.** Single-thread results repeat within a few percent. With 4 or
   more threads advancing one watermark, throughput varies by ±20–30% between
@@ -68,20 +68,20 @@ Untimed throughput in M ops/s:
 
 | Workload | Latest | Last64 | Last128 | Last256 | Last512 | HashSet64 | HashSet512 |
 |---|---|---|---|---|---|---|---|
-| Seq | 156 | 75 | 99 | 93 | 89 | 21 | 21 |
-| Gaps | 156 | 76 | 88 | 82 | 81 | 6.0 | 1.1 |
-| Late | 216* | 75 | 87 | 85 | 78 | 20 | 20 |
-| Dups | 269 | 96 | 166 | 154 | 141 | 28 | 28 |
+| Seq | 85 | 75 | 99 | 94 | 89 | 21 | 21 |
+| Gaps | 85 | 75 | 89 | 83 | 81 | 6.0 | 1.1 |
+| Late | 132* | 76 | 87 | 83 | 78 | 20 | 20 |
+| Dups | 110 | 98 | 165 | 155 | 141 | 28 | 28 |
 
 \* `Latest` rejects 79% of Late as `TooOld`.
 
 * A call costs 10–13 ns for `Last64` and 6–13 ns for the slot modes, with
-  a timed p99 at or below 40 ns: **3.4–6× faster than the hash set**.
-* `Last64` is slower than the slot modes on one thread because it reads its
-  header with a locked `LOCK CMPXCHG16B`, which pays off only under
+  a timed p99 at or below 40 ns: **3.5–6× faster than the hash set**.
+* `Latest` and `Last64` are slower than the slot modes on one thread
+  because they read the header with a locked RMW, which pays off only under
   contention (see "Header load" below).
 * **With gaps the hash set collapses**, because removing old entries is
-  O(gap): `Last64` is 13× faster than `HashSet64`, and `Last512` 74× faster
+  O(gap): `Last64` is 12× faster than `HashSet64`, and `Last512` 74× faster
   than `HashSet512`. Its p99 is 2.3 µs (N = 64) and 17 µs (N = 512), against
   20–30 ns for the bitmap modes.
 
@@ -91,19 +91,19 @@ Untimed M ops/s, all threads combined (timed p99 ns per call):
 
 | Threads | Last64 | Last128 | Last256 | Last512 | HashSet64 | HashSet512 |
 |---|---|---|---|---|---|---|
-| 2 | 34 (40) | 42 (120) | 42 (110) | 32 (120) | 13 (300) | 14 (280) |
-| 4 | 35 (70) | 28 (210) | 33 (220) | 35 (170) | 16 (820) | 18 (570) |
-| 8 | 40 (140)* | 36 (480) | 38 (470) | 36 (320) | 28 (2,540) | 29 (1,370) |
-| 16 | 44 (310)* | 40 (910) | 36 (910) | 40 (660) | 45 (3,030) | 50 (2,760) |
+| 2 | 34 (50) | 37 (110) | 41 (120) | 37 (120) | 12 (310) | 14 (290) |
+| 4 | 35 (50) | 34 (220) | 34 (240) | 34 (180) | 16 (820) | 18 (600) |
+| 8 | 45 (140)* | 38 (480) | 39 (470) | 38 (320) | 24 (2,490) | 28 (1,370) |
+| 16 | 44 (310)* | 40 (910) | 38 (910) | 39 (640) | 45 (3,010) | 50 (2,770) |
 
-\* With 8 and 16 threads, 32–42% of `Last64` calls return `TooOld`: the
+\* With 8 and 16 threads, 38–39% of `Last64` calls return `TooOld`: the
 thread holding the header line runs more than 64 ids ahead of the others,
 and their copies fall out of the window. Every id is still `New` exactly
 once, but those calls skip the CAS, so the throughput is not comparable.
 
 * Up to 8 threads every bitmap mode beats the hash set on throughput, by
-  1.2–3×.
-* p99 is 2.3–3× lower for the slot modes at every thread count, and 7–10×
+  1.3–3.4×.
+* p99 is 2.4–3× lower for the slot modes at every thread count, and 6–12×
   lower for `Last64`.
 * At 16 threads the hash set has the higher throughput; see below.
 
@@ -113,9 +113,9 @@ Untimed M ops/s (timed p99 ns, CAS retries per op):
 
 | Threads | Last64 | Last128 | Last256 | Last512 | HashSet512 |
 |---|---|---|---|---|---|
-| 2 | 34 (40, 0.2) | 25 (240, 0.6) | 25 (240, 0.5) | 18 (200, 0.8) | 14 (250) |
-| 4 | 35 (50, 0.3) | 10 (930, 2.6) | 10 (1,040, 2.6) | 9.4 (850, 2.9) | 14 (550) |
-| 16 | 43 (330, 0.1) | 3.7 (15,200, 10.6) | 3.0 (17,200, 13.3) | 3.7 (14,700, 10.5) | 11 (3,850) |
+| 2 | 34 (40, 0.3) | 29 (230, 0.5) | 25 (250, 0.6) | 18 (210, 0.8) | 14 (250) |
+| 4 | 34 (50, 0.4) | 11 (850, 2.5) | 11 (840, 2.6) | 9.5 (910, 2.9) | 14 (560) |
+| 16 | 43 (330, 0.1) | 3.3 (15,700, 11.9) | 3.4 (22,200, 11.6) | 3.8 (17,100, 10.5) | 11 (4,000) |
 
 **This is the weak spot of the slot modes.** The window between the header
 load and the CAS is long: read the source slot (a line just written on
@@ -132,7 +132,7 @@ Both give the same answers. The difference is in how the cores contend.
 1. **The hash set is not lock-free.** In `perf record` of `HashSet512` Dups
    with 16 threads, 37% of cycles are in `saa::wait_queue::WaitQueue::spin_until`:
    `insert_sync` takes a per-bucket lock, and waiting threads spin in L1.
-   Its p99 is 2.8 µs, against 0.66 µs for `Last512`.
+   Its p99 is 2.8 µs, against 0.64 µs for `Last512`.
 2. **Its contention is spread out; ours is on one line.**
    * `ls_dmnd_fills_from_sys.local_ccx` (fills from L3 or another core's L2)
      per op: `HashSet512` 4.7, `Last512` 2.0, `Last64` 1.0.
@@ -143,22 +143,22 @@ Both give the same answers. The difference is in how the cores contend.
 3. **Lockstep losers each pay a locked RMW.** In A/B arbitration all 16
    threads reach sequence `k` together and see `high = k - 1`. All of them
    build the new slot and CAS; one wins.
-   * `Last512` makes 0.68 failed CASes per op while only 6.25% of ops are
+   * `Last512` makes 0.66 failed CASes per op while only 6.25% of ops are
      `New`: about 11 failed `LOCK CMPXCHG16B`s per new sequence.
    * Each failure takes the header line exclusive in turn, so they
      serialise.
    * The slot modes also have a dependent second miss on the slot line
      (header → slot id → slot).
-   * `Last64` fails only 0.06 CASes per op, but its locked loads serialise
-     the same way: 44 M ops/s, with 42% of calls falling behind the window
+   * `Last64` fails only 0.09 CASes per op, but its locked loads serialise
+     the same way: 44 M ops/s, with 38% of calls falling behind the window
      as `TooOld`.
    * The losers cannot avoid the CAS: re-reading the header first
      (`recheck_before_cas`, below) is slower, because the winner's CAS lands
      too late for them to notice.
 
 **Practical reading:** at 2–8 threads the bitmap modes win on both
-throughput and tail. At 16 lockstep feeds, `Last512` gives 80% of the hash
-set's throughput with 24% of its p99, and it is lock-free. Going further
+throughput and tail. At 16 lockstep feeds, `Last512` gives 78% of the hash
+set's throughput with 23% of its p99, and it is lock-free. Going further
 would need a design that does not route every writer through one CAS, such
 as combining, or an inline header for the newest 64 bits with slots only for
 older history.
@@ -173,17 +173,17 @@ contention. Full tables, including 2 threads, are in
 
 | | Seq 1T | Gaps 1T | Dups 1T | Seq 4T p99 |
 |---|---|---|---|---|
-| Last128, hazard | 88 | 80 | 149 | 1,990 ns |
-| Last128, optimistic | 99 | 89 | 166 | 940 ns |
-| Last256, hazard | 84 | 76 | 142 | 2,390 ns |
-| Last256, optimistic | 94 | 84 | 157 | 910 ns |
-| Last512, hazard | 75 | 64 | 123 | 2,110 ns |
-| Last512, optimistic | 85 | 72 | 129 | 910 ns |
-| Last512, hazard + VBMI2 | 81 | 75 | 131 | 1,700 ns |
-| Last512, optimistic + VBMI2 (default) | 89 | 82 | 142 | 970 ns |
+| Last128, hazard | 88 | 80 | 146 | 2,210 ns |
+| Last128, optimistic | 99 | 88 | 166 | 910 ns |
+| Last256, hazard | 84 | 75 | 141 | 2,150 ns |
+| Last256, optimistic | 94 | 84 | 157 | 1,000 ns |
+| Last512, hazard | 80 | 68 | 124 | 1,600 ns |
+| Last512, optimistic | 83 | 72 | 130 | 920 ns |
+| Last512, hazard + VBMI2 | 82 | 76 | 132 | 1,920 ns |
+| Last512, optimistic + VBMI2 (default) | 89 | 81 | 141 | 870 ns |
 
-* **Optimistic validation is 5–13% faster single-threaded** and cuts the
-  4-thread Seq p99 by 43–62%: no hazard `XCHG`, no revalidation load, no
+* **Optimistic validation is 4–14% faster single-threaded** and cuts the
+  4-thread Seq p99 by 43–59%: no hazard `XCHG`, no revalidation load, no
   reclaim scans.
 * **Default: optimistic.**
 
@@ -191,19 +191,19 @@ contention. Full tables, including 2 threads, are in
 
 | | Seq 1T | Gaps 1T | Late 1T |
 |---|---|---|---|
-| Last256 scalar | 92 | 85 | 86 |
-| Last256 AVX2 | 90 | 83 | 81 |
-| Last256 AVX-512F | 90 | 83 | 81 |
-| Last256 VBMI2 | 90 | 84 | 80 |
-| Last512 scalar | 85 | 72 | 80 |
+| Last256 scalar | 94 | 84 | 83 |
+| Last256 AVX2 | 89 | 84 | 81 |
+| Last256 AVX-512F | 89 | 84 | 81 |
+| Last256 VBMI2 | 90 | 85 | 80 |
+| Last512 scalar | 84 | 71 | 80 |
 | Last512 AVX2 | 88 | 81 | 79 |
-| Last512 AVX-512F | 89 | 82 | 79 |
-| Last512 VBMI2 | 89 | 80 | 77 |
+| Last512 AVX-512F | 88 | 82 | 78 |
+| Last512 VBMI2 | 89 | 82 | 80 |
 
-* **Last512:** SIMD gains 4–5% on Seq and 11–14% on Gaps. The three SIMD
-  variants are within 3%; VBMI2 is preferred because it keeps the whole
+* **Last512:** SIMD gains 5–6% on Seq and 14–15% on Gaps. The three SIMD
+  variants are within 2%; VBMI2 is preferred because it keeps the whole
   history in one register (one load, one store, no guard words).
-* **Last256:** scalar is fastest on all three workloads.
+* **Last256:** scalar is fastest for Seq and Late; Gaps is a tie.
 * Late arrivals copy the slot and never shift, so they are unaffected.
 * **Default (`Auto`):** VBMI2, else AVX2, for Last512; scalar otherwise.
 
@@ -211,7 +211,7 @@ contention. Full tables, including 2 threads, are in
 
 | | off | on |
 |---|---|---|
-| Last64, Seq 1T | 75 | 76 |
+| Last64, Seq 1T | 75 | 75 |
 | Last128, Seq 1T | 94 | 99 |
 | Last512, Seq 1T | 87 | 89 |
 
@@ -223,22 +223,27 @@ contention. Full tables, including 2 threads, are in
 
 M ops/s (p99 ns):
 
+Untimed M ops/s (timed p99 ns):
+
 | | Seq 1T | Dups 1T | Seq 4T | Dups 2T | Dups 4T |
 |---|---|---|---|---|---|
-| Last64, `LOCK CMPXCHG16B` (default) | 75 | 98 | 34 (50) | 35 (40) | 34 (50) |
-| Last64, `VMOVDQA` | 126 | 204 | 22 (60) | 55 (90) | 52 (160) |
-| Last64, `PREFETCHW` + `VMOVDQA` | 126 | 203 | 24 (80) | 55 (90) | 46 (170) |
-| Last512, `LOCK CMPXCHG16B` | 57 | 75 | 9.2 (750) | 34 (140)* | 24 (170)* |
-| Last512, `VMOVDQA` (default) | 89 | 142 | 8.9 (1,020) | 38 (110) | 31 (180) |
-| Last512, `PREFETCHW` + `VMOVDQA` | 89 | 142 | 12 (1,040) | 35 (110) | 28 (230) |
+| Latest, `LOCK CMPXCHG` (default) | 85 | 110 | 65 (60) | 68 (50) | 68 (60) |
+| Latest, plain `MOV` | 157 | 270 | 70 (160) | 76 (70) | 72 (160) |
+| Last64, `LOCK CMPXCHG16B` (default) | 75 | 99 | 34 (60) | 35 (40) | 35 (60) |
+| Last64, `VMOVDQA` | 125 | 203 | 21 (60) | 53 (90) | 52 (160) |
+| Last64, `PREFETCHW` + `VMOVDQA` | 125 | 204 | 22 (60) | 56 (90) | 50 (160) |
+| Last512, `LOCK CMPXCHG16B` | 57 | 75 | 9.7 (720) | 36 (120)* | 21 (170)* |
+| Last512, `VMOVDQA` (default) | 89 | 142 | 9.0 (860) | 37 (110) | 31 (180) |
+| Last512, `PREFETCHW` + `VMOVDQA` | 89 | 142 | 9.1 (1,030) | 34 (110) | 29 (220) |
 
-\* 42–46% `TooOld`: one thread runs ahead of the window.
+\* 20–48% `TooOld`: one thread runs ahead of the window.
 
-* **The locked load costs a full RMW:** `VMOVDQA` is 1.6–2.1× faster
+* **The locked load costs a full RMW:** the plain load is 1.6–2.5× faster
   single-threaded.
-* **`Last64` under contention:** with 2 and 4 threads the locked load cuts
-  the Dups p99 by 2–3× (to 40–50 ns) and the CAS retries on Seq by 6–20×,
-  at the cost of 35% of the Dups throughput. Almost every `Last64` load is
+* **`Latest` and `Last64` under contention:** with 2 and 4 threads the
+  locked load cuts the Dups p99 by 1.4–2.7× (to 40–60 ns) and the CAS
+  retries on Seq by 4–13×. It costs 6–11% of the Dups throughput for
+  `Latest` and a third for `Last64`. In both, almost every load is
   followed by a CAS on the same line, and a locked load makes the
   load-to-CAS window a single ownership of the line. `PREFETCHW`, which
   also requests the line exclusive, does not get the same effect, so the
@@ -247,21 +252,21 @@ M ops/s (p99 ns):
 * **The slot modes** also reload the header to validate every `Duplicate`;
   a locked load turns those reads into writes, so it loses there.
 * `PREFETCHW` brings nothing measurable.
-* **Default (`Auto`):** `LOCK CMPXCHG16B` for `Last64`, which is tuned for
-  concurrency; `VMOVDQA` (single-copy atomic on AVX-capable CPUs) for the
-  slot modes.
+* **Default (`Auto`):** a locked load for `Latest` and `Last64`, which are
+  tuned for concurrency; `VMOVDQA` (single-copy atomic on AVX-capable CPUs)
+  for the slot modes.
 
 ### Hazard pre-publication (`Tuning::pre_protect`, hazard protection only)
 
 | | off | on |
 |---|---|---|
-| Last128, Seq 1T | 59 | 87 |
-| Last128, Dups 1T | 103 | 149 |
+| Last128, Seq 1T | 59 | 88 |
+| Last128, Dups 1T | 103 | 150 |
 | Last512, Seq 1T | 57 | 82 |
-| Last512, Dups 1T | 97 | 132 |
+| Last512, Dups 1T | 96 | 131 |
 
 * When the same writer advances again, it skips the hazard `XCHG` and the
-  revalidation load: +36–47% single-threaded. It relies on the ABA-free
+  revalidation load: +36–49% single-threaded. It relies on the ABA-free
   header (see `DESIGN.md`).
 * **Default: on.** It has no effect with optimistic protection.
 
@@ -271,7 +276,7 @@ M ops/s (p99 ns):
 |---|---|---|
 | Last64, Seq 1T | 75 | 52 |
 | Last64, Seq 4T | 34 | 19 |
-| Last512, Seq 4T (p99) | 9.1 (940 ns) | 7.6 (2,080 ns) |
+| Last512, Seq 4T (p99) | 8.9 (810 ns) | 7.8 (2,190 ns) |
 
 * Re-reading the header before the CAS and skipping it if it changed is
   slower everywhere: the window in which a loser could notice the winner is
@@ -284,8 +289,8 @@ Last512, Seq, M ops/s:
 
 | R | 1T | 2T | 4T |
 |---|---|---|---|
-| 1 | 75 | 15 | 8.9 |
-| 4 | 87 | 18 | 11 |
+| 1 | 75 | 19 | 8.9 |
+| 4 | 87 | 20 | 11 |
 | 16 | 91 | 19 | 11 |
 | 64 | 92 | 19 | 11 |
 

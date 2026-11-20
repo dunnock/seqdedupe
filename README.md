@@ -122,7 +122,7 @@ answers and a 512-message window (`benches/common/hashset.rs`).
 
 ![register() latency percentiles per mode; rows are 2 and 4 streams, columns are rates](docs/latency-tails.svg)
 
-![p99 latency per mode and rate, for 2 and 4 streams](docs/latency-p99.svg)
+![p50, mean and p99 latency per mode at 50k msg/s, for 2 and 4 streams](docs/latency-summary.svg)
 
 All latencies are p50 / p99 / p99.9, in nanoseconds.
 
@@ -130,60 +130,63 @@ All latencies are p50 / p99 / p99.9, in nanoseconds.
 
 | Mode | 10k msg/s | 50k msg/s | 200k msg/s |
 |---|---|---|---|
-| Latest | <10 / 40 / 70 | <10 / 50 / 70 | <10 / 60 / 80 |
-| Last64 | <20 / 60 / 70 | <20 / 60 / 70 | <20 / 50 / 70 |
-| Last128 | 30 / 90 / 140 | 30 / 80 / 130 | <20 / 80 / 130 |
-| Last256 | 30 / 90 / 140 | 30 / 90 / 140 | 30 / 80 / 140 |
-| Last512 | 40 / 110 / 150 | 40 / 110 / 140 | 30 / 100 / 120 |
-| HashSet512 | 90 / 170 / 230 | 90 / 180 / 230 | 90 / 180 / 230 |
+| Latest | <20 / 40 / 50 | <20 / 50 / 60 | <10 / 40 / 50 |
+| Last64 | <20 / 60 / 90 | 30 / 60 / 70 | <20 / 60 / 80 |
+| Last128 | 30 / 90 / 150 | 30 / 80 / 150 | 30 / 90 / 140 |
+| Last256 | 30 / 100 / 150 | 40 / 100 / 150 | 30 / 90 / 140 |
+| Last512 | 40 / 110 / 150 | 40 / 110 / 140 | 40 / 100 / 140 |
+| HashSet512 | 90 / 170 / 240 | 90 / 180 / 230 | 90 / 180 / 230 |
 
 **4 streams**
 
 | Mode | 10k msg/s | 50k msg/s | 200k msg/s |
 |---|---|---|---|
-| Latest | <20 / 70 / 100 | <20 / 80 / 100 | <20 / 70 / 90 |
-| Last64 | 40 / 60 / 110 | 40 / 60 / 100 | 30 / 60 / 90 |
-| Last128 | 40 / 120 / 160 | 40 / 110 / 160 | 30 / 110 / 150 |
-| Last256 | 40 / 120 / 160 | 40 / 120 / 160 | 30 / 110 / 140 |
-| Last512 | 40 / 110 / 150 | 40 / 120 / 150 | 40 / 120 / 150 |
-| HashSet512 | 100 / 200 / 280 | 90 / 210 / 280 | 90 / 210 / 280 |
+| Latest | 30 / 50 / 80 | 30 / 50 / 80 | 30 / 60 / 70 |
+| Last64 | 40 / 70 / 110 | 40 / 60 / 110 | 40 / 60 / 100 |
+| Last128 | 40 / 120 / 160 | 40 / 120 / 160 | 40 / 120 / 160 |
+| Last256 | 40 / 120 / 160 | 40 / 120 / 160 | 30 / 110 / 150 |
+| Last512 | 40 / 130 / 160 | 50 / 130 / 160 | 40 / 130 / 160 |
+| HashSet512 | 100 / 200 / 280 | 90 / 210 / 280 | 100 / 220 / 290 |
 
 The `LastN` modes answer `New` for one delivery in S (50.5% with 2 streams,
 25.25% with 4) and `Duplicate` for the rest. `Latest` answers `TooOld` for
-35–37% of deliveries with 2 streams, and 55–58% with 4.
+35–37% of deliveries with 2 streams, and 56–58% with 4.
 
 - **`LastN` vs `HashSet512`.** Every `LastN` mode is faster at every
   percentile, rate and stream count.
-  - `Last512`, with the same 512-message window, is 2–3× faster at p50
-    (30–40 vs 90–100 ns) and 1.5–1.8× faster at p99 (100–120 vs
-    170–210 ns).
-  - At p99.99 it takes 0.15–0.5 µs against 0.6–2.1 µs.
+  - `Last512`, with the same 512-message window, is 2–2.5× faster at p50
+    (40–50 vs 90–100 ns) and 1.5–1.8× faster at p99 (100–130 vs
+    170–220 ns).
+  - At p99.99 it takes 0.16–0.5 µs (2.1 µs in one run) against 1.8–2.2 µs.
   - The baseline hashes, takes a bucket lock and touches a bucket line that
     another stream just wrote. A `LastN` mode needs one header load and at
     most one slot word.
-- **2 vs 4 streams.** Doubling the streams adds up to 30 ns at p99 for
-  `Last128`–`Last512`, at most 10 ns for `Last64`, and 30 ns for
-  `HashSet512`. Each id is contended by more cores, so more header-line
+- **2 vs 4 streams.** Doubling the streams adds up to 40 ns at p99 for
+  `Last128`–`Last512`, at most 10 ns for `Latest` and `Last64`, and
+  30–40 ns for `HashSet512`. Each id is contended by more cores, so more header-line
   transfers happen and more CASes lose.
 - **`Last64` vs `Last128`–`Last512`.**
-  - The wider windows add 20–60 ns at p99, more with 4 streams. A duplicate
+  - The wider windows add 20–70 ns at p99, more with 4 streams. A duplicate
     behind the watermark must read a slot line that the winning stream just
     wrote on another core.
   - `Last64` keeps the history in the header line itself and reads it with
-    a locked load, which keeps its p99 at 50–60 ns with 2 or 4 streams.
+    a locked load, which keeps its p99 at 60–70 ns with 2 or 4 streams.
     Use it when 64 messages of reordering are enough.
 - **`Last128` vs `Last256` vs `Last512`.** These are within 30 ns of each
   other at p99. A bigger window costs the extra cache line, not the shift.
 - **`Latest` vs `Last64`.**
-  - With 2 streams the latency is about the same. With 4, `Last64` has the
-    higher p50 (30–40 vs <20 ns, the cost of its locked load) and the lower
-    p99 (60 vs 70–80 ns).
+  - Both read their header with a locked load. `Latest` does less work: up
+    to 10 ns faster at p50, 10–20 ns at p99 and 10–40 ns at p99.9.
   - `Latest` cannot tell "already seen" from "late and never seen". So when
     the fastest stream loses a message, the late fill-in from another stream
     is rejected.
   - That discards 0.6–0.7% of distinct messages. With 2 streams, `New` is
-    50.14–50.16% of deliveries against 50.50% for the `LastN` modes; with 4,
-    it is 25.10% against 25.25%.
+    50.13–50.16% of deliveries against 50.50% for the `LastN` modes; with 4,
+    it is 25.09–25.10% against 25.25%.
+- **Locked loads.** `Latest` and `Last64` read the header with a locked
+  RMW instead of a plain load. For `Latest` that costs up to 10 ns at p50
+  and cuts p99 by up to 30 ns and p99.9 by 10–50 ns (the plain-load version
+  is `LatestPlain` in the CSV).
 - **Message rate.** Results are within 10–30 ns from 10k to 200k msg/s. At
   these rates, the streams rarely collide on the header CAS, so the latency
   is mostly cache-line transfers. A thread that sleeps between messages,

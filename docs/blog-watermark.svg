@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="760" height="380" role="img" aria-label="Window::Latest register() time per call: p50, p99 and p99.9 under saturated arbitration with 1, 2 and 4 threads, and in the paced live feed with 2 and 4 streams">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" width="760" height="380" role="img" aria-label="Window::Latest with a plain load, register() time per call: p50, p99 and p99.9 under saturated arbitration with 1, 2 and 4 threads, and in the paced live feed with 2 and 4 streams">
 
 <style>
   text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
@@ -48,7 +48,7 @@
 </style>
 
 <rect class="bg" width="760" height="380" rx="8"/>
-<text class="title" x="56" y="30">Window::Latest: time per register() call</text>
+<text class="title" x="56" y="30">Window::Latest with a plain load: time per register() call</text>
 <text class="sub" x="56" y="50">ns per call on an EPYC 9845; lower is better. The cost grows with the number of cores sharing the line.</text>
 <rect x="56" y="68" width="12" height="12" rx="3" class="f-r1"/>
 <text class="leg" x="74" y="78">p50</text>
@@ -73,14 +73,14 @@
 <text class="val" x="124.0" y="294.5" text-anchor="middle">p99 &lt;10 ns</text>
 <text class="tick" x="260.0" y="330" text-anchor="middle">2 threads</text>
 <g><title>2 threads: p50 = 40 ns</title><path d="M219.0,310.0 L219.0,276.0 Q219.0,272.0 223.0,272.0 L241.0,272.0 Q245.0,272.0 245.0,276.0 L245.0,310.0 Z" class="f-r1"/></g>
-<g><title>2 threads: p99 = 90 ns</title><path d="M247.0,310.0 L247.0,228.5 Q247.0,224.5 251.0,224.5 L269.0,224.5 Q273.0,224.5 273.0,228.5 L273.0,310.0 Z" class="f-r2"/></g>
-<g><title>2 threads: p99.9 = 100 ns</title><path d="M275.0,310.0 L275.0,219.0 Q275.0,215.0 279.0,215.0 L297.0,215.0 Q301.0,215.0 301.0,219.0 L301.0,310.0 Z" class="f-r3"/></g>
-<text class="val" x="260.0" y="209.0" text-anchor="middle">p99 90 ns</text>
+<g><title>2 threads: p99 = 70 ns</title><path d="M247.0,310.0 L247.0,247.5 Q247.0,243.5 251.0,243.5 L269.0,243.5 Q273.0,243.5 273.0,247.5 L273.0,310.0 Z" class="f-r2"/></g>
+<g><title>2 threads: p99.9 = 90 ns</title><path d="M275.0,310.0 L275.0,228.5 Q275.0,224.5 279.0,224.5 L297.0,224.5 Q301.0,224.5 301.0,228.5 L301.0,310.0 Z" class="f-r3"/></g>
+<text class="val" x="260.0" y="218.5" text-anchor="middle">p99 70 ns</text>
 <text class="tick" x="396.0" y="330" text-anchor="middle">4 threads</text>
-<g><title>4 threads: p50 = 60 ns</title><path d="M355.0,310.0 L355.0,257.0 Q355.0,253.0 359.0,253.0 L377.0,253.0 Q381.0,253.0 381.0,257.0 L381.0,310.0 Z" class="f-r1"/></g>
-<g><title>4 threads: p99 = 120 ns</title><path d="M383.0,310.0 L383.0,200.0 Q383.0,196.0 387.0,196.0 L405.0,196.0 Q409.0,196.0 409.0,200.0 L409.0,310.0 Z" class="f-r2"/></g>
-<g><title>4 threads: p99.9 = 140 ns</title><path d="M411.0,310.0 L411.0,181.0 Q411.0,177.0 415.0,177.0 L433.0,177.0 Q437.0,177.0 437.0,181.0 L437.0,310.0 Z" class="f-r3"/></g>
-<text class="val" x="396.0" y="171.0" text-anchor="middle">p99 120 ns</text>
+<g><title>4 threads: p50 = 50 ns</title><path d="M355.0,310.0 L355.0,266.5 Q355.0,262.5 359.0,262.5 L377.0,262.5 Q381.0,262.5 381.0,266.5 L381.0,310.0 Z" class="f-r1"/></g>
+<g><title>4 threads: p99 = 160 ns</title><path d="M383.0,310.0 L383.0,162.0 Q383.0,158.0 387.0,158.0 L405.0,158.0 Q409.0,158.0 409.0,162.0 L409.0,310.0 Z" class="f-r2"/></g>
+<g><title>4 threads: p99.9 = 170 ns</title><path d="M411.0,310.0 L411.0,152.5 Q411.0,148.5 415.0,148.5 L433.0,148.5 Q437.0,148.5 437.0,152.5 L437.0,310.0 Z" class="f-r3"/></g>
+<text class="val" x="396.0" y="142.5" text-anchor="middle">p99 160 ns</text>
 <text class="tick" x="532.0" y="330" text-anchor="middle">2 streams</text>
 <g><title>2 streams: p50 = &lt;10 ns</title><path d="M491.0,310.0 L491.0,304.5 Q491.0,300.5 495.0,300.5 L513.0,300.5 Q517.0,300.5 517.0,304.5 L517.0,310.0 Z" class="f-r1"/></g>
 <g><title>2 streams: p99 = 50 ns</title><path d="M519.0,310.0 L519.0,266.5 Q519.0,262.5 523.0,262.5 L541.0,262.5 Q545.0,262.5 545.0,266.5 L545.0,310.0 Z" class="f-r2"/></g>
@@ -88,11 +88,11 @@
 <text class="val" x="532.0" y="237.5" text-anchor="middle">p99 50 ns</text>
 <text class="tick" x="668.0" y="330" text-anchor="middle">4 streams</text>
 <g><title>4 streams: p50 = &lt;20 ns</title><path d="M627.0,310.0 L627.0,295.0 Q627.0,291.0 631.0,291.0 L649.0,291.0 Q653.0,291.0 653.0,295.0 L653.0,310.0 Z" class="f-r1"/></g>
-<g><title>4 streams: p99 = 80 ns</title><path d="M655.0,310.0 L655.0,238.0 Q655.0,234.0 659.0,234.0 L677.0,234.0 Q681.0,234.0 681.0,238.0 L681.0,310.0 Z" class="f-r2"/></g>
+<g><title>4 streams: p99 = 70 ns</title><path d="M655.0,310.0 L655.0,247.5 Q655.0,243.5 659.0,243.5 L677.0,243.5 Q681.0,243.5 681.0,247.5 L681.0,310.0 Z" class="f-r2"/></g>
 <g><title>4 streams: p99.9 = 100 ns</title><path d="M683.0,310.0 L683.0,219.0 Q683.0,215.0 687.0,215.0 L705.0,215.0 Q709.0,215.0 709.0,219.0 L709.0,310.0 Z" class="f-r3"/></g>
-<text class="val" x="668.0" y="209.0" text-anchor="middle">p99 80 ns</text>
+<text class="val" x="668.0" y="209.0" text-anchor="middle">p99 70 ns</text>
 <line class="axis" x1="464.0" y1="106" x2="464.0" y2="344" stroke-dasharray="3 3"/>
 <text class="ptitle" x="60" y="116">Saturated arbitration (every thread sees every id)</text>
 <text class="ptitle" x="474.0" y="116">Live feed, 50k msg/s per stream</text>
-<text class="sub" x="56" y="362">Saturated throughput: 269, 73 and 71 M ops/s (all threads) at 1, 2 and 4 threads.</text>
+<text class="sub" x="56" y="362">Saturated throughput: 270, 76 and 72 M ops/s (all threads) at 1, 2 and 4 threads.</text>
 </svg>

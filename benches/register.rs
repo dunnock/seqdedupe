@@ -401,6 +401,20 @@ fn main() {
         }
     }
     if want("load") {
+        for (name, hl) in [("locked", HeaderLoad::LockCmpxchg16b), ("plain", HeaderLoad::Avx)] {
+            for load in [Load::Seq, Load::Late, Load::Dups] {
+                for &th in &th2 {
+                    let t = Target::D(
+                        Window::Latest,
+                        Tuning {
+                            header_load: hl,
+                            ..def
+                        },
+                    );
+                    measure(&mut ctx, "load", name, t, load, th);
+                }
+            }
+        }
         for w in [Window::Last64, Window::Last512] {
             for (name, hl) in [
                 ("lock-cmpxchg16b", HeaderLoad::LockCmpxchg16b),

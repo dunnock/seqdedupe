@@ -1,365 +1,383 @@
 # AMD EPYC 9845 160-Core Processor — 160 physical cores, TSC 2.100 GHz, timer overhead 42 cycles (subtracted)
 # 2000000 ops per thread; results also in bench-results/epyc-9845-experiments.csv
 
-| exp | target | variant | workload | thr | Mops/s | ns/op/thr | p50 ns | p99 ns | p99.9 ns | retries/op | New/Dup/Old % |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| shift | Last256 | scalar | Seq | 1 | 92.5 | 10.8 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| shift | Last256 | scalar | Seq | 2 | 22.5 | 89.0 | 70 | 250 | 300 | 0.650 | 94/0/6 |
-| shift | Last256 | scalar | Seq | 4 | 13.6 | 293.8 | 220 | 950 | 1440 | 1.622 | 66/0/34 |
-| shift | Last256 | scalar | Gaps | 1 | 84.6 | 11.8 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last256 | scalar | Gaps | 2 | 26.3 | 76.1 | 60 | 230 | 300 | 0.521 | 70/0/30 |
-| shift | Last256 | scalar | Gaps | 4 | 13.8 | 290.1 | 180 | 940 | 1410 | 1.778 | 65/0/35 |
-| shift | Last256 | scalar | Late | 1 | 85.6 | 11.7 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last256 | scalar | Late | 2 | 21.4 | 93.4 | 70 | 240 | 300 | 0.666 | 89/0/11 |
-| shift | Last256 | scalar | Late | 4 | 9.5 | 419.0 | 280 | 1030 | 1520 | 2.595 | 90/0/10 |
-| shift | Last256 | avx2 | Seq | 1 | 89.9 | 11.1 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last256 | avx2 | Seq | 2 | 34.6 | 57.9 | 70 | 200 | 240 | 0.324 | 57/0/43 |
-| shift | Last256 | avx2 | Seq | 4 | 10.0 | 398.4 | 270 | 840 | 1190 | 2.473 | 87/0/13 |
-| shift | Last256 | avx2 | Gaps | 1 | 83.4 | 12.0 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| shift | Last256 | avx2 | Gaps | 2 | 32.1 | 62.3 | 80 | 240 | 290 | 0.407 | 62/0/38 |
-| shift | Last256 | avx2 | Gaps | 4 | 13.6 | 293.2 | 160 | 930 | 1420 | 1.807 | 65/0/35 |
-| shift | Last256 | avx2 | Late | 1 | 80.7 | 12.4 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| shift | Last256 | avx2 | Late | 2 | 28.7 | 69.8 | 110 | 240 | 280 | 0.436 | 63/0/37 |
-| shift | Last256 | avx2 | Late | 4 | 8.9 | 450.6 | 240 | 870 | 1240 | 2.794 | 96/0/4 |
-| shift | Last256 | avx512 | Seq | 1 | 89.7 | 11.2 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last256 | avx512 | Seq | 2 | 33.4 | 59.8 | 70 | 180 | 240 | 0.349 | 59/0/41 |
-| shift | Last256 | avx512 | Seq | 4 | 9.4 | 427.1 | 270 | 840 | 1200 | 2.714 | 94/0/6 |
-| shift | Last256 | avx512 | Gaps | 1 | 83.2 | 12.0 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| shift | Last256 | avx512 | Gaps | 2 | 31.9 | 62.8 | 80 | 240 | 290 | 0.414 | 62/0/38 |
-| shift | Last256 | avx512 | Gaps | 4 | 13.7 | 292.3 | 160 | 930 | 1420 | 1.805 | 65/0/35 |
-| shift | Last256 | avx512 | Late | 1 | 80.7 | 12.4 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| shift | Last256 | avx512 | Late | 2 | 29.6 | 67.5 | 110 | 240 | 280 | 0.429 | 63/0/37 |
-| shift | Last256 | avx512 | Late | 4 | 9.0 | 446.0 | 230 | 870 | 1250 | 2.748 | 95/0/5 |
-| shift | Last256 | avx512vbmi2 | Seq | 1 | 89.8 | 11.1 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| shift | Last256 | avx512vbmi2 | Seq | 2 | 19.8 | 101.1 | 70 | 170 | 240 | 0.725 | 95/0/5 |
-| shift | Last256 | avx512vbmi2 | Seq | 4 | 9.5 | 422.3 | 300 | 920 | 1320 | 2.631 | 92/0/8 |
-| shift | Last256 | avx512vbmi2 | Gaps | 1 | 84.0 | 11.9 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last256 | avx512vbmi2 | Gaps | 2 | 26.4 | 75.8 | 70 | 230 | 280 | 0.511 | 69/0/31 |
-| shift | Last256 | avx512vbmi2 | Gaps | 4 | 13.0 | 308.5 | 180 | 930 | 1370 | 1.900 | 69/0/31 |
-| shift | Last256 | avx512vbmi2 | Late | 1 | 80.0 | 12.5 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| shift | Last256 | avx512vbmi2 | Late | 2 | 20.9 | 95.6 | 100 | 240 | 290 | 0.666 | 88/0/12 |
-| shift | Last256 | avx512vbmi2 | Late | 4 | 9.8 | 407.3 | 290 | 960 | 1390 | 2.501 | 87/0/13 |
-| shift | Last512 | scalar | Seq | 1 | 85.5 | 11.7 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| shift | Last512 | scalar | Seq | 2 | 19.2 | 104.1 | 70 | 230 | 280 | 0.766 | 100/0/0 |
-| shift | Last512 | scalar | Seq | 4 | 9.9 | 403.1 | 280 | 1010 | 1450 | 2.536 | 88/0/12 |
-| shift | Last512 | scalar | Gaps | 1 | 72.1 | 13.9 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last512 | scalar | Gaps | 2 | 25.8 | 77.5 | 70 | 240 | 310 | 0.533 | 72/0/28 |
-| shift | Last512 | scalar | Gaps | 4 | 14.0 | 284.8 | 170 | 950 | 1440 | 1.766 | 64/0/36 |
-| shift | Last512 | scalar | Late | 1 | 80.0 | 12.5 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last512 | scalar | Late | 2 | 18.7 | 106.7 | 70 | 230 | 280 | 0.778 | 100/0/0 |
-| shift | Last512 | scalar | Late | 4 | 9.0 | 445.7 | 270 | 1110 | 1680 | 2.781 | 95/0/5 |
-| shift | Last512 | avx2 | Seq | 1 | 87.9 | 11.4 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last512 | avx2 | Seq | 2 | 26.8 | 74.6 | 70 | 200 | 240 | 0.474 | 69/0/31 |
-| shift | Last512 | avx2 | Seq | 4 | 11.4 | 349.7 | 270 | 920 | 1330 | 2.095 | 75/0/25 |
-| shift | Last512 | avx2 | Gaps | 1 | 81.0 | 12.3 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last512 | avx2 | Gaps | 2 | 31.6 | 63.3 | 80 | 210 | 290 | 0.410 | 62/0/38 |
-| shift | Last512 | avx2 | Gaps | 4 | 13.4 | 298.4 | 170 | 900 | 1320 | 1.842 | 66/0/34 |
-| shift | Last512 | avx2 | Late | 1 | 78.9 | 12.7 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| shift | Last512 | avx2 | Late | 2 | 22.6 | 88.5 | 100 | 230 | 280 | 0.578 | 77/0/23 |
-| shift | Last512 | avx2 | Late | 4 | 10.6 | 376.4 | 260 | 910 | 1290 | 2.277 | 80/0/20 |
-| shift | Last512 | avx512 | Seq | 1 | 88.8 | 11.3 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| shift | Last512 | avx512 | Seq | 2 | 26.8 | 74.7 | 70 | 190 | 240 | 0.466 | 69/0/31 |
-| shift | Last512 | avx512 | Seq | 4 | 10.3 | 388.8 | 260 | 830 | 1180 | 2.434 | 85/0/15 |
-| shift | Last512 | avx512 | Gaps | 1 | 81.7 | 12.2 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| shift | Last512 | avx512 | Gaps | 2 | 35.3 | 56.6 | 80 | 210 | 280 | 0.365 | 58/0/42 |
-| shift | Last512 | avx512 | Gaps | 4 | 14.4 | 277.3 | 160 | 940 | 1430 | 1.741 | 63/0/37 |
-| shift | Last512 | avx512 | Late | 1 | 79.1 | 12.6 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| shift | Last512 | avx512 | Late | 2 | 23.5 | 85.0 | 110 | 230 | 280 | 0.595 | 83/0/17 |
-| shift | Last512 | avx512 | Late | 4 | 9.1 | 441.5 | 220 | 880 | 1250 | 2.769 | 94/0/6 |
-| shift | Last512 | avx512vbmi2 | Seq | 1 | 89.3 | 11.2 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| shift | Last512 | avx512vbmi2 | Seq | 2 | 19.4 | 103.3 | 70 | 180 | 240 | 0.727 | 93/0/7 |
-| shift | Last512 | avx512vbmi2 | Seq | 4 | 8.9 | 450.7 | 290 | 950 | 1440 | 2.900 | 99/0/1 |
-| shift | Last512 | avx512vbmi2 | Gaps | 1 | 80.3 | 12.5 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| shift | Last512 | avx512vbmi2 | Gaps | 2 | 25.7 | 77.7 | 80 | 240 | 280 | 0.529 | 71/0/29 |
-| shift | Last512 | avx512vbmi2 | Gaps | 4 | 12.5 | 319.7 | 180 | 940 | 1410 | 1.987 | 72/0/28 |
-| shift | Last512 | avx512vbmi2 | Late | 1 | 77.3 | 12.9 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| shift | Last512 | avx512vbmi2 | Late | 2 | 22.3 | 89.6 | 110 | 230 | 290 | 0.621 | 83/0/17 |
-| shift | Last512 | avx512vbmi2 | Late | 4 | 10.2 | 392.0 | 260 | 910 | 1280 | 2.393 | 83/0/17 |
-| delta1 | Last64 | delta1-off | Seq | 1 | 75.4 | 13.3 | 20 | 20 | 20 | 0.000 | 100/0/0 |
-| delta1 | Last64 | delta1-off | Seq | 2 | 34.5 | 58.0 | 40 | 40 | 50 | 0.018 | 98/0/2 |
-| delta1 | Last64 | delta1-off | Seq | 4 | 34.0 | 117.6 | 50 | 50 | 60 | 0.243 | 73/0/27 |
-| delta1 | Last64 | delta1-on | Seq | 1 | 75.5 | 13.2 | 20 | 20 | 20 | 0.000 | 100/0/0 |
-| delta1 | Last64 | delta1-on | Seq | 2 | 34.4 | 58.1 | 40 | 40 | 50 | 0.016 | 99/0/1 |
-| delta1 | Last64 | delta1-on | Seq | 4 | 34.1 | 117.2 | 50 | 50 | 60 | 0.232 | 75/0/25 |
-| delta1 | Last128 | delta1-off | Seq | 1 | 94.2 | 10.6 | 10 | 30 | 30 | 0.000 | 100/0/0 |
-| delta1 | Last128 | delta1-off | Seq | 2 | 25.0 | 80.0 | 70 | 220 | 270 | 0.534 | 76/0/24 |
-| delta1 | Last128 | delta1-off | Seq | 4 | 10.5 | 379.2 | 260 | 910 | 1320 | 2.350 | 84/0/16 |
-| delta1 | Last128 | delta1-on | Seq | 1 | 98.6 | 10.1 | 10 | 20 | 20 | 0.000 | 100/0/0 |
-| delta1 | Last128 | delta1-on | Seq | 2 | 23.2 | 86.1 | 70 | 220 | 270 | 0.573 | 78/0/22 |
-| delta1 | Last128 | delta1-on | Seq | 4 | 10.1 | 397.5 | 260 | 910 | 1330 | 2.496 | 89/0/11 |
-| delta1 | Last512 | delta1-off | Seq | 1 | 86.7 | 11.5 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| delta1 | Last512 | delta1-off | Seq | 2 | 19.6 | 102.3 | 80 | 200 | 240 | 0.753 | 99/0/1 |
-| delta1 | Last512 | delta1-off | Seq | 4 | 9.1 | 441.7 | 280 | 910 | 1300 | 2.827 | 97/0/3 |
-| delta1 | Last512 | delta1-on | Seq | 1 | 89.1 | 11.2 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| delta1 | Last512 | delta1-on | Seq | 2 | 19.0 | 105.2 | 80 | 200 | 240 | 0.777 | 100/0/0 |
-| delta1 | Last512 | delta1-on | Seq | 4 | 9.1 | 437.9 | 290 | 910 | 1290 | 2.791 | 96/0/4 |
-| load | Last64 | lock-cmpxchg16b | Seq | 1 | 75.5 | 13.2 | 20 | 20 | 20 | 0.000 | 100/0/0 |
-| load | Last64 | lock-cmpxchg16b | Seq | 2 | 34.6 | 57.8 | 40 | 40 | 50 | 0.035 | 95/0/5 |
-| load | Last64 | lock-cmpxchg16b | Seq | 4 | 34.2 | 117.0 | 50 | 50 | 60 | 0.241 | 74/0/26 |
-| load | Last64 | lock-cmpxchg16b | Late | 1 | 76.1 | 13.1 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| load | Last64 | lock-cmpxchg16b | Late | 2 | 28.2 | 70.9 | 40 | 90 | 100 | 0.302 | 100/0/0 |
-| load | Last64 | lock-cmpxchg16b | Late | 4 | 24.9 | 160.8 | 50 | 510 | 910 | 0.474 | 100/0/0 |
-| load | Last64 | lock-cmpxchg16b | Dups | 1 | 98.4 | 10.2 | 10 | 20 | 20 | 0.000 | 50/50/0 |
-| load | Last64 | lock-cmpxchg16b | Dups | 2 | 34.9 | 57.3 | 40 | 40 | 50 | 0.434 | 50/50/0 |
-| load | Last64 | lock-cmpxchg16b | Dups | 4 | 34.4 | 116.3 | 50 | 50 | 60 | 0.656 | 25/75/0 |
-| load | Last64 | vmovdqa | Seq | 1 | 125.7 | 8.0 | 10 | 10 | 20 | 0.000 | 100/0/0 |
-| load | Last64 | vmovdqa | Seq | 2 | 32.4 | 61.7 | 40 | 40 | 50 | 0.621 | 91/0/9 |
-| load | Last64 | vmovdqa | Seq | 4 | 21.7 | 184.7 | 60 | 60 | 100 | 1.613 | 92/0/8 |
-| load | Last64 | vmovdqa | Late | 1 | 102.6 | 9.8 | 10 | 20 | 20 | 0.000 | 100/0/0 |
-| load | Last64 | vmovdqa | Late | 2 | 30.5 | 65.6 | 40 | 130 | 140 | 0.715 | 94/0/6 |
-| load | Last64 | vmovdqa | Late | 4 | 23.7 | 168.7 | 60 | 100 | 430 | 1.187 | 71/0/29 |
-| load | Last64 | vmovdqa | Dups | 1 | 204.2 | 4.9 | 10 | 20 | 20 | 0.000 | 50/50/0 |
-| load | Last64 | vmovdqa | Dups | 2 | 54.9 | 36.5 | 40 | 90 | 100 | 0.167 | 50/50/0 |
-| load | Last64 | vmovdqa | Dups | 4 | 52.0 | 76.9 | 70 | 160 | 170 | 0.252 | 25/75/0 |
-| load | Last64 | prefetchw+vmovdqa | Seq | 1 | 125.8 | 7.9 | 10 | 10 | 10 | 0.000 | 100/0/0 |
-| load | Last64 | prefetchw+vmovdqa | Seq | 2 | 33.3 | 60.1 | 40 | 40 | 60 | 0.655 | 90/0/10 |
-| load | Last64 | prefetchw+vmovdqa | Seq | 4 | 23.6 | 169.3 | 60 | 80 | 130 | 1.403 | 83/0/17 |
-| load | Last64 | prefetchw+vmovdqa | Late | 1 | 98.9 | 10.1 | 10 | 20 | 20 | 0.000 | 100/0/0 |
-| load | Last64 | prefetchw+vmovdqa | Late | 2 | 31.8 | 63.0 | 40 | 130 | 150 | 0.675 | 91/0/9 |
-| load | Last64 | prefetchw+vmovdqa | Late | 4 | 23.9 | 167.6 | 60 | 210 | 490 | 1.177 | 72/0/28 |
-| load | Last64 | prefetchw+vmovdqa | Dups | 1 | 203.3 | 4.9 | 10 | 10 | 10 | 0.000 | 50/50/0 |
-| load | Last64 | prefetchw+vmovdqa | Dups | 2 | 54.8 | 36.5 | 40 | 90 | 100 | 0.175 | 50/50/0 |
-| load | Last64 | prefetchw+vmovdqa | Dups | 4 | 46.4 | 86.2 | 70 | 170 | 190 | 0.309 | 25/75/0 |
-| load | Last512 | lock-cmpxchg16b | Seq | 1 | 57.1 | 17.5 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| load | Last512 | lock-cmpxchg16b | Seq | 2 | 17.0 | 117.9 | 70 | 190 | 240 | 0.867 | 96/0/4 |
-| load | Last512 | lock-cmpxchg16b | Seq | 4 | 9.2 | 436.0 | 260 | 750 | 1100 | 2.919 | 99/0/1 |
-| load | Last512 | lock-cmpxchg16b | Late | 1 | 55.0 | 18.2 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| load | Last512 | lock-cmpxchg16b | Late | 2 | 15.5 | 128.6 | 120 | 210 | 250 | 0.944 | 100/0/0 |
-| load | Last512 | lock-cmpxchg16b | Late | 4 | 9.8 | 406.4 | 270 | 910 | 1340 | 2.630 | 90/0/10 |
-| load | Last512 | lock-cmpxchg16b | Dups | 1 | 74.5 | 13.4 | 20 | 40 | 40 | 0.000 | 50/50/0 |
-| load | Last512 | lock-cmpxchg16b | Dups | 2 | 33.6 | 59.5 | 60 | 140 | 150 | 0.000 | 50/4/46 |
-| load | Last512 | lock-cmpxchg16b | Dups | 4 | 24.4 | 163.6 | 140 | 170 | 170 | 0.000 | 25/33/42 |
-| load | Last512 | vmovdqa | Seq | 1 | 89.3 | 11.2 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| load | Last512 | vmovdqa | Seq | 2 | 18.9 | 105.8 | 80 | 200 | 240 | 0.770 | 99/0/1 |
-| load | Last512 | vmovdqa | Seq | 4 | 8.9 | 449.1 | 290 | 1020 | 1550 | 2.908 | 100/0/0 |
-| load | Last512 | vmovdqa | Late | 1 | 77.4 | 12.9 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| load | Last512 | vmovdqa | Late | 2 | 19.9 | 100.7 | 110 | 210 | 270 | 0.720 | 92/0/8 |
-| load | Last512 | vmovdqa | Late | 4 | 9.3 | 428.0 | 290 | 910 | 1310 | 2.631 | 91/0/9 |
-| load | Last512 | vmovdqa | Dups | 1 | 142.2 | 7.0 | 10 | 30 | 30 | 0.000 | 50/50/0 |
-| load | Last512 | vmovdqa | Dups | 2 | 38.5 | 52.0 | 50 | 110 | 120 | 0.213 | 50/50/0 |
-| load | Last512 | vmovdqa | Dups | 4 | 31.2 | 128.0 | 70 | 180 | 230 | 0.564 | 25/75/0 |
-| load | Last512 | prefetchw+vmovdqa | Seq | 1 | 89.3 | 11.2 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| load | Last512 | prefetchw+vmovdqa | Seq | 2 | 18.1 | 110.6 | 70 | 200 | 340 | 0.799 | 100/0/0 |
-| load | Last512 | prefetchw+vmovdqa | Seq | 4 | 11.5 | 347.6 | 210 | 1040 | 1610 | 1.724 | 63/0/37 |
-| load | Last512 | prefetchw+vmovdqa | Late | 1 | 76.9 | 13.0 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| load | Last512 | prefetchw+vmovdqa | Late | 2 | 21.1 | 94.6 | 80 | 270 | 360 | 0.622 | 80/0/20 |
-| load | Last512 | prefetchw+vmovdqa | Late | 4 | 10.5 | 382.2 | 310 | 1200 | 1780 | 1.939 | 68/0/32 |
-| load | Last512 | prefetchw+vmovdqa | Dups | 1 | 142.1 | 7.0 | 10 | 30 | 30 | 0.000 | 50/50/0 |
-| load | Last512 | prefetchw+vmovdqa | Dups | 2 | 34.9 | 57.2 | 50 | 110 | 130 | 0.222 | 50/50/0 |
-| load | Last512 | prefetchw+vmovdqa | Dups | 4 | 27.8 | 143.8 | 80 | 230 | 310 | 0.615 | 25/75/0 |
-| preprotect | Last128 | pre_protect-off | Seq | 1 | 58.6 | 17.1 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| preprotect | Last128 | pre_protect-off | Seq | 2 | 15.1 | 132.1 | 70 | 230 | 310 | 0.551 | 91/0/9 |
-| preprotect | Last128 | pre_protect-off | Seq | 4 | 6.9 | 575.7 | 260 | 1470 | 2471 | 1.899 | 89/0/11 |
-| preprotect | Last128 | pre_protect-off | Dups | 1 | 103.1 | 9.7 | 20 | 40 | 40 | 0.000 | 50/50/0 |
-| preprotect | Last128 | pre_protect-off | Dups | 2 | 26.2 | 76.5 | 70 | 130 | 170 | 0.289 | 50/50/0 |
-| preprotect | Last128 | pre_protect-off | Dups | 4 | 25.1 | 159.4 | 130 | 260 | 380 | 0.487 | 25/75/0 |
-| preprotect | Last128 | pre_protect-on | Seq | 1 | 87.1 | 11.5 | 10 | 30 | 40 | 0.000 | 100/0/0 |
-| preprotect | Last128 | pre_protect-on | Seq | 2 | 20.2 | 99.1 | 70 | 240 | 340 | 0.410 | 85/0/15 |
-| preprotect | Last128 | pre_protect-on | Seq | 4 | 8.9 | 451.3 | 240 | 2151 | 3461 | 1.538 | 88/0/12 |
-| preprotect | Last128 | pre_protect-on | Dups | 1 | 149.5 | 6.7 | 10 | 30 | 40 | 0.000 | 50/50/0 |
-| preprotect | Last128 | pre_protect-on | Dups | 2 | 32.6 | 61.4 | 40 | 130 | 160 | 0.216 | 50/50/0 |
-| preprotect | Last128 | pre_protect-on | Dups | 4 | 30.3 | 132.1 | 80 | 250 | 320 | 0.401 | 25/75/0 |
-| preprotect | Last512 | pre_protect-off | Seq | 1 | 57.4 | 17.4 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| preprotect | Last512 | pre_protect-off | Seq | 2 | 13.2 | 151.9 | 70 | 210 | 280 | 0.623 | 98/0/2 |
-| preprotect | Last512 | pre_protect-off | Seq | 4 | 6.5 | 610.8 | 360 | 1640 | 2680 | 1.995 | 93/0/7 |
-| preprotect | Last512 | pre_protect-off | Dups | 1 | 97.2 | 10.3 | 20 | 40 | 40 | 0.000 | 50/50/0 |
-| preprotect | Last512 | pre_protect-off | Dups | 2 | 27.6 | 72.5 | 70 | 130 | 160 | 0.247 | 50/50/0 |
-| preprotect | Last512 | pre_protect-off | Dups | 4 | 24.8 | 161.3 | 110 | 250 | 330 | 0.490 | 25/75/0 |
-| preprotect | Last512 | pre_protect-on | Seq | 1 | 81.8 | 12.2 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| preprotect | Last512 | pre_protect-on | Seq | 2 | 18.7 | 106.8 | 70 | 250 | 360 | 0.473 | 83/0/17 |
-| preprotect | Last512 | pre_protect-on | Seq | 4 | 8.5 | 471.3 | 270 | 2191 | 3461 | 1.682 | 90/0/10 |
-| preprotect | Last512 | pre_protect-on | Dups | 1 | 131.8 | 7.6 | 10 | 40 | 40 | 0.000 | 50/50/0 |
-| preprotect | Last512 | pre_protect-on | Dups | 2 | 33.8 | 59.2 | 50 | 150 | 160 | 0.170 | 50/50/0 |
-| preprotect | Last512 | pre_protect-on | Dups | 4 | 31.6 | 126.6 | 80 | 240 | 320 | 0.360 | 25/75/0 |
-| protection | Last128 | hazard | Seq | 1 | 88.2 | 11.3 | 10 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last128 | hazard | Seq | 2 | 20.2 | 99.0 | 70 | 230 | 330 | 0.428 | 83/0/17 |
-| protection | Last128 | hazard | Seq | 4 | 9.0 | 443.9 | 230 | 1991 | 3231 | 1.554 | 85/0/15 |
-| protection | Last128 | hazard | Gaps | 1 | 79.9 | 12.5 | 10 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last128 | hazard | Gaps | 2 | 23.6 | 84.6 | 70 | 250 | 390 | 0.355 | 71/0/29 |
-| protection | Last128 | hazard | Gaps | 4 | 13.7 | 291.1 | 120 | 1550 | 2530 | 1.002 | 55/0/45 |
-| protection | Last128 | hazard | Late | 1 | 79.0 | 12.7 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last128 | hazard | Late | 2 | 17.3 | 115.5 | 80 | 270 | 440 | 0.505 | 94/0/6 |
-| protection | Last128 | hazard | Late | 4 | 9.2 | 434.3 | 220 | 2191 | 3490 | 1.590 | 81/0/19 |
-| protection | Last128 | hazard | Dups | 1 | 148.9 | 6.7 | 10 | 40 | 40 | 0.000 | 50/50/0 |
-| protection | Last128 | hazard | Dups | 2 | 33.0 | 60.6 | 40 | 130 | 160 | 0.206 | 50/50/0 |
-| protection | Last128 | hazard | Dups | 4 | 30.2 | 132.4 | 80 | 250 | 330 | 0.408 | 25/75/0 |
-| protection | Last128 | optimistic | Seq | 1 | 98.6 | 10.1 | 10 | 20 | 20 | 0.000 | 100/0/0 |
-| protection | Last128 | optimistic | Seq | 2 | 23.0 | 86.9 | 70 | 220 | 270 | 0.612 | 85/0/15 |
-| protection | Last128 | optimistic | Seq | 4 | 9.7 | 413.7 | 270 | 940 | 1340 | 2.647 | 93/0/7 |
-| protection | Last128 | optimistic | Gaps | 1 | 88.6 | 11.3 | 10 | 30 | 30 | 0.000 | 100/0/0 |
-| protection | Last128 | optimistic | Gaps | 2 | 28.6 | 70.0 | 70 | 220 | 290 | 0.484 | 68/0/32 |
-| protection | Last128 | optimistic | Gaps | 4 | 14.1 | 282.7 | 170 | 940 | 1360 | 1.763 | 66/0/34 |
-| protection | Last128 | optimistic | Late | 1 | 85.6 | 11.7 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last128 | optimistic | Late | 2 | 22.3 | 89.8 | 80 | 230 | 280 | 0.617 | 83/0/17 |
-| protection | Last128 | optimistic | Late | 4 | 9.7 | 412.2 | 270 | 1030 | 1640 | 2.572 | 90/0/10 |
-| protection | Last128 | optimistic | Dups | 1 | 166.4 | 6.0 | 10 | 30 | 30 | 0.000 | 50/50/0 |
-| protection | Last128 | optimistic | Dups | 2 | 39.2 | 51.0 | 40 | 100 | 130 | 0.217 | 50/50/0 |
-| protection | Last128 | optimistic | Dups | 4 | 32.0 | 125.0 | 70 | 210 | 290 | 0.547 | 25/75/0 |
-| protection | Last128 | hazard+vbmi2 | Seq | 1 | 88.1 | 11.4 | 10 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last128 | hazard+vbmi2 | Seq | 2 | 20.1 | 99.6 | 70 | 250 | 370 | 0.417 | 85/0/15 |
-| protection | Last128 | hazard+vbmi2 | Seq | 4 | 8.9 | 451.0 | 230 | 2071 | 3330 | 1.562 | 87/0/13 |
-| protection | Last128 | hazard+vbmi2 | Gaps | 1 | 80.1 | 12.5 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last128 | hazard+vbmi2 | Gaps | 2 | 23.7 | 84.5 | 70 | 270 | 420 | 0.360 | 72/0/28 |
-| protection | Last128 | hazard+vbmi2 | Gaps | 4 | 14.0 | 286.2 | 130 | 1580 | 2560 | 0.981 | 55/0/45 |
-| protection | Last128 | hazard+vbmi2 | Late | 1 | 78.8 | 12.7 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last128 | hazard+vbmi2 | Late | 2 | 16.8 | 119.3 | 80 | 280 | 450 | 0.529 | 97/0/3 |
-| protection | Last128 | hazard+vbmi2 | Late | 4 | 9.0 | 446.6 | 220 | 2271 | 3610 | 1.628 | 84/0/16 |
-| protection | Last128 | hazard+vbmi2 | Dups | 1 | 149.4 | 6.7 | 10 | 30 | 40 | 0.000 | 50/50/0 |
-| protection | Last128 | hazard+vbmi2 | Dups | 2 | 33.6 | 59.5 | 60 | 120 | 150 | 0.197 | 50/50/0 |
-| protection | Last128 | hazard+vbmi2 | Dups | 4 | 30.6 | 130.6 | 80 | 250 | 320 | 0.404 | 25/75/0 |
-| protection | Last128 | optimistic+vbmi2 | Seq | 1 | 98.3 | 10.2 | 10 | 20 | 20 | 0.000 | 100/0/0 |
-| protection | Last128 | optimistic+vbmi2 | Seq | 2 | 22.1 | 90.4 | 70 | 220 | 270 | 0.639 | 86/0/14 |
-| protection | Last128 | optimistic+vbmi2 | Seq | 4 | 9.8 | 407.0 | 270 | 860 | 1200 | 2.561 | 90/0/10 |
-| protection | Last128 | optimistic+vbmi2 | Gaps | 1 | 88.1 | 11.3 | 10 | 30 | 30 | 0.000 | 100/0/0 |
-| protection | Last128 | optimistic+vbmi2 | Gaps | 2 | 28.1 | 71.2 | 70 | 220 | 290 | 0.490 | 68/0/32 |
-| protection | Last128 | optimistic+vbmi2 | Gaps | 4 | 14.1 | 284.2 | 160 | 930 | 1380 | 1.768 | 66/0/34 |
-| protection | Last128 | optimistic+vbmi2 | Late | 1 | 85.4 | 11.7 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last128 | optimistic+vbmi2 | Late | 2 | 24.0 | 83.3 | 80 | 240 | 280 | 0.582 | 77/0/23 |
-| protection | Last128 | optimistic+vbmi2 | Late | 4 | 10.1 | 397.0 | 260 | 930 | 1360 | 2.423 | 85/0/15 |
-| protection | Last128 | optimistic+vbmi2 | Dups | 1 | 166.2 | 6.0 | 10 | 30 | 30 | 0.000 | 50/50/0 |
-| protection | Last128 | optimistic+vbmi2 | Dups | 2 | 38.3 | 52.3 | 40 | 100 | 130 | 0.229 | 50/50/0 |
-| protection | Last128 | optimistic+vbmi2 | Dups | 4 | 32.0 | 124.9 | 70 | 210 | 300 | 0.547 | 25/75/0 |
-| protection | Last256 | hazard | Seq | 1 | 84.1 | 11.9 | 10 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last256 | hazard | Seq | 2 | 16.9 | 118.5 | 70 | 240 | 380 | 0.509 | 97/0/3 |
-| protection | Last256 | hazard | Seq | 4 | 7.8 | 513.3 | 260 | 2391 | 3781 | 1.806 | 96/0/4 |
-| protection | Last256 | hazard | Gaps | 1 | 76.0 | 13.2 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last256 | hazard | Gaps | 2 | 23.7 | 84.5 | 70 | 260 | 410 | 0.351 | 70/0/30 |
-| protection | Last256 | hazard | Gaps | 4 | 13.3 | 300.6 | 130 | 1630 | 2640 | 1.029 | 57/0/43 |
-| protection | Last256 | hazard | Late | 1 | 76.5 | 13.1 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last256 | hazard | Late | 2 | 17.1 | 117.2 | 70 | 280 | 440 | 0.519 | 97/0/3 |
-| protection | Last256 | hazard | Late | 4 | 7.9 | 507.4 | 240 | 2471 | 3941 | 1.784 | 95/0/5 |
-| protection | Last256 | hazard | Dups | 1 | 141.8 | 7.1 | 10 | 30 | 40 | 0.000 | 50/50/0 |
-| protection | Last256 | hazard | Dups | 2 | 34.9 | 57.4 | 60 | 120 | 150 | 0.163 | 50/50/0 |
-| protection | Last256 | hazard | Dups | 4 | 30.7 | 130.3 | 80 | 250 | 330 | 0.389 | 25/75/0 |
-| protection | Last256 | optimistic | Seq | 1 | 94.2 | 10.6 | 10 | 30 | 30 | 0.000 | 100/0/0 |
-| protection | Last256 | optimistic | Seq | 2 | 23.5 | 85.3 | 40 | 170 | 230 | 0.602 | 84/0/16 |
-| protection | Last256 | optimistic | Seq | 4 | 9.7 | 412.5 | 280 | 910 | 1290 | 2.543 | 89/0/11 |
-| protection | Last256 | optimistic | Gaps | 1 | 84.0 | 11.9 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last256 | optimistic | Gaps | 2 | 27.5 | 72.8 | 50 | 230 | 310 | 0.481 | 67/0/33 |
-| protection | Last256 | optimistic | Gaps | 4 | 13.6 | 293.2 | 170 | 920 | 1350 | 1.796 | 66/0/34 |
-| protection | Last256 | optimistic | Late | 1 | 84.7 | 11.8 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last256 | optimistic | Late | 2 | 22.5 | 88.9 | 70 | 230 | 300 | 0.604 | 80/0/20 |
-| protection | Last256 | optimistic | Late | 4 | 10.3 | 389.5 | 260 | 910 | 1310 | 2.318 | 82/0/18 |
-| protection | Last256 | optimistic | Dups | 1 | 157.5 | 6.3 | 10 | 30 | 30 | 0.000 | 50/50/0 |
-| protection | Last256 | optimistic | Dups | 2 | 40.1 | 49.8 | 50 | 100 | 140 | 0.208 | 50/50/0 |
-| protection | Last256 | optimistic | Dups | 4 | 32.5 | 123.3 | 70 | 210 | 300 | 0.517 | 25/75/0 |
-| protection | Last256 | hazard+vbmi2 | Seq | 1 | 82.2 | 12.2 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last256 | hazard+vbmi2 | Seq | 2 | 18.2 | 109.7 | 70 | 220 | 300 | 0.459 | 85/0/15 |
-| protection | Last256 | hazard+vbmi2 | Seq | 4 | 8.2 | 488.2 | 230 | 1810 | 2941 | 1.723 | 89/0/11 |
-| protection | Last256 | hazard+vbmi2 | Gaps | 1 | 75.2 | 13.3 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| protection | Last256 | hazard+vbmi2 | Gaps | 2 | 22.0 | 90.9 | 70 | 230 | 300 | 0.389 | 71/0/29 |
-| protection | Last256 | hazard+vbmi2 | Gaps | 4 | 13.2 | 302.2 | 150 | 1560 | 2520 | 1.027 | 56/0/44 |
-| protection | Last256 | hazard+vbmi2 | Late | 1 | 71.7 | 13.9 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| protection | Last256 | hazard+vbmi2 | Late | 2 | 17.5 | 114.6 | 80 | 280 | 350 | 0.506 | 94/0/6 |
-| protection | Last256 | hazard+vbmi2 | Late | 4 | 9.3 | 429.5 | 240 | 1890 | 3021 | 1.559 | 78/0/22 |
-| protection | Last256 | hazard+vbmi2 | Dups | 1 | 131.7 | 7.6 | 10 | 40 | 40 | 0.000 | 50/50/0 |
-| protection | Last256 | hazard+vbmi2 | Dups | 2 | 36.5 | 54.8 | 50 | 140 | 160 | 0.143 | 50/50/0 |
-| protection | Last256 | hazard+vbmi2 | Dups | 4 | 30.7 | 130.3 | 80 | 240 | 320 | 0.371 | 25/75/0 |
-| protection | Last256 | optimistic+vbmi2 | Seq | 1 | 90.0 | 11.1 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| protection | Last256 | optimistic+vbmi2 | Seq | 2 | 18.5 | 107.9 | 70 | 170 | 230 | 0.778 | 100/0/0 |
-| protection | Last256 | optimistic+vbmi2 | Seq | 4 | 8.8 | 453.3 | 290 | 940 | 1380 | 2.868 | 99/0/1 |
-| protection | Last256 | optimistic+vbmi2 | Gaps | 1 | 83.1 | 12.0 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last256 | optimistic+vbmi2 | Gaps | 2 | 23.5 | 85.0 | 70 | 230 | 280 | 0.592 | 77/0/23 |
-| protection | Last256 | optimistic+vbmi2 | Gaps | 4 | 12.5 | 320.4 | 180 | 930 | 1360 | 1.979 | 71/0/29 |
-| protection | Last256 | optimistic+vbmi2 | Late | 1 | 79.1 | 12.6 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last256 | optimistic+vbmi2 | Late | 2 | 20.5 | 97.7 | 110 | 240 | 290 | 0.675 | 85/0/15 |
-| protection | Last256 | optimistic+vbmi2 | Late | 4 | 9.0 | 445.7 | 280 | 890 | 1250 | 2.752 | 95/0/5 |
-| protection | Last256 | optimistic+vbmi2 | Dups | 1 | 142.7 | 7.0 | 10 | 30 | 40 | 0.000 | 50/50/0 |
-| protection | Last256 | optimistic+vbmi2 | Dups | 2 | 39.1 | 51.1 | 50 | 110 | 120 | 0.206 | 50/50/0 |
-| protection | Last256 | optimistic+vbmi2 | Dups | 4 | 31.8 | 125.7 | 70 | 190 | 270 | 0.516 | 25/75/0 |
-| protection | Last512 | hazard | Seq | 1 | 75.0 | 13.3 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last512 | hazard | Seq | 2 | 15.8 | 126.9 | 70 | 280 | 460 | 0.545 | 100/0/0 |
-| protection | Last512 | hazard | Seq | 4 | 7.9 | 508.5 | 240 | 2111 | 3480 | 1.829 | 95/0/5 |
-| protection | Last512 | hazard | Gaps | 1 | 64.2 | 15.6 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| protection | Last512 | hazard | Gaps | 2 | 20.4 | 97.9 | 70 | 290 | 450 | 0.413 | 78/0/22 |
-| protection | Last512 | hazard | Gaps | 4 | 13.8 | 289.9 | 110 | 1550 | 2591 | 1.003 | 56/0/44 |
-| protection | Last512 | hazard | Late | 1 | 72.4 | 13.8 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| protection | Last512 | hazard | Late | 2 | 15.7 | 127.0 | 80 | 290 | 460 | 0.556 | 98/0/2 |
-| protection | Last512 | hazard | Late | 4 | 8.3 | 484.4 | 250 | 2311 | 3690 | 1.743 | 89/0/11 |
-| protection | Last512 | hazard | Dups | 1 | 122.8 | 8.1 | 10 | 40 | 40 | 0.000 | 50/50/0 |
-| protection | Last512 | hazard | Dups | 2 | 34.3 | 58.2 | 60 | 130 | 150 | 0.164 | 50/50/0 |
-| protection | Last512 | hazard | Dups | 4 | 32.3 | 123.8 | 80 | 260 | 340 | 0.392 | 25/75/0 |
-| protection | Last512 | optimistic | Seq | 1 | 85.3 | 11.7 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| protection | Last512 | optimistic | Seq | 2 | 19.6 | 102.2 | 70 | 230 | 270 | 0.750 | 100/0/0 |
-| protection | Last512 | optimistic | Seq | 4 | 9.9 | 402.5 | 280 | 910 | 1320 | 2.535 | 88/0/12 |
-| protection | Last512 | optimistic | Gaps | 1 | 71.8 | 13.9 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last512 | optimistic | Gaps | 2 | 25.4 | 78.7 | 70 | 240 | 300 | 0.545 | 73/0/27 |
-| protection | Last512 | optimistic | Gaps | 4 | 13.6 | 293.5 | 170 | 920 | 1360 | 1.833 | 67/0/33 |
-| protection | Last512 | optimistic | Late | 1 | 79.2 | 12.6 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last512 | optimistic | Late | 2 | 18.7 | 107.2 | 70 | 230 | 280 | 0.772 | 100/0/0 |
-| protection | Last512 | optimistic | Late | 4 | 9.4 | 423.3 | 260 | 1080 | 1650 | 2.614 | 90/0/10 |
-| protection | Last512 | optimistic | Dups | 1 | 129.0 | 7.8 | 10 | 30 | 30 | 0.000 | 50/50/0 |
-| protection | Last512 | optimistic | Dups | 2 | 39.2 | 51.0 | 40 | 110 | 140 | 0.184 | 50/50/0 |
-| protection | Last512 | optimistic | Dups | 4 | 34.1 | 117.4 | 70 | 220 | 320 | 0.573 | 25/75/0 |
-| protection | Last512 | hazard+vbmi2 | Seq | 1 | 81.1 | 12.3 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last512 | hazard+vbmi2 | Seq | 2 | 17.6 | 113.4 | 80 | 260 | 360 | 0.489 | 88/0/12 |
-| protection | Last512 | hazard+vbmi2 | Seq | 4 | 8.9 | 448.5 | 200 | 1700 | 2840 | 1.597 | 85/0/15 |
-| protection | Last512 | hazard+vbmi2 | Gaps | 1 | 75.0 | 13.3 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| protection | Last512 | hazard+vbmi2 | Gaps | 2 | 22.0 | 90.7 | 70 | 240 | 310 | 0.390 | 71/0/29 |
-| protection | Last512 | hazard+vbmi2 | Gaps | 4 | 13.4 | 297.9 | 140 | 1550 | 2530 | 1.033 | 56/0/44 |
-| protection | Last512 | hazard+vbmi2 | Late | 1 | 71.3 | 14.0 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| protection | Last512 | hazard+vbmi2 | Late | 2 | 17.5 | 114.0 | 80 | 260 | 370 | 0.494 | 86/0/14 |
-| protection | Last512 | hazard+vbmi2 | Late | 4 | 8.9 | 447.4 | 240 | 1960 | 3130 | 1.607 | 84/0/16 |
-| protection | Last512 | hazard+vbmi2 | Dups | 1 | 131.2 | 7.6 | 10 | 40 | 40 | 0.000 | 50/50/0 |
-| protection | Last512 | hazard+vbmi2 | Dups | 2 | 33.8 | 59.2 | 50 | 140 | 160 | 0.171 | 50/50/0 |
-| protection | Last512 | hazard+vbmi2 | Dups | 4 | 31.3 | 127.7 | 80 | 250 | 330 | 0.370 | 25/75/0 |
-| protection | Last512 | optimistic+vbmi2 | Seq | 1 | 89.4 | 11.2 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last512 | optimistic+vbmi2 | Seq | 2 | 18.6 | 107.6 | 160 | 180 | 240 | 0.804 | 100/0/0 |
-| protection | Last512 | optimistic+vbmi2 | Seq | 4 | 9.1 | 439.1 | 290 | 970 | 1560 | 2.808 | 97/0/3 |
-| protection | Last512 | optimistic+vbmi2 | Gaps | 1 | 81.6 | 12.3 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| protection | Last512 | optimistic+vbmi2 | Gaps | 2 | 25.6 | 78.2 | 70 | 230 | 290 | 0.544 | 73/0/27 |
-| protection | Last512 | optimistic+vbmi2 | Gaps | 4 | 12.2 | 326.9 | 170 | 920 | 1350 | 2.057 | 74/0/26 |
-| protection | Last512 | optimistic+vbmi2 | Late | 1 | 78.5 | 12.7 | 20 | 40 | 40 | 0.000 | 100/0/0 |
-| protection | Last512 | optimistic+vbmi2 | Late | 2 | 20.2 | 98.9 | 110 | 240 | 290 | 0.717 | 95/0/5 |
-| protection | Last512 | optimistic+vbmi2 | Late | 4 | 9.8 | 408.8 | 260 | 910 | 1330 | 2.564 | 89/0/11 |
-| protection | Last512 | optimistic+vbmi2 | Dups | 1 | 142.1 | 7.0 | 10 | 30 | 30 | 0.000 | 50/50/0 |
-| protection | Last512 | optimistic+vbmi2 | Dups | 2 | 38.8 | 51.5 | 50 | 110 | 120 | 0.210 | 50/50/0 |
-| protection | Last512 | optimistic+vbmi2 | Dups | 4 | 31.9 | 125.2 | 70 | 180 | 220 | 0.543 | 25/75/0 |
-| recheck | Last64 | recheck-off | Seq | 1 | 75.1 | 13.3 | 20 | 20 | 20 | 0.000 | 100/0/0 |
-| recheck | Last64 | recheck-off | Seq | 2 | 34.6 | 57.7 | 40 | 40 | 50 | 0.033 | 96/0/4 |
-| recheck | Last64 | recheck-off | Seq | 4 | 34.3 | 116.8 | 50 | 50 | 60 | 0.211 | 76/0/24 |
-| recheck | Last64 | recheck-off | Late | 1 | 76.3 | 13.1 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| recheck | Last64 | recheck-off | Late | 2 | 28.2 | 70.9 | 40 | 90 | 100 | 0.302 | 100/0/0 |
-| recheck | Last64 | recheck-off | Late | 4 | 24.9 | 160.8 | 50 | 490 | 860 | 0.473 | 100/0/0 |
-| recheck | Last64 | recheck-off | Dups | 1 | 98.1 | 10.2 | 10 | 20 | 20 | 0.000 | 50/50/0 |
-| recheck | Last64 | recheck-off | Dups | 2 | 34.9 | 57.2 | 40 | 40 | 50 | 0.435 | 50/50/0 |
-| recheck | Last64 | recheck-off | Dups | 4 | 34.4 | 116.1 | 50 | 50 | 60 | 0.656 | 25/75/0 |
-| recheck | Last64 | recheck-on | Seq | 1 | 52.2 | 19.2 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| recheck | Last64 | recheck-on | Seq | 2 | 16.1 | 124.5 | 40 | 50 | 100 | 0.825 | 94/0/6 |
-| recheck | Last64 | recheck-on | Seq | 4 | 19.2 | 208.2 | 60 | 70 | 70 | 1.077 | 47/0/53 |
-| recheck | Last64 | recheck-on | Late | 1 | 52.1 | 19.2 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| recheck | Last64 | recheck-on | Late | 2 | 15.5 | 129.3 | 40 | 100 | 140 | 0.874 | 98/0/2 |
-| recheck | Last64 | recheck-on | Late | 4 | 10.8 | 371.0 | 90 | 1590 | 2610 | 1.953 | 83/0/17 |
-| recheck | Last64 | recheck-on | Dups | 1 | 75.7 | 13.2 | 10 | 20 | 30 | 0.000 | 50/50/0 |
-| recheck | Last64 | recheck-on | Dups | 2 | 25.4 | 78.9 | 50 | 100 | 100 | 0.428 | 50/50/0 |
-| recheck | Last64 | recheck-on | Dups | 4 | 28.7 | 139.6 | 50 | 60 | 60 | 0.683 | 25/75/0 |
-| recheck | Last512 | recheck-off | Seq | 1 | 89.3 | 11.2 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| recheck | Last512 | recheck-off | Seq | 2 | 18.6 | 107.6 | 70 | 160 | 230 | 0.800 | 100/0/0 |
-| recheck | Last512 | recheck-off | Seq | 4 | 9.1 | 440.9 | 280 | 940 | 1410 | 2.835 | 97/0/3 |
-| recheck | Last512 | recheck-off | Late | 1 | 77.9 | 12.8 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| recheck | Last512 | recheck-off | Late | 2 | 20.2 | 98.8 | 110 | 240 | 290 | 0.720 | 95/0/5 |
-| recheck | Last512 | recheck-off | Late | 4 | 10.1 | 395.3 | 260 | 890 | 1290 | 2.448 | 85/0/15 |
-| recheck | Last512 | recheck-off | Dups | 1 | 141.9 | 7.0 | 10 | 30 | 30 | 0.000 | 50/50/0 |
-| recheck | Last512 | recheck-off | Dups | 2 | 39.6 | 50.5 | 50 | 110 | 120 | 0.198 | 50/50/0 |
-| recheck | Last512 | recheck-off | Dups | 4 | 31.4 | 127.5 | 70 | 180 | 220 | 0.574 | 25/75/0 |
-| recheck | Last512 | recheck-on | Seq | 1 | 87.6 | 11.4 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| recheck | Last512 | recheck-on | Seq | 2 | 18.2 | 110.1 | 70 | 170 | 190 | 0.809 | 98/0/2 |
-| recheck | Last512 | recheck-on | Seq | 4 | 7.6 | 523.4 | 350 | 2080 | 3280 | 2.894 | 98/0/2 |
-| recheck | Last512 | recheck-on | Late | 1 | 74.9 | 13.3 | 20 | 40 | 50 | 0.000 | 100/0/0 |
-| recheck | Last512 | recheck-on | Late | 2 | 18.5 | 108.4 | 70 | 190 | 310 | 0.777 | 93/0/7 |
-| recheck | Last512 | recheck-on | Late | 4 | 7.5 | 530.0 | 330 | 2191 | 3471 | 2.883 | 97/0/3 |
-| recheck | Last512 | recheck-on | Dups | 1 | 138.7 | 7.2 | 20 | 30 | 30 | 0.000 | 50/50/0 |
-| recheck | Last512 | recheck-on | Dups | 2 | 37.1 | 53.9 | 50 | 120 | 140 | 0.229 | 50/50/0 |
-| recheck | Last512 | recheck-on | Dups | 4 | 29.9 | 133.7 | 110 | 160 | 200 | 0.594 | 25/75/0 |
-| batch | Last512 | batch=1 | Seq | 1 | 74.9 | 13.4 | 20 | 20 | 20 | 0.000 | 100/0/0 |
-| batch | Last512 | batch=1 | Seq | 2 | 14.7 | 135.6 | 70 | 280 | 300 | 0.853 | 95/0/5 |
-| batch | Last512 | batch=1 | Seq | 4 | 8.9 | 451.8 | 280 | 1000 | 1540 | 2.807 | 98/0/2 |
-| batch | Last512 | batch=4 | Seq | 1 | 86.7 | 11.5 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| batch | Last512 | batch=4 | Seq | 2 | 18.0 | 111.0 | 70 | 180 | 200 | 0.810 | 100/0/0 |
-| batch | Last512 | batch=4 | Seq | 4 | 10.6 | 376.1 | 230 | 950 | 1470 | 2.830 | 100/0/0 |
-| batch | Last512 | batch=16 | Seq | 1 | 90.7 | 11.0 | 20 | 30 | 30 | 0.000 | 100/0/0 |
-| batch | Last512 | batch=16 | Seq | 2 | 19.1 | 104.6 | 160 | 180 | 240 | 0.789 | 100/0/0 |
-| batch | Last512 | batch=16 | Seq | 4 | 10.6 | 378.1 | 230 | 940 | 1490 | 2.837 | 100/0/0 |
-| batch | Last512 | batch=64 | Seq | 1 | 92.1 | 10.9 | 20 | 30 | 40 | 0.000 | 100/0/0 |
-| batch | Last512 | batch=64 | Seq | 2 | 19.0 | 105.5 | 160 | 180 | 240 | 0.794 | 100/0/0 |
-| batch | Last512 | batch=64 | Seq | 4 | 10.6 | 378.0 | 230 | 950 | 1490 | 2.837 | 100/0/0 |
+| exp | target | variant | workload | thr | untimed: Mops/s | ns/op/thr | retries/op | timed: mean ns | p50 ns | p99 ns | p99.9 ns | New/Dup/Old % (untimed) |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| shift | Last256 | scalar | Seq | 1 | 94.1 | 10.6 | 0.000 | 15 | 10 | 30 | 30 | 100/0/0 |
+| shift | Last256 | scalar | Seq | 2 | 30.4 | 65.8 | 0.397 | 87 | 70 | 240 | 290 | 65/0/35 |
+| shift | Last256 | scalar | Seq | 4 | 18.8 | 212.2 | 1.202 | 283 | 230 | 930 | 1450 | 50/0/50 |
+| shift | Last256 | scalar | Gaps | 1 | 84.2 | 11.9 | 0.000 | 16 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last256 | scalar | Gaps | 2 | 26.9 | 74.5 | 0.507 | 89 | 70 | 250 | 330 | 69/0/31 |
+| shift | Last256 | scalar | Gaps | 4 | 14.4 | 278.1 | 1.725 | 231 | 160 | 940 | 1410 | 63/0/37 |
+| shift | Last256 | scalar | Late | 1 | 83.4 | 12.0 | 0.000 | 17 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last256 | scalar | Late | 2 | 23.3 | 85.9 | 0.581 | 94 | 70 | 250 | 340 | 78/0/22 |
+| shift | Last256 | scalar | Late | 4 | 12.2 | 326.9 | 1.911 | 288 | 240 | 940 | 1400 | 69/0/31 |
+| shift | Last256 | avx2 | Seq | 1 | 88.7 | 11.3 | 0.000 | 20 | 20 | 30 | 30 | 100/0/0 |
+| shift | Last256 | avx2 | Seq | 2 | 30.9 | 64.8 | 0.389 | 96 | 70 | 190 | 240 | 62/0/38 |
+| shift | Last256 | avx2 | Seq | 4 | 10.0 | 400.3 | 2.449 | 328 | 280 | 880 | 1180 | 86/0/14 |
+| shift | Last256 | avx2 | Gaps | 1 | 83.6 | 12.0 | 0.000 | 22 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last256 | avx2 | Gaps | 2 | 31.7 | 63.0 | 0.418 | 103 | 80 | 230 | 280 | 62/0/38 |
+| shift | Last256 | avx2 | Gaps | 4 | 13.4 | 297.5 | 1.817 | 250 | 170 | 910 | 1360 | 65/0/35 |
+| shift | Last256 | avx2 | Late | 1 | 80.5 | 12.4 | 0.000 | 22 | 20 | 40 | 50 | 100/0/0 |
+| shift | Last256 | avx2 | Late | 2 | 24.4 | 82.1 | 0.527 | 113 | 100 | 230 | 270 | 71/0/29 |
+| shift | Last256 | avx2 | Late | 4 | 9.7 | 412.0 | 2.510 | 302 | 260 | 880 | 1240 | 87/0/13 |
+| shift | Last256 | avx512 | Seq | 1 | 88.8 | 11.3 | 0.000 | 20 | 20 | 30 | 30 | 100/0/0 |
+| shift | Last256 | avx512 | Seq | 2 | 28.8 | 69.5 | 0.403 | 102 | 80 | 200 | 270 | 63/0/37 |
+| shift | Last256 | avx512 | Seq | 4 | 9.7 | 414.4 | 2.594 | 327 | 280 | 850 | 1200 | 90/0/10 |
+| shift | Last256 | avx512 | Gaps | 1 | 83.7 | 12.0 | 0.000 | 22 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last256 | avx512 | Gaps | 2 | 30.5 | 65.7 | 0.449 | 105 | 80 | 230 | 290 | 64/0/36 |
+| shift | Last256 | avx512 | Gaps | 4 | 13.7 | 291.9 | 1.785 | 240 | 170 | 920 | 1400 | 64/0/36 |
+| shift | Last256 | avx512 | Late | 1 | 81.1 | 12.3 | 0.000 | 23 | 20 | 40 | 50 | 100/0/0 |
+| shift | Last256 | avx512 | Late | 2 | 24.7 | 81.0 | 0.550 | 110 | 90 | 230 | 280 | 74/0/26 |
+| shift | Last256 | avx512 | Late | 4 | 9.6 | 415.3 | 2.525 | 318 | 280 | 840 | 1200 | 87/0/13 |
+| shift | Last256 | avx512vbmi2 | Seq | 1 | 89.7 | 11.1 | 0.000 | 20 | 20 | 30 | 30 | 100/0/0 |
+| shift | Last256 | avx512vbmi2 | Seq | 2 | 18.4 | 108.8 | 0.796 | 88 | 70 | 170 | 220 | 100/0/0 |
+| shift | Last256 | avx512vbmi2 | Seq | 4 | 8.9 | 450.9 | 2.873 | 327 | 280 | 840 | 1190 | 98/0/2 |
+| shift | Last256 | avx512vbmi2 | Gaps | 1 | 84.5 | 11.8 | 0.000 | 21 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last256 | avx512vbmi2 | Gaps | 2 | 24.9 | 80.4 | 0.546 | 95 | 70 | 240 | 280 | 73/0/27 |
+| shift | Last256 | avx512vbmi2 | Gaps | 4 | 13.3 | 301.4 | 1.868 | 234 | 170 | 890 | 1320 | 68/0/32 |
+| shift | Last256 | avx512vbmi2 | Late | 1 | 80.4 | 12.4 | 0.000 | 22 | 20 | 40 | 40 | 100/0/0 |
+| shift | Last256 | avx512vbmi2 | Late | 2 | 23.1 | 86.6 | 0.586 | 114 | 100 | 230 | 280 | 79/0/21 |
+| shift | Last256 | avx512vbmi2 | Late | 4 | 9.0 | 444.6 | 2.760 | 318 | 270 | 940 | 1370 | 95/0/5 |
+| shift | Last512 | scalar | Seq | 1 | 84.5 | 11.8 | 0.000 | 18 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last512 | scalar | Seq | 2 | 19.4 | 103.2 | 0.757 | 90 | 70 | 230 | 270 | 100/0/0 |
+| shift | Last512 | scalar | Seq | 4 | 9.1 | 438.0 | 2.848 | 336 | 280 | 930 | 1340 | 98/0/2 |
+| shift | Last512 | scalar | Gaps | 1 | 70.9 | 14.1 | 0.000 | 19 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last512 | scalar | Gaps | 2 | 25.5 | 78.3 | 0.544 | 88 | 70 | 240 | 300 | 73/0/27 |
+| shift | Last512 | scalar | Gaps | 4 | 13.6 | 294.6 | 1.848 | 224 | 160 | 960 | 1490 | 67/0/33 |
+| shift | Last512 | scalar | Late | 1 | 79.6 | 12.6 | 0.000 | 17 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last512 | scalar | Late | 2 | 19.4 | 103.2 | 0.770 | 106 | 70 | 230 | 290 | 100/0/0 |
+| shift | Last512 | scalar | Late | 4 | 9.6 | 417.1 | 2.640 | 318 | 260 | 1090 | 1650 | 90/0/10 |
+| shift | Last512 | avx2 | Seq | 1 | 87.8 | 11.4 | 0.000 | 21 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last512 | avx2 | Seq | 2 | 23.0 | 86.9 | 0.625 | 113 | 100 | 190 | 240 | 89/0/11 |
+| shift | Last512 | avx2 | Seq | 4 | 9.2 | 434.1 | 2.774 | 327 | 280 | 880 | 1200 | 96/0/4 |
+| shift | Last512 | avx2 | Gaps | 1 | 81.0 | 12.4 | 0.000 | 23 | 20 | 40 | 40 | 100/0/0 |
+| shift | Last512 | avx2 | Gaps | 2 | 24.0 | 83.2 | 0.559 | 100 | 80 | 210 | 280 | 73/0/27 |
+| shift | Last512 | avx2 | Gaps | 4 | 12.7 | 315.2 | 1.968 | 247 | 170 | 920 | 1370 | 71/0/29 |
+| shift | Last512 | avx2 | Late | 1 | 79.1 | 12.6 | 0.000 | 23 | 20 | 40 | 50 | 100/0/0 |
+| shift | Last512 | avx2 | Late | 2 | 20.3 | 98.5 | 0.716 | 119 | 110 | 230 | 280 | 92/0/8 |
+| shift | Last512 | avx2 | Late | 4 | 9.2 | 436.3 | 2.710 | 315 | 270 | 910 | 1250 | 93/0/7 |
+| shift | Last512 | avx512 | Seq | 1 | 88.3 | 11.3 | 0.000 | 21 | 20 | 30 | 30 | 100/0/0 |
+| shift | Last512 | avx512 | Seq | 2 | 30.9 | 64.7 | 0.387 | 104 | 80 | 200 | 240 | 63/0/37 |
+| shift | Last512 | avx512 | Seq | 4 | 9.3 | 429.0 | 2.742 | 316 | 270 | 890 | 1220 | 94/0/6 |
+| shift | Last512 | avx512 | Gaps | 1 | 82.3 | 12.2 | 0.000 | 23 | 20 | 40 | 40 | 100/0/0 |
+| shift | Last512 | avx512 | Gaps | 2 | 35.1 | 57.0 | 0.363 | 103 | 80 | 230 | 280 | 58/0/42 |
+| shift | Last512 | avx512 | Gaps | 4 | 13.9 | 288.1 | 1.791 | 240 | 170 | 990 | 1480 | 64/0/36 |
+| shift | Last512 | avx512 | Late | 1 | 77.9 | 12.8 | 0.000 | 24 | 20 | 40 | 50 | 100/0/0 |
+| shift | Last512 | avx512 | Late | 2 | 23.1 | 86.4 | 0.592 | 124 | 120 | 230 | 280 | 81/0/19 |
+| shift | Last512 | avx512 | Late | 4 | 9.2 | 433.9 | 2.735 | 302 | 250 | 1050 | 1660 | 93/0/7 |
+| shift | Last512 | avx512vbmi2 | Seq | 1 | 89.2 | 11.2 | 0.000 | 20 | 20 | 30 | 30 | 100/0/0 |
+| shift | Last512 | avx512vbmi2 | Seq | 2 | 18.7 | 106.8 | 0.779 | 72 | 70 | 180 | 230 | 100/0/0 |
+| shift | Last512 | avx512vbmi2 | Seq | 4 | 9.0 | 444.0 | 2.809 | 321 | 280 | 850 | 1240 | 96/0/4 |
+| shift | Last512 | avx512vbmi2 | Gaps | 1 | 82.2 | 12.2 | 0.000 | 22 | 20 | 30 | 40 | 100/0/0 |
+| shift | Last512 | avx512vbmi2 | Gaps | 2 | 25.7 | 77.8 | 0.529 | 99 | 70 | 230 | 280 | 72/0/28 |
+| shift | Last512 | avx512vbmi2 | Gaps | 4 | 13.0 | 307.3 | 1.910 | 237 | 170 | 930 | 1440 | 69/0/31 |
+| shift | Last512 | avx512vbmi2 | Late | 1 | 79.6 | 12.6 | 0.000 | 23 | 20 | 40 | 40 | 100/0/0 |
+| shift | Last512 | avx512vbmi2 | Late | 2 | 22.9 | 87.2 | 0.602 | 122 | 110 | 230 | 280 | 84/0/16 |
+| shift | Last512 | avx512vbmi2 | Late | 4 | 9.5 | 422.0 | 2.590 | 313 | 270 | 920 | 1350 | 89/0/11 |
+| delta1 | Last64 | delta1-off | Seq | 1 | 75.4 | 13.3 | 0.000 | 17 | 20 | 20 | 20 | 100/0/0 |
+| delta1 | Last64 | delta1-off | Seq | 2 | 34.5 | 58.0 | 0.031 | 36 | 40 | 40 | 50 | 97/0/3 |
+| delta1 | Last64 | delta1-off | Seq | 4 | 33.7 | 118.6 | 0.352 | 50 | 50 | 60 | 60 | 65/0/35 |
+| delta1 | Last64 | delta1-on | Seq | 1 | 75.5 | 13.3 | 0.000 | 17 | 20 | 20 | 20 | 100/0/0 |
+| delta1 | Last64 | delta1-on | Seq | 2 | 34.5 | 58.0 | 0.027 | 36 | 40 | 40 | 50 | 97/0/3 |
+| delta1 | Last64 | delta1-on | Seq | 4 | 33.7 | 118.8 | 0.349 | 50 | 50 | 60 | 60 | 65/0/35 |
+| delta1 | Last128 | delta1-off | Seq | 1 | 94.0 | 10.6 | 0.000 | 16 | 20 | 30 | 30 | 100/0/0 |
+| delta1 | Last128 | delta1-off | Seq | 2 | 26.2 | 76.2 | 0.507 | 90 | 70 | 230 | 270 | 71/0/29 |
+| delta1 | Last128 | delta1-off | Seq | 4 | 10.5 | 379.3 | 2.330 | 303 | 260 | 910 | 1320 | 82/0/18 |
+| delta1 | Last128 | delta1-on | Seq | 1 | 98.7 | 10.1 | 0.000 | 13 | 10 | 20 | 20 | 100/0/0 |
+| delta1 | Last128 | delta1-on | Seq | 2 | 26.6 | 75.1 | 0.492 | 88 | 70 | 220 | 270 | 70/0/30 |
+| delta1 | Last128 | delta1-on | Seq | 4 | 10.4 | 383.0 | 2.346 | 291 | 250 | 840 | 1190 | 83/0/17 |
+| delta1 | Last512 | delta1-off | Seq | 1 | 86.6 | 11.6 | 0.000 | 21 | 20 | 30 | 30 | 100/0/0 |
+| delta1 | Last512 | delta1-off | Seq | 2 | 18.6 | 107.3 | 0.793 | 75 | 70 | 170 | 240 | 100/0/0 |
+| delta1 | Last512 | delta1-off | Seq | 4 | 9.4 | 427.7 | 2.667 | 330 | 290 | 840 | 1180 | 92/0/8 |
+| delta1 | Last512 | delta1-on | Seq | 1 | 89.2 | 11.2 | 0.000 | 20 | 20 | 30 | 40 | 100/0/0 |
+| delta1 | Last512 | delta1-on | Seq | 2 | 19.0 | 105.2 | 0.764 | 73 | 70 | 190 | 240 | 100/0/0 |
+| delta1 | Last512 | delta1-on | Seq | 4 | 9.1 | 440.7 | 2.781 | 322 | 290 | 820 | 1140 | 95/0/5 |
+| load | Latest | locked | Seq | 1 | 85.2 | 11.7 | 0.000 | 13 | 10 | 20 | 20 | 100/0/0 |
+| load | Latest | locked | Seq | 2 | 64.3 | 31.1 | 0.038 | 35 | 30 | 50 | 50 | 66/0/34 |
+| load | Latest | locked | Seq | 4 | 65.3 | 61.3 | 0.069 | 56 | 60 | 60 | 60 | 30/0/70 |
+| load | Latest | locked | Late | 1 | 133.1 | 7.5 | 0.000 | 7 | 10 | 20 | 20 | 21/0/79 |
+| load | Latest | locked | Late | 2 | 70.9 | 28.2 | 0.035 | 32 | 30 | 50 | 50 | 20/0/80 |
+| load | Latest | locked | Late | 4 | 68.2 | 58.6 | 0.063 | 56 | 60 | 70 | 70 | 17/0/83 |
+| load | Latest | locked | Dups | 1 | 109.9 | 9.1 | 0.000 | 9 | 10 | 20 | 20 | 50/50/0 |
+| load | Latest | locked | Dups | 2 | 68.4 | 29.2 | 0.004 | 35 | 30 | 50 | 60 | 50/15/35 |
+| load | Latest | locked | Dups | 4 | 68.1 | 58.7 | 0.033 | 56 | 60 | 60 | 60 | 25/17/58 |
+| load | Latest | plain | Seq | 1 | 157.2 | 6.4 | 0.000 | 6 | 10 | 10 | 10 | 100/0/0 |
+| load | Latest | plain | Seq | 2 | 70.8 | 28.2 | 0.176 | 33 | 30 | 40 | 60 | 58/0/42 |
+| load | Latest | plain | Seq | 4 | 70.3 | 56.9 | 0.259 | 60 | 60 | 160 | 170 | 34/0/66 |
+| load | Latest | plain | Late | 1 | 222.8 | 4.5 | 0.000 | 6 | 10 | 20 | 20 | 21/0/79 |
+| load | Latest | plain | Late | 2 | 141.6 | 14.1 | 0.073 | 17 | 10 | 70 | 110 | 19/0/81 |
+| load | Latest | plain | Late | 4 | 104.5 | 38.3 | 0.163 | 40 | 40 | 170 | 250 | 17/0/83 |
+| load | Latest | plain | Dups | 1 | 269.9 | 3.7 | 0.000 | 5 | 10 | 10 | 10 | 50/50/0 |
+| load | Latest | plain | Dups | 2 | 76.3 | 26.2 | 0.111 | 47 | 40 | 70 | 90 | 50/17/33 |
+| load | Latest | plain | Dups | 4 | 72.1 | 55.4 | 0.190 | 59 | 50 | 160 | 170 | 25/28/47 |
+| load | Last64 | lock-cmpxchg16b | Seq | 1 | 75.1 | 13.3 | 0.000 | 18 | 20 | 20 | 20 | 100/0/0 |
+| load | Last64 | lock-cmpxchg16b | Seq | 2 | 34.3 | 58.3 | 0.054 | 37 | 40 | 40 | 50 | 96/0/4 |
+| load | Last64 | lock-cmpxchg16b | Seq | 4 | 34.0 | 117.5 | 0.205 | 49 | 50 | 60 | 60 | 79/0/21 |
+| load | Last64 | lock-cmpxchg16b | Late | 1 | 76.2 | 13.1 | 0.000 | 17 | 20 | 30 | 30 | 100/0/0 |
+| load | Last64 | lock-cmpxchg16b | Late | 2 | 28.1 | 71.2 | 0.310 | 39 | 40 | 90 | 100 | 100/0/0 |
+| load | Last64 | lock-cmpxchg16b | Late | 4 | 24.6 | 162.4 | 0.491 | 90 | 50 | 450 | 830 | 100/0/0 |
+| load | Last64 | lock-cmpxchg16b | Dups | 1 | 99.2 | 10.1 | 0.000 | 13 | 10 | 20 | 20 | 50/50/0 |
+| load | Last64 | lock-cmpxchg16b | Dups | 2 | 34.8 | 57.5 | 0.443 | 37 | 40 | 40 | 50 | 50/50/0 |
+| load | Last64 | lock-cmpxchg16b | Dups | 4 | 34.6 | 115.7 | 0.640 | 49 | 50 | 60 | 60 | 25/75/0 |
+| load | Last64 | vmovdqa | Seq | 1 | 125.3 | 8.0 | 0.000 | 10 | 10 | 10 | 20 | 100/0/0 |
+| load | Last64 | vmovdqa | Seq | 2 | 34.7 | 57.6 | 0.652 | 39 | 40 | 40 | 50 | 92/0/8 |
+| load | Last64 | vmovdqa | Seq | 4 | 21.3 | 188.1 | 1.645 | 55 | 50 | 60 | 80 | 91/0/9 |
+| load | Last64 | vmovdqa | Late | 1 | 103.0 | 9.7 | 0.000 | 12 | 10 | 20 | 20 | 100/0/0 |
+| load | Last64 | vmovdqa | Late | 2 | 32.6 | 61.4 | 0.599 | 41 | 40 | 130 | 140 | 86/0/14 |
+| load | Last64 | vmovdqa | Late | 4 | 25.1 | 159.4 | 1.109 | 77 | 60 | 360 | 640 | 72/0/28 |
+| load | Last64 | vmovdqa | Dups | 1 | 203.4 | 4.9 | 0.000 | 8 | 10 | 20 | 20 | 50/50/0 |
+| load | Last64 | vmovdqa | Dups | 2 | 53.0 | 37.7 | 0.175 | 39 | 30 | 90 | 90 | 50/50/0 |
+| load | Last64 | vmovdqa | Dups | 4 | 51.7 | 77.4 | 0.268 | 75 | 70 | 160 | 170 | 25/75/0 |
+| load | Last64 | prefetchw+vmovdqa | Seq | 1 | 125.3 | 8.0 | 0.000 | 10 | 10 | 20 | 20 | 100/0/0 |
+| load | Last64 | prefetchw+vmovdqa | Seq | 2 | 33.8 | 59.1 | 0.632 | 37 | 40 | 40 | 50 | 89/0/11 |
+| load | Last64 | prefetchw+vmovdqa | Seq | 4 | 21.6 | 185.1 | 1.585 | 56 | 60 | 60 | 90 | 91/0/9 |
+| load | Last64 | prefetchw+vmovdqa | Late | 1 | 99.7 | 10.0 | 0.000 | 11 | 10 | 20 | 20 | 100/0/0 |
+| load | Last64 | prefetchw+vmovdqa | Late | 2 | 31.1 | 64.4 | 0.661 | 41 | 40 | 130 | 140 | 91/0/9 |
+| load | Last64 | prefetchw+vmovdqa | Late | 4 | 25.4 | 157.6 | 1.099 | 65 | 60 | 290 | 570 | 70/0/30 |
+| load | Last64 | prefetchw+vmovdqa | Dups | 1 | 204.0 | 4.9 | 0.000 | 8 | 10 | 10 | 20 | 50/50/0 |
+| load | Last64 | prefetchw+vmovdqa | Dups | 2 | 55.7 | 35.9 | 0.177 | 44 | 40 | 90 | 100 | 50/50/0 |
+| load | Last64 | prefetchw+vmovdqa | Dups | 4 | 49.6 | 80.6 | 0.270 | 74 | 70 | 160 | 170 | 25/75/0 |
+| load | Last512 | lock-cmpxchg16b | Seq | 1 | 57.0 | 17.5 | 0.000 | 22 | 20 | 40 | 40 | 100/0/0 |
+| load | Last512 | lock-cmpxchg16b | Seq | 2 | 17.7 | 112.7 | 0.784 | 83 | 70 | 190 | 230 | 90/0/10 |
+| load | Last512 | lock-cmpxchg16b | Seq | 4 | 9.7 | 413.1 | 2.718 | 303 | 280 | 720 | 1010 | 93/0/7 |
+| load | Last512 | lock-cmpxchg16b | Late | 1 | 55.1 | 18.1 | 0.000 | 25 | 20 | 40 | 50 | 100/0/0 |
+| load | Last512 | lock-cmpxchg16b | Late | 2 | 16.2 | 123.8 | 0.928 | 139 | 150 | 240 | 290 | 99/0/1 |
+| load | Last512 | lock-cmpxchg16b | Late | 4 | 9.5 | 421.8 | 2.777 | 321 | 290 | 910 | 1340 | 95/0/5 |
+| load | Last512 | lock-cmpxchg16b | Dups | 1 | 74.7 | 13.4 | 0.000 | 18 | 20 | 30 | 40 | 50/50/0 |
+| load | Last512 | lock-cmpxchg16b | Dups | 2 | 35.5 | 56.3 | 0.000 | 55 | 50 | 120 | 130 | 50/2/48 |
+| load | Last512 | lock-cmpxchg16b | Dups | 4 | 20.9 | 191.7 | 0.002 | 93 | 60 | 170 | 170 | 25/55/20 |
+| load | Last512 | vmovdqa | Seq | 1 | 89.1 | 11.2 | 0.000 | 21 | 20 | 30 | 40 | 100/0/0 |
+| load | Last512 | vmovdqa | Seq | 2 | 18.8 | 106.1 | 0.775 | 85 | 70 | 200 | 250 | 99/0/1 |
+| load | Last512 | vmovdqa | Seq | 4 | 9.0 | 445.8 | 2.835 | 339 | 300 | 860 | 1230 | 97/0/3 |
+| load | Last512 | vmovdqa | Late | 1 | 79.0 | 12.7 | 0.000 | 23 | 20 | 40 | 50 | 100/0/0 |
+| load | Last512 | vmovdqa | Late | 2 | 22.4 | 89.2 | 0.623 | 123 | 110 | 240 | 290 | 85/0/15 |
+| load | Last512 | vmovdqa | Late | 4 | 9.7 | 413.8 | 2.520 | 299 | 260 | 910 | 1320 | 87/0/13 |
+| load | Last512 | vmovdqa | Dups | 1 | 141.9 | 7.0 | 0.000 | 14 | 10 | 30 | 30 | 50/50/0 |
+| load | Last512 | vmovdqa | Dups | 2 | 37.4 | 53.4 | 0.220 | 58 | 50 | 110 | 120 | 50/50/0 |
+| load | Last512 | vmovdqa | Dups | 4 | 30.9 | 129.3 | 0.564 | 89 | 70 | 180 | 220 | 25/75/0 |
+| load | Last512 | prefetchw+vmovdqa | Seq | 1 | 88.6 | 11.3 | 0.000 | 21 | 20 | 30 | 40 | 100/0/0 |
+| load | Last512 | prefetchw+vmovdqa | Seq | 2 | 17.9 | 111.5 | 0.799 | 79 | 70 | 180 | 320 | 100/0/0 |
+| load | Last512 | prefetchw+vmovdqa | Seq | 4 | 9.1 | 441.2 | 2.244 | 271 | 200 | 1030 | 1560 | 78/0/22 |
+| load | Last512 | prefetchw+vmovdqa | Late | 1 | 78.9 | 12.7 | 0.000 | 24 | 20 | 40 | 50 | 100/0/0 |
+| load | Last512 | prefetchw+vmovdqa | Late | 2 | 23.2 | 86.3 | 0.564 | 104 | 80 | 290 | 360 | 78/0/22 |
+| load | Last512 | prefetchw+vmovdqa | Late | 4 | 9.2 | 433.5 | 2.248 | 345 | 300 | 1150 | 1690 | 78/0/22 |
+| load | Last512 | prefetchw+vmovdqa | Dups | 1 | 141.8 | 7.1 | 0.000 | 14 | 10 | 30 | 30 | 50/50/0 |
+| load | Last512 | prefetchw+vmovdqa | Dups | 2 | 34.2 | 58.4 | 0.221 | 58 | 50 | 110 | 130 | 50/50/0 |
+| load | Last512 | prefetchw+vmovdqa | Dups | 4 | 28.6 | 139.7 | 0.578 | 89 | 80 | 220 | 300 | 25/75/0 |
+| preprotect | Last128 | pre_protect-off | Seq | 1 | 58.6 | 17.1 | 0.000 | 23 | 20 | 30 | 40 | 100/0/0 |
+| preprotect | Last128 | pre_protect-off | Seq | 2 | 14.9 | 134.4 | 0.574 | 86 | 70 | 240 | 340 | 92/0/8 |
+| preprotect | Last128 | pre_protect-off | Seq | 4 | 6.7 | 596.0 | 1.910 | 362 | 270 | 1520 | 2501 | 91/0/9 |
+| preprotect | Last128 | pre_protect-off | Dups | 1 | 103.2 | 9.7 | 0.000 | 14 | 20 | 30 | 40 | 50/50/0 |
+| preprotect | Last128 | pre_protect-off | Dups | 2 | 28.0 | 71.4 | 0.247 | 69 | 70 | 130 | 160 | 50/50/0 |
+| preprotect | Last128 | pre_protect-off | Dups | 4 | 25.7 | 155.5 | 0.457 | 121 | 130 | 240 | 310 | 25/75/0 |
+| preprotect | Last128 | pre_protect-on | Seq | 1 | 88.0 | 11.4 | 0.000 | 14 | 10 | 30 | 40 | 100/0/0 |
+| preprotect | Last128 | pre_protect-on | Seq | 2 | 18.6 | 107.3 | 0.479 | 88 | 70 | 230 | 350 | 90/0/10 |
+| preprotect | Last128 | pre_protect-on | Seq | 4 | 8.3 | 483.8 | 1.702 | 427 | 260 | 2290 | 3671 | 89/0/11 |
+| preprotect | Last128 | pre_protect-on | Dups | 1 | 150.1 | 6.7 | 0.000 | 10 | 10 | 30 | 40 | 50/50/0 |
+| preprotect | Last128 | pre_protect-on | Dups | 2 | 34.5 | 57.9 | 0.171 | 56 | 60 | 120 | 150 | 50/50/0 |
+| preprotect | Last128 | pre_protect-on | Dups | 4 | 32.1 | 124.5 | 0.355 | 91 | 80 | 260 | 330 | 25/75/0 |
+| preprotect | Last512 | pre_protect-off | Seq | 1 | 57.4 | 17.4 | 0.000 | 24 | 20 | 40 | 40 | 100/0/0 |
+| preprotect | Last512 | pre_protect-off | Seq | 2 | 13.3 | 150.1 | 0.622 | 96 | 70 | 230 | 300 | 98/0/2 |
+| preprotect | Last512 | pre_protect-off | Seq | 4 | 6.5 | 619.1 | 1.997 | 422 | 340 | 1590 | 2621 | 94/0/6 |
+| preprotect | Last512 | pre_protect-off | Dups | 1 | 96.0 | 10.4 | 0.000 | 15 | 20 | 40 | 40 | 50/50/0 |
+| preprotect | Last512 | pre_protect-off | Dups | 2 | 25.8 | 77.5 | 0.284 | 73 | 70 | 130 | 160 | 50/50/0 |
+| preprotect | Last512 | pre_protect-off | Dups | 4 | 25.0 | 159.9 | 0.465 | 116 | 120 | 260 | 380 | 25/75/0 |
+| preprotect | Last512 | pre_protect-on | Seq | 1 | 81.8 | 12.2 | 0.000 | 22 | 20 | 40 | 40 | 100/0/0 |
+| preprotect | Last512 | pre_protect-on | Seq | 2 | 16.5 | 121.5 | 0.518 | 98 | 70 | 220 | 320 | 94/0/6 |
+| preprotect | Last512 | pre_protect-on | Seq | 4 | 8.1 | 494.5 | 1.716 | 378 | 250 | 1970 | 3200 | 91/0/9 |
+| preprotect | Last512 | pre_protect-on | Dups | 1 | 131.5 | 7.6 | 0.000 | 13 | 10 | 40 | 40 | 50/50/0 |
+| preprotect | Last512 | pre_protect-on | Dups | 2 | 32.0 | 62.6 | 0.210 | 65 | 60 | 150 | 160 | 50/50/0 |
+| preprotect | Last512 | pre_protect-on | Dups | 4 | 29.7 | 134.5 | 0.393 | 97 | 80 | 240 | 310 | 25/75/0 |
+| protection | Last128 | hazard | Seq | 1 | 87.6 | 11.4 | 0.000 | 14 | 10 | 30 | 40 | 100/0/0 |
+| protection | Last128 | hazard | Seq | 2 | 20.3 | 98.6 | 0.422 | 67 | 60 | 210 | 310 | 82/0/18 |
+| protection | Last128 | hazard | Seq | 4 | 8.5 | 472.9 | 1.636 | 413 | 250 | 2210 | 3530 | 87/0/13 |
+| protection | Last128 | hazard | Gaps | 1 | 80.2 | 12.5 | 0.000 | 16 | 10 | 40 | 40 | 100/0/0 |
+| protection | Last128 | hazard | Gaps | 2 | 25.1 | 79.8 | 0.340 | 78 | 70 | 250 | 380 | 68/0/32 |
+| protection | Last128 | hazard | Gaps | 4 | 14.1 | 283.9 | 0.974 | 244 | 130 | 1590 | 2570 | 54/0/46 |
+| protection | Last128 | hazard | Late | 1 | 78.8 | 12.7 | 0.000 | 18 | 20 | 40 | 50 | 100/0/0 |
+| protection | Last128 | hazard | Late | 2 | 18.6 | 107.8 | 0.458 | 99 | 80 | 290 | 460 | 85/0/15 |
+| protection | Last128 | hazard | Late | 4 | 8.4 | 478.5 | 1.693 | 403 | 240 | 2271 | 3621 | 87/0/13 |
+| protection | Last128 | hazard | Dups | 1 | 146.3 | 6.8 | 0.000 | 10 | 10 | 30 | 40 | 50/50/0 |
+| protection | Last128 | hazard | Dups | 2 | 34.6 | 57.9 | 0.176 | 55 | 50 | 120 | 150 | 50/50/0 |
+| protection | Last128 | hazard | Dups | 4 | 32.2 | 124.3 | 0.355 | 91 | 80 | 260 | 330 | 25/75/0 |
+| protection | Last128 | optimistic | Seq | 1 | 98.7 | 10.1 | 0.000 | 13 | 10 | 20 | 20 | 100/0/0 |
+| protection | Last128 | optimistic | Seq | 2 | 28.8 | 69.5 | 0.441 | 88 | 70 | 220 | 270 | 67/0/33 |
+| protection | Last128 | optimistic | Seq | 4 | 10.6 | 378.9 | 2.328 | 303 | 260 | 910 | 1320 | 82/0/18 |
+| protection | Last128 | optimistic | Gaps | 1 | 88.5 | 11.3 | 0.000 | 15 | 10 | 30 | 30 | 100/0/0 |
+| protection | Last128 | optimistic | Gaps | 2 | 29.5 | 67.8 | 0.470 | 77 | 60 | 230 | 280 | 65/0/35 |
+| protection | Last128 | optimistic | Gaps | 4 | 14.7 | 271.7 | 1.668 | 219 | 160 | 920 | 1360 | 62/0/38 |
+| protection | Last128 | optimistic | Late | 1 | 86.3 | 11.6 | 0.000 | 17 | 20 | 30 | 40 | 100/0/0 |
+| protection | Last128 | optimistic | Late | 2 | 24.3 | 82.3 | 0.552 | 99 | 70 | 230 | 280 | 73/0/27 |
+| protection | Last128 | optimistic | Late | 4 | 9.5 | 421.8 | 2.609 | 301 | 250 | 940 | 1410 | 90/0/10 |
+| protection | Last128 | optimistic | Dups | 1 | 165.8 | 6.0 | 0.000 | 10 | 10 | 30 | 30 | 50/50/0 |
+| protection | Last128 | optimistic | Dups | 2 | 40.4 | 49.5 | 0.205 | 50 | 40 | 110 | 130 | 50/50/0 |
+| protection | Last128 | optimistic | Dups | 4 | 34.1 | 117.2 | 0.485 | 86 | 70 | 210 | 300 | 25/75/0 |
+| protection | Last128 | hazard+vbmi2 | Seq | 1 | 88.1 | 11.4 | 0.000 | 14 | 10 | 30 | 40 | 100/0/0 |
+| protection | Last128 | hazard+vbmi2 | Seq | 2 | 19.1 | 104.6 | 0.453 | 86 | 70 | 240 | 360 | 87/0/13 |
+| protection | Last128 | hazard+vbmi2 | Seq | 4 | 8.0 | 498.0 | 1.753 | 377 | 240 | 2040 | 3311 | 91/0/9 |
+| protection | Last128 | hazard+vbmi2 | Gaps | 1 | 79.9 | 12.5 | 0.000 | 16 | 10 | 40 | 40 | 100/0/0 |
+| protection | Last128 | hazard+vbmi2 | Gaps | 2 | 24.8 | 80.5 | 0.341 | 80 | 70 | 260 | 400 | 69/0/31 |
+| protection | Last128 | hazard+vbmi2 | Gaps | 4 | 14.0 | 284.8 | 0.977 | 245 | 130 | 1590 | 2570 | 54/0/46 |
+| protection | Last128 | hazard+vbmi2 | Late | 1 | 79.1 | 12.6 | 0.000 | 17 | 20 | 40 | 40 | 100/0/0 |
+| protection | Last128 | hazard+vbmi2 | Late | 2 | 17.8 | 112.5 | 0.487 | 103 | 80 | 290 | 450 | 90/0/10 |
+| protection | Last128 | hazard+vbmi2 | Late | 4 | 8.0 | 499.8 | 1.772 | 407 | 240 | 2261 | 3600 | 91/0/9 |
+| protection | Last128 | hazard+vbmi2 | Dups | 1 | 147.3 | 6.8 | 0.000 | 10 | 10 | 30 | 30 | 50/50/0 |
+| protection | Last128 | hazard+vbmi2 | Dups | 2 | 34.5 | 57.9 | 0.175 | 56 | 60 | 120 | 150 | 50/50/0 |
+| protection | Last128 | hazard+vbmi2 | Dups | 4 | 32.2 | 124.3 | 0.355 | 91 | 80 | 260 | 330 | 25/75/0 |
+| protection | Last128 | optimistic+vbmi2 | Seq | 1 | 98.7 | 10.1 | 0.000 | 14 | 10 | 20 | 20 | 100/0/0 |
+| protection | Last128 | optimistic+vbmi2 | Seq | 2 | 27.2 | 73.5 | 0.481 | 90 | 70 | 220 | 270 | 69/0/31 |
+| protection | Last128 | optimistic+vbmi2 | Seq | 4 | 10.8 | 370.3 | 2.259 | 293 | 250 | 850 | 1210 | 80/0/20 |
+| protection | Last128 | optimistic+vbmi2 | Gaps | 1 | 89.6 | 11.2 | 0.000 | 15 | 10 | 30 | 30 | 100/0/0 |
+| protection | Last128 | optimistic+vbmi2 | Gaps | 2 | 30.0 | 66.8 | 0.459 | 78 | 60 | 230 | 280 | 65/0/35 |
+| protection | Last128 | optimistic+vbmi2 | Gaps | 4 | 14.7 | 272.9 | 1.682 | 216 | 160 | 910 | 1350 | 62/0/38 |
+| protection | Last128 | optimistic+vbmi2 | Late | 1 | 86.0 | 11.6 | 0.000 | 17 | 20 | 30 | 40 | 100/0/0 |
+| protection | Last128 | optimistic+vbmi2 | Late | 2 | 23.3 | 86.0 | 0.588 | 102 | 70 | 230 | 290 | 77/0/23 |
+| protection | Last128 | optimistic+vbmi2 | Late | 4 | 9.4 | 423.9 | 2.616 | 293 | 240 | 930 | 1340 | 90/0/10 |
+| protection | Last128 | optimistic+vbmi2 | Dups | 1 | 164.6 | 6.1 | 0.000 | 10 | 10 | 30 | 30 | 50/50/0 |
+| protection | Last128 | optimistic+vbmi2 | Dups | 2 | 40.3 | 49.6 | 0.205 | 49 | 40 | 110 | 130 | 50/50/0 |
+| protection | Last128 | optimistic+vbmi2 | Dups | 4 | 34.1 | 117.3 | 0.485 | 85 | 70 | 210 | 290 | 25/75/0 |
+| protection | Last256 | hazard | Seq | 1 | 83.9 | 11.9 | 0.000 | 15 | 10 | 30 | 40 | 100/0/0 |
+| protection | Last256 | hazard | Seq | 2 | 20.2 | 99.1 | 0.421 | 92 | 70 | 250 | 380 | 84/0/16 |
+| protection | Last256 | hazard | Seq | 4 | 8.0 | 502.2 | 1.796 | 391 | 250 | 2151 | 3471 | 94/0/6 |
+| protection | Last256 | hazard | Gaps | 1 | 75.3 | 13.3 | 0.000 | 17 | 20 | 40 | 40 | 100/0/0 |
+| protection | Last256 | hazard | Gaps | 2 | 22.6 | 88.3 | 0.381 | 88 | 70 | 270 | 420 | 73/0/27 |
+| protection | Last256 | hazard | Gaps | 4 | 13.6 | 293.1 | 1.029 | 230 | 120 | 1550 | 2551 | 56/0/44 |
+| protection | Last256 | hazard | Late | 1 | 75.9 | 13.2 | 0.000 | 17 | 20 | 40 | 50 | 100/0/0 |
+| protection | Last256 | hazard | Late | 2 | 16.1 | 124.3 | 0.568 | 103 | 80 | 280 | 430 | 100/0/0 |
+| protection | Last256 | hazard | Late | 4 | 8.3 | 481.8 | 1.812 | 383 | 230 | 2151 | 3440 | 90/0/10 |
+| protection | Last256 | hazard | Dups | 1 | 140.9 | 7.1 | 0.000 | 11 | 10 | 30 | 40 | 50/50/0 |
+| protection | Last256 | hazard | Dups | 2 | 32.8 | 60.9 | 0.190 | 54 | 50 | 130 | 160 | 50/50/0 |
+| protection | Last256 | hazard | Dups | 4 | 31.2 | 128.1 | 0.379 | 92 | 80 | 260 | 330 | 25/75/0 |
+| protection | Last256 | optimistic | Seq | 1 | 94.3 | 10.6 | 0.000 | 15 | 10 | 30 | 30 | 100/0/0 |
+| protection | Last256 | optimistic | Seq | 2 | 20.2 | 99.0 | 0.751 | 99 | 70 | 230 | 280 | 99/0/1 |
+| protection | Last256 | optimistic | Seq | 4 | 9.4 | 426.0 | 2.712 | 337 | 270 | 1000 | 1380 | 94/0/6 |
+| protection | Last256 | optimistic | Gaps | 1 | 84.1 | 11.9 | 0.000 | 16 | 20 | 30 | 30 | 100/0/0 |
+| protection | Last256 | optimistic | Gaps | 2 | 27.2 | 73.4 | 0.504 | 86 | 70 | 240 | 330 | 70/0/30 |
+| protection | Last256 | optimistic | Gaps | 4 | 14.0 | 285.7 | 1.809 | 242 | 170 | 980 | 1440 | 67/0/33 |
+| protection | Last256 | optimistic | Late | 1 | 83.9 | 11.9 | 0.000 | 17 | 20 | 30 | 40 | 100/0/0 |
+| protection | Last256 | optimistic | Late | 2 | 20.6 | 96.9 | 0.702 | 91 | 70 | 230 | 300 | 95/0/5 |
+| protection | Last256 | optimistic | Late | 4 | 9.6 | 416.8 | 2.640 | 324 | 260 | 1040 | 1530 | 91/0/9 |
+| protection | Last256 | optimistic | Dups | 1 | 156.7 | 6.4 | 0.000 | 10 | 10 | 30 | 30 | 50/50/0 |
+| protection | Last256 | optimistic | Dups | 2 | 39.7 | 50.3 | 0.201 | 52 | 40 | 120 | 150 | 50/50/0 |
+| protection | Last256 | optimistic | Dups | 4 | 33.0 | 121.1 | 0.500 | 82 | 70 | 200 | 290 | 25/75/0 |
+| protection | Last256 | hazard+vbmi2 | Seq | 1 | 82.2 | 12.2 | 0.000 | 20 | 20 | 30 | 40 | 100/0/0 |
+| protection | Last256 | hazard+vbmi2 | Seq | 2 | 17.6 | 113.9 | 0.483 | 95 | 70 | 240 | 310 | 90/0/10 |
+| protection | Last256 | hazard+vbmi2 | Seq | 4 | 8.8 | 453.2 | 1.507 | 375 | 240 | 1981 | 3200 | 84/0/16 |
+| protection | Last256 | hazard+vbmi2 | Gaps | 1 | 76.5 | 13.1 | 0.000 | 22 | 20 | 40 | 50 | 100/0/0 |
+| protection | Last256 | hazard+vbmi2 | Gaps | 2 | 21.4 | 93.5 | 0.390 | 94 | 70 | 240 | 300 | 74/0/26 |
+| protection | Last256 | hazard+vbmi2 | Gaps | 4 | 14.1 | 283.7 | 0.943 | 261 | 150 | 1560 | 2490 | 54/0/46 |
+| protection | Last256 | hazard+vbmi2 | Late | 1 | 72.0 | 13.9 | 0.000 | 22 | 20 | 40 | 50 | 100/0/0 |
+| protection | Last256 | hazard+vbmi2 | Late | 2 | 17.3 | 115.5 | 0.499 | 111 | 80 | 270 | 340 | 91/0/9 |
+| protection | Last256 | hazard+vbmi2 | Late | 4 | 9.2 | 436.9 | 1.511 | 400 | 250 | 2130 | 3370 | 81/0/19 |
+| protection | Last256 | hazard+vbmi2 | Dups | 1 | 132.2 | 7.6 | 0.000 | 13 | 10 | 40 | 40 | 50/50/0 |
+| protection | Last256 | hazard+vbmi2 | Dups | 2 | 32.0 | 62.4 | 0.215 | 65 | 50 | 140 | 160 | 50/50/0 |
+| protection | Last256 | hazard+vbmi2 | Dups | 4 | 29.2 | 137.0 | 0.403 | 96 | 90 | 240 | 310 | 25/75/0 |
+| protection | Last256 | optimistic+vbmi2 | Seq | 1 | 90.1 | 11.1 | 0.000 | 19 | 20 | 30 | 30 | 100/0/0 |
+| protection | Last256 | optimistic+vbmi2 | Seq | 2 | 19.0 | 105.5 | 0.765 | 77 | 70 | 170 | 210 | 99/0/1 |
+| protection | Last256 | optimistic+vbmi2 | Seq | 4 | 9.0 | 446.7 | 2.859 | 326 | 280 | 840 | 1150 | 98/0/2 |
+| protection | Last256 | optimistic+vbmi2 | Gaps | 1 | 84.0 | 11.9 | 0.000 | 21 | 20 | 30 | 40 | 100/0/0 |
+| protection | Last256 | optimistic+vbmi2 | Gaps | 2 | 25.6 | 78.1 | 0.533 | 96 | 70 | 230 | 280 | 72/0/28 |
+| protection | Last256 | optimistic+vbmi2 | Gaps | 4 | 12.9 | 309.1 | 1.927 | 238 | 170 | 920 | 1360 | 70/0/30 |
+| protection | Last256 | optimistic+vbmi2 | Late | 1 | 79.8 | 12.5 | 0.000 | 22 | 20 | 40 | 40 | 100/0/0 |
+| protection | Last256 | optimistic+vbmi2 | Late | 2 | 23.3 | 85.8 | 0.573 | 114 | 100 | 240 | 280 | 77/0/23 |
+| protection | Last256 | optimistic+vbmi2 | Late | 4 | 9.3 | 431.6 | 2.697 | 325 | 270 | 990 | 1440 | 93/0/7 |
+| protection | Last256 | optimistic+vbmi2 | Dups | 1 | 142.5 | 7.0 | 0.000 | 14 | 10 | 30 | 30 | 50/50/0 |
+| protection | Last256 | optimistic+vbmi2 | Dups | 2 | 37.4 | 53.5 | 0.230 | 58 | 50 | 110 | 120 | 50/50/0 |
+| protection | Last256 | optimistic+vbmi2 | Dups | 4 | 31.3 | 127.7 | 0.514 | 87 | 70 | 180 | 210 | 25/75/0 |
+| protection | Last512 | hazard | Seq | 1 | 79.5 | 12.6 | 0.000 | 17 | 20 | 40 | 40 | 100/0/0 |
+| protection | Last512 | hazard | Seq | 2 | 16.7 | 119.8 | 0.507 | 90 | 70 | 250 | 400 | 98/0/2 |
+| protection | Last512 | hazard | Seq | 4 | 9.5 | 421.9 | 1.399 | 302 | 210 | 1600 | 2720 | 81/0/19 |
+| protection | Last512 | hazard | Gaps | 1 | 67.9 | 14.7 | 0.000 | 19 | 20 | 40 | 40 | 100/0/0 |
+| protection | Last512 | hazard | Gaps | 2 | 22.9 | 87.4 | 0.374 | 81 | 70 | 280 | 440 | 72/0/28 |
+| protection | Last512 | hazard | Gaps | 4 | 14.2 | 281.7 | 0.970 | 232 | 110 | 1620 | 2680 | 55/0/45 |
+| protection | Last512 | hazard | Late | 1 | 72.4 | 13.8 | 0.000 | 18 | 20 | 40 | 50 | 100/0/0 |
+| protection | Last512 | hazard | Late | 2 | 16.2 | 123.2 | 0.524 | 107 | 80 | 300 | 480 | 98/0/2 |
+| protection | Last512 | hazard | Late | 4 | 8.5 | 469.2 | 1.683 | 384 | 220 | 2240 | 3600 | 87/0/13 |
+| protection | Last512 | hazard | Dups | 1 | 123.9 | 8.1 | 0.000 | 12 | 10 | 40 | 40 | 50/50/0 |
+| protection | Last512 | hazard | Dups | 2 | 33.2 | 60.2 | 0.185 | 58 | 50 | 130 | 160 | 50/50/0 |
+| protection | Last512 | hazard | Dups | 4 | 31.9 | 125.6 | 0.437 | 95 | 80 | 260 | 330 | 25/75/0 |
+| protection | Last512 | optimistic | Seq | 1 | 82.6 | 12.1 | 0.000 | 18 | 20 | 30 | 30 | 100/0/0 |
+| protection | Last512 | optimistic | Seq | 2 | 19.7 | 101.3 | 0.751 | 85 | 70 | 220 | 270 | 100/0/0 |
+| protection | Last512 | optimistic | Seq | 4 | 9.4 | 423.6 | 2.764 | 323 | 270 | 920 | 1310 | 96/0/4 |
+| protection | Last512 | optimistic | Gaps | 1 | 71.7 | 13.9 | 0.000 | 19 | 20 | 30 | 40 | 100/0/0 |
+| protection | Last512 | optimistic | Gaps | 2 | 25.6 | 78.3 | 0.533 | 94 | 70 | 240 | 300 | 73/0/27 |
+| protection | Last512 | optimistic | Gaps | 4 | 13.6 | 293.4 | 1.846 | 236 | 170 | 980 | 1460 | 67/0/33 |
+| protection | Last512 | optimistic | Late | 1 | 79.7 | 12.5 | 0.000 | 17 | 20 | 30 | 40 | 100/0/0 |
+| protection | Last512 | optimistic | Late | 2 | 18.7 | 106.8 | 0.771 | 111 | 80 | 240 | 280 | 100/0/0 |
+| protection | Last512 | optimistic | Late | 4 | 9.7 | 410.7 | 2.569 | 316 | 260 | 1050 | 1600 | 89/0/11 |
+| protection | Last512 | optimistic | Dups | 1 | 129.8 | 7.7 | 0.000 | 12 | 10 | 30 | 30 | 50/50/0 |
+| protection | Last512 | optimistic | Dups | 2 | 39.2 | 51.1 | 0.192 | 53 | 40 | 120 | 130 | 50/50/0 |
+| protection | Last512 | optimistic | Dups | 4 | 35.3 | 113.3 | 0.664 | 89 | 80 | 220 | 310 | 25/75/0 |
+| protection | Last512 | hazard+vbmi2 | Seq | 1 | 81.7 | 12.2 | 0.000 | 22 | 20 | 40 | 40 | 100/0/0 |
+| protection | Last512 | hazard+vbmi2 | Seq | 2 | 15.0 | 133.2 | 0.594 | 91 | 70 | 200 | 280 | 98/0/2 |
+| protection | Last512 | hazard+vbmi2 | Seq | 4 | 7.8 | 511.2 | 1.847 | 349 | 230 | 1920 | 3141 | 93/0/7 |
+| protection | Last512 | hazard+vbmi2 | Gaps | 1 | 75.5 | 13.2 | 0.000 | 23 | 20 | 40 | 50 | 100/0/0 |
+| protection | Last512 | hazard+vbmi2 | Gaps | 2 | 20.8 | 96.1 | 0.410 | 94 | 70 | 220 | 300 | 73/0/27 |
+| protection | Last512 | hazard+vbmi2 | Gaps | 4 | 13.0 | 307.0 | 1.057 | 232 | 130 | 1540 | 2541 | 57/0/43 |
+| protection | Last512 | hazard+vbmi2 | Late | 1 | 72.4 | 13.8 | 0.000 | 23 | 20 | 40 | 50 | 100/0/0 |
+| protection | Last512 | hazard+vbmi2 | Late | 2 | 15.9 | 125.5 | 0.539 | 122 | 100 | 280 | 360 | 96/0/4 |
+| protection | Last512 | hazard+vbmi2 | Late | 4 | 8.1 | 493.4 | 1.750 | 382 | 240 | 2090 | 3381 | 90/0/10 |
+| protection | Last512 | hazard+vbmi2 | Dups | 1 | 132.4 | 7.6 | 0.000 | 13 | 10 | 40 | 40 | 50/50/0 |
+| protection | Last512 | hazard+vbmi2 | Dups | 2 | 33.1 | 60.4 | 0.195 | 62 | 50 | 150 | 160 | 50/50/0 |
+| protection | Last512 | hazard+vbmi2 | Dups | 4 | 30.5 | 131.2 | 0.382 | 94 | 80 | 240 | 310 | 25/75/0 |
+| protection | Last512 | optimistic+vbmi2 | Seq | 1 | 89.2 | 11.2 | 0.000 | 20 | 20 | 30 | 30 | 100/0/0 |
+| protection | Last512 | optimistic+vbmi2 | Seq | 2 | 18.3 | 109.2 | 0.804 | 86 | 70 | 170 | 230 | 100/0/0 |
+| protection | Last512 | optimistic+vbmi2 | Seq | 4 | 8.9 | 450.4 | 2.849 | 324 | 280 | 870 | 1280 | 97/0/3 |
+| protection | Last512 | optimistic+vbmi2 | Gaps | 1 | 80.9 | 12.4 | 0.000 | 22 | 20 | 30 | 40 | 100/0/0 |
+| protection | Last512 | optimistic+vbmi2 | Gaps | 2 | 25.7 | 77.9 | 0.525 | 91 | 70 | 210 | 280 | 71/0/29 |
+| protection | Last512 | optimistic+vbmi2 | Gaps | 4 | 12.5 | 318.9 | 1.997 | 239 | 170 | 940 | 1430 | 72/0/28 |
+| protection | Last512 | optimistic+vbmi2 | Late | 1 | 77.7 | 12.9 | 0.000 | 23 | 20 | 40 | 50 | 100/0/0 |
+| protection | Last512 | optimistic+vbmi2 | Late | 2 | 26.3 | 75.9 | 0.496 | 114 | 100 | 210 | 280 | 72/0/28 |
+| protection | Last512 | optimistic+vbmi2 | Late | 4 | 9.2 | 436.7 | 2.716 | 301 | 250 | 940 | 1390 | 93/0/7 |
+| protection | Last512 | optimistic+vbmi2 | Dups | 1 | 141.4 | 7.1 | 0.000 | 13 | 10 | 30 | 40 | 50/50/0 |
+| protection | Last512 | optimistic+vbmi2 | Dups | 2 | 38.6 | 51.7 | 0.202 | 57 | 50 | 110 | 120 | 50/50/0 |
+| protection | Last512 | optimistic+vbmi2 | Dups | 4 | 31.9 | 125.4 | 0.548 | 84 | 70 | 180 | 220 | 25/75/0 |
+| recheck | Last64 | recheck-off | Seq | 1 | 74.9 | 13.4 | 0.000 | 17 | 20 | 20 | 20 | 100/0/0 |
+| recheck | Last64 | recheck-off | Seq | 2 | 34.6 | 57.8 | 0.055 | 36 | 40 | 40 | 50 | 94/0/6 |
+| recheck | Last64 | recheck-off | Seq | 4 | 34.0 | 117.5 | 0.383 | 50 | 50 | 60 | 60 | 58/0/42 |
+| recheck | Last64 | recheck-off | Late | 1 | 76.2 | 13.1 | 0.000 | 16 | 20 | 30 | 30 | 100/0/0 |
+| recheck | Last64 | recheck-off | Late | 2 | 28.0 | 71.4 | 0.321 | 39 | 40 | 90 | 110 | 99/0/1 |
+| recheck | Last64 | recheck-off | Late | 4 | 24.8 | 161.1 | 0.475 | 89 | 50 | 470 | 820 | 99/0/1 |
+| recheck | Last64 | recheck-off | Dups | 1 | 98.8 | 10.1 | 0.000 | 13 | 10 | 20 | 20 | 50/50/0 |
+| recheck | Last64 | recheck-off | Dups | 2 | 35.5 | 56.3 | 0.378 | 36 | 40 | 40 | 50 | 50/50/0 |
+| recheck | Last64 | recheck-off | Dups | 4 | 34.8 | 114.9 | 0.629 | 49 | 50 | 60 | 60 | 25/75/0 |
+| recheck | Last64 | recheck-on | Seq | 1 | 52.2 | 19.2 | 0.000 | 20 | 20 | 20 | 30 | 100/0/0 |
+| recheck | Last64 | recheck-on | Seq | 2 | 16.8 | 119.2 | 0.771 | 42 | 40 | 50 | 50 | 89/0/11 |
+| recheck | Last64 | recheck-on | Seq | 4 | 18.9 | 212.0 | 1.098 | 55 | 50 | 60 | 70 | 46/0/54 |
+| recheck | Last64 | recheck-on | Late | 1 | 51.7 | 19.3 | 0.000 | 20 | 20 | 30 | 30 | 100/0/0 |
+| recheck | Last64 | recheck-on | Late | 2 | 15.4 | 129.5 | 0.886 | 45 | 40 | 110 | 150 | 97/0/3 |
+| recheck | Last64 | recheck-on | Late | 4 | 10.9 | 366.3 | 1.920 | 255 | 90 | 1550 | 2551 | 83/0/17 |
+| recheck | Last64 | recheck-on | Dups | 1 | 75.8 | 13.2 | 0.000 | 14 | 10 | 20 | 30 | 50/50/0 |
+| recheck | Last64 | recheck-on | Dups | 2 | 25.8 | 77.6 | 0.397 | 56 | 50 | 100 | 100 | 50/50/0 |
+| recheck | Last64 | recheck-on | Dups | 4 | 28.9 | 138.6 | 0.694 | 55 | 50 | 60 | 60 | 25/75/0 |
+| recheck | Last512 | recheck-off | Seq | 1 | 89.2 | 11.2 | 0.000 | 21 | 20 | 30 | 40 | 100/0/0 |
+| recheck | Last512 | recheck-off | Seq | 2 | 17.8 | 112.5 | 0.792 | 85 | 70 | 180 | 230 | 99/0/1 |
+| recheck | Last512 | recheck-off | Seq | 4 | 8.9 | 448.5 | 2.881 | 316 | 280 | 810 | 1120 | 98/0/2 |
+| recheck | Last512 | recheck-off | Late | 1 | 78.0 | 12.8 | 0.000 | 23 | 20 | 40 | 50 | 100/0/0 |
+| recheck | Last512 | recheck-off | Late | 2 | 20.7 | 96.8 | 0.678 | 121 | 110 | 230 | 280 | 94/0/6 |
+| recheck | Last512 | recheck-off | Late | 4 | 9.8 | 408.8 | 2.525 | 303 | 260 | 940 | 1390 | 87/0/13 |
+| recheck | Last512 | recheck-off | Dups | 1 | 140.3 | 7.1 | 0.000 | 13 | 10 | 30 | 30 | 50/50/0 |
+| recheck | Last512 | recheck-off | Dups | 2 | 37.9 | 52.7 | 0.211 | 58 | 50 | 110 | 120 | 50/50/0 |
+| recheck | Last512 | recheck-off | Dups | 4 | 31.7 | 126.3 | 0.553 | 84 | 70 | 180 | 220 | 25/75/0 |
+| recheck | Last512 | recheck-on | Seq | 1 | 87.6 | 11.4 | 0.000 | 21 | 20 | 30 | 40 | 100/0/0 |
+| recheck | Last512 | recheck-on | Seq | 2 | 21.5 | 93.2 | 0.642 | 75 | 70 | 130 | 190 | 83/0/17 |
+| recheck | Last512 | recheck-on | Seq | 4 | 7.8 | 515.7 | 2.865 | 461 | 340 | 2191 | 3530 | 97/0/3 |
+| recheck | Last512 | recheck-on | Late | 1 | 77.1 | 13.0 | 0.000 | 24 | 20 | 40 | 50 | 100/0/0 |
+| recheck | Last512 | recheck-on | Late | 2 | 24.2 | 82.8 | 0.555 | 82 | 70 | 180 | 270 | 70/0/30 |
+| recheck | Last512 | recheck-on | Late | 4 | 7.9 | 509.5 | 2.775 | 457 | 330 | 2360 | 3840 | 94/0/6 |
+| recheck | Last512 | recheck-on | Dups | 1 | 139.3 | 7.2 | 0.000 | 14 | 10 | 30 | 30 | 50/50/0 |
+| recheck | Last512 | recheck-on | Dups | 2 | 34.6 | 57.9 | 0.257 | 68 | 70 | 120 | 140 | 50/50/0 |
+| recheck | Last512 | recheck-on | Dups | 4 | 29.8 | 134.2 | 0.592 | 104 | 110 | 160 | 190 | 25/75/0 |
+| batch | Last512 | batch=1 | Seq | 1 | 74.9 | 13.3 | 0.000 | 18 | 20 | 20 | 20 | 100/0/0 |
+| batch | Last512 | batch=1 | Seq | 2 | 18.6 | 107.5 | 0.614 | 113 | 80 | 270 | 290 | 77/0/23 |
+| batch | Last512 | batch=1 | Seq | 4 | 8.9 | 447.6 | 2.796 | 326 | 270 | 980 | 1490 | 98/0/2 |
+| batch | Last512 | batch=4 | Seq | 1 | 86.8 | 11.5 | 0.000 | 20 | 20 | 30 | 30 | 100/0/0 |
+| batch | Last512 | batch=4 | Seq | 2 | 19.6 | 102.3 | 0.765 | 72 | 70 | 180 | 230 | 95/0/5 |
+| batch | Last512 | batch=4 | Seq | 4 | 10.8 | 371.6 | 2.830 | 301 | 240 | 930 | 1390 | 100/0/0 |
+| batch | Last512 | batch=16 | Seq | 1 | 90.8 | 11.0 | 0.000 | 20 | 20 | 30 | 40 | 100/0/0 |
+| batch | Last512 | batch=16 | Seq | 2 | 19.3 | 103.7 | 0.760 | 74 | 70 | 180 | 240 | 100/0/0 |
+| batch | Last512 | batch=16 | Seq | 4 | 10.8 | 370.4 | 2.823 | 298 | 230 | 920 | 1390 | 99/0/1 |
+| batch | Last512 | batch=64 | Seq | 1 | 92.2 | 10.8 | 0.000 | 19 | 20 | 30 | 40 | 100/0/0 |
+| batch | Last512 | batch=64 | Seq | 2 | 19.5 | 102.8 | 0.756 | 78 | 70 | 190 | 270 | 99/0/1 |
+| batch | Last512 | batch=64 | Seq | 4 | 10.9 | 366.2 | 2.789 | 315 | 230 | 1240 | 1981 | 98/0/2 |

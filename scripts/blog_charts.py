@@ -3,10 +3,11 @@
 
 usage: scripts/blog_charts.py [bench-results dir] [out dir]
 
-Writes <out>/blog-watermark.svg: Window::Latest time per register() call
-(p50 / p99 / p99.9) under saturated arbitration (Dups, 1/2/4 threads, from
-epyc-9845.csv) and in the paced live feed (2 and 4 streams at 50k msg/s,
-from latency-epyc-9845.csv).
+Writes <out>/blog-watermark.svg: time per register() call (p50 / p99 /
+p99.9) of the first `Latest` design, with a plain load of the watermark,
+under saturated arbitration (Dups, 1/2/4 threads, the `load` experiment's
+`plain` variant in epyc-9845-experiments.csv) and in the paced live feed
+(2 and 4 streams at 50k msg/s, target LatestPlain in latency-epyc-9845.csv).
 """
 import csv
 import math
@@ -22,12 +23,12 @@ out_dir = sys.argv[2] if len(sys.argv) > 2 else "docs"
 PCTS = [("p50", "p50_ns", "r1"), ("p99", "p99_ns", "r2"), ("p99.9", "p999_ns", "r3")]
 
 sat = {}
-for r in csv.DictReader(open(os.path.join(res, "epyc-9845.csv"))):
-    if r["experiment"] == "main" and r["target"] == "Latest" and r["workload"] == "Dups":
+for r in csv.DictReader(open(os.path.join(res, "epyc-9845-experiments.csv"))):
+    if (r["experiment"], r["target"], r["variant"], r["workload"]) == ("load", "Latest", "plain", "Dups"):
         sat[int(r["threads"])] = r
 live = {}
 for r in csv.DictReader(open(os.path.join(res, "latency-epyc-9845.csv"))):
-    if r["target"] == "Latest" and float(r["rate_kps"]) == 50:
+    if r["target"] == "LatestPlain" and float(r["rate_kps"]) == 50:
         live[int(r["streams"])] = r
 
 groups = [(f"{t} thread{'s' if t > 1 else ''}", sat[t]) for t in (1, 2, 4)]
@@ -46,10 +47,10 @@ def y(v):
 
 
 svg = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
-       f'aria-label="Window::Latest register() time per call: p50, p99 and p99.9 under saturated arbitration '
+       f'aria-label="Window::Latest with a plain load, register() time per call: p50, p99 and p99.9 under saturated arbitration '
        f'with 1, 2 and 4 threads, and in the paced live feed with 2 and 4 streams">', STYLE,
        f'<rect class="bg" width="{W}" height="{H}" rx="8"/>',
-       f'<text class="title" x="{left}" y="30">Window::Latest: time per register() call</text>',
+       f'<text class="title" x="{left}" y="30">Window::Latest with a plain load: time per register() call</text>',
        f'<text class="sub" x="{left}" y="50">ns per call on an EPYC 9845; lower is better. '
        f'The cost grows with the number of cores sharing the line.</text>']
 lx = left

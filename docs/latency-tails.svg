@@ -87,42 +87,42 @@
 <text class="tick" x="191.0" y="340" text-anchor="middle">p99</text>
 <text class="tick" x="251.5" y="340" text-anchor="middle">p99.9</text>
 <text class="tick" x="312.0" y="340" text-anchor="middle">p99.99</text>
-<path d="M70.0,322.0 L130.5,283.5 L191.0,273.4 L251.5,253.8 L312.0,209.1" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Latest, 2 streams, 10k msg/s per stream: p50 = 10 ns</title><circle cx="70.0" cy="322.0" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M70.0,297.7 L130.5,283.5 L191.0,273.4 L251.5,265.6 L312.0,198.4" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 2 streams, 10k msg/s per stream: p50 = 20 ns</title><circle cx="70.0" cy="297.7" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
 <g><title>Latest, 2 streams, 10k msg/s per stream: p90 = 30 ns</title><circle cx="130.5" cy="283.5" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
 <g><title>Latest, 2 streams, 10k msg/s per stream: p99 = 40 ns</title><circle cx="191.0" cy="273.4" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 10k msg/s per stream: p99.9 = 70 ns</title><circle cx="251.5" cy="253.8" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 10k msg/s per stream: p99.99 = 250 ns</title><circle cx="312.0" cy="209.1" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<path d="M70.0,297.7 L130.5,265.6 L191.0,259.2 L251.5,253.8 L312.0,191.8" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 2 streams, 10k msg/s per stream: p99.9 = 50 ns</title><circle cx="251.5" cy="265.6" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 2 streams, 10k msg/s per stream: p99.99 = 340 ns</title><circle cx="312.0" cy="198.4" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M70.0,297.7 L130.5,265.6 L191.0,259.2 L251.5,245.0 L312.0,224.8" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last64, 2 streams, 10k msg/s per stream: p50 = 20 ns</title><rect x="65.5" y="293.2" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 2 streams, 10k msg/s per stream: p90 = 50 ns</title><rect x="126.0" y="261.1" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 2 streams, 10k msg/s per stream: p99 = 60 ns</title><rect x="186.5" y="254.7" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 2 streams, 10k msg/s per stream: p99.9 = 70 ns</title><rect x="247.0" y="249.3" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 2 streams, 10k msg/s per stream: p99.99 = 410 ns</title><rect x="307.5" y="187.3" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<path d="M70.0,283.5 L130.5,253.8 L191.0,245.0 L251.5,229.5 L312.0,184.8" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last64, 2 streams, 10k msg/s per stream: p99.9 = 90 ns</title><rect x="247.0" y="240.5" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Last64, 2 streams, 10k msg/s per stream: p99.99 = 160 ns</title><rect x="307.5" y="220.3" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<path d="M70.0,283.5 L130.5,253.8 L191.0,245.0 L251.5,227.0 L312.0,190.1" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last128, 2 streams, 10k msg/s per stream: p50 = 30 ns</title><path d="M70.0,277.6 L75.8,283.5 L70.0,289.3 L64.2,283.5 Z" class="f-s3 k-surface" stroke-width="2"/></g>
 <g><title>Last128, 2 streams, 10k msg/s per stream: p90 = 70 ns</title><path d="M130.5,247.9 L136.3,253.8 L130.5,259.6 L124.7,253.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
 <g><title>Last128, 2 streams, 10k msg/s per stream: p99 = 90 ns</title><path d="M191.0,239.1 L196.8,245.0 L191.0,250.8 L185.2,245.0 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 10k msg/s per stream: p99.9 = 140 ns</title><path d="M251.5,223.6 L257.4,229.5 L251.5,235.3 L245.7,229.5 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 10k msg/s per stream: p99.99 = 500 ns</title><path d="M312.0,179.0 L317.9,184.8 L312.0,190.7 L306.1,184.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<path d="M70.0,283.5 L130.5,253.8 L191.0,245.0 L251.5,229.5 L312.0,198.4" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last128, 2 streams, 10k msg/s per stream: p99.9 = 150 ns</title><path d="M251.5,221.2 L257.4,227.0 L251.5,232.9 L245.7,227.0 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 2 streams, 10k msg/s per stream: p99.99 = 430 ns</title><path d="M312.0,184.3 L317.9,190.1 L312.0,196.0 L306.1,190.1 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<path d="M70.0,283.5 L130.5,253.8 L191.0,241.3 L251.5,227.0 L312.0,215.2" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last256, 2 streams, 10k msg/s per stream: p50 = 30 ns</title><path d="M70.0,277.6 L75.8,288.2 L64.2,288.2 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 2 streams, 10k msg/s per stream: p90 = 70 ns</title><path d="M130.5,247.9 L136.3,258.4 L124.7,258.4 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 2 streams, 10k msg/s per stream: p99 = 90 ns</title><path d="M191.0,239.1 L196.8,249.6 L185.2,249.6 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 2 streams, 10k msg/s per stream: p99.9 = 140 ns</title><path d="M251.5,223.6 L257.4,234.1 L245.7,234.1 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 2 streams, 10k msg/s per stream: p99.99 = 340 ns</title><path d="M312.0,192.5 L317.9,203.0 L306.1,203.0 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<path d="M70.0,273.4 L130.5,241.3 L191.0,237.9 L251.5,227.0 L312.0,184.1" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last256, 2 streams, 10k msg/s per stream: p99 = 100 ns</title><path d="M191.0,235.4 L196.8,245.9 L185.2,245.9 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<g><title>Last256, 2 streams, 10k msg/s per stream: p99.9 = 150 ns</title><path d="M251.5,221.2 L257.4,231.7 L245.7,231.7 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<g><title>Last256, 2 streams, 10k msg/s per stream: p99.99 = 210 ns</title><path d="M312.0,209.4 L317.9,219.9 L306.1,219.9 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<path d="M70.0,273.4 L130.5,241.3 L191.0,237.9 L251.5,227.0 L312.0,134.7" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last512, 2 streams, 10k msg/s per stream: p50 = 40 ns</title><path d="M70.0,279.2 L75.8,268.7 L64.2,268.7 Z" class="f-s5 k-surface" stroke-width="2"/></g>
 <g><title>Last512, 2 streams, 10k msg/s per stream: p90 = 100 ns</title><path d="M130.5,247.1 L136.3,236.6 L124.7,236.6 Z" class="f-s5 k-surface" stroke-width="2"/></g>
 <g><title>Last512, 2 streams, 10k msg/s per stream: p99 = 110 ns</title><path d="M191.0,243.8 L196.8,233.2 L185.2,233.2 Z" class="f-s5 k-surface" stroke-width="2"/></g>
 <g><title>Last512, 2 streams, 10k msg/s per stream: p99.9 = 150 ns</title><path d="M251.5,232.9 L257.4,222.4 L245.7,222.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 2 streams, 10k msg/s per stream: p99.99 = 510 ns</title><path d="M312.0,190.0 L317.9,179.5 L306.1,179.5 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<path d="M70.0,245.0 L130.5,234.9 L191.0,222.7 L251.5,212.1 L312.0,175.6" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last512, 2 streams, 10k msg/s per stream: p99.99 = 2090 ns</title><path d="M312.0,140.5 L317.9,130.0 L306.1,130.0 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<path d="M70.0,245.0 L130.5,234.9 L191.0,222.7 L251.5,210.6 L312.0,133.8" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
 <g><title>HashSet512, 2 streams, 10k msg/s per stream: p50 = 90 ns</title><path d="M65.0,240.0 L75.0,249.9 M75.0,240.0 L65.0,249.9" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M65.0,240.0 L75.0,249.9 M75.0,240.0 L65.0,249.9" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 2 streams, 10k msg/s per stream: p90 = 120 ns</title><path d="M125.5,229.9 L135.4,239.8 M135.4,229.9 L125.5,239.8" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M125.5,229.9 L135.4,239.8 M135.4,229.9 L125.5,239.8" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 2 streams, 10k msg/s per stream: p99 = 170 ns</title><path d="M186.1,217.7 L195.9,227.6 M195.9,217.7 L186.1,227.6" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M186.1,217.7 L195.9,227.6 M195.9,217.7 L186.1,227.6" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 2 streams, 10k msg/s per stream: p99.9 = 230 ns</title><path d="M246.6,207.1 L256.4,217.0 M256.4,207.1 L246.6,217.0" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M246.6,207.1 L256.4,217.0 M256.4,207.1 L246.6,217.0" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 2 streams, 10k msg/s per stream: p99.99 = 650 ns</title><path d="M307.1,170.7 L316.9,180.6 M316.9,170.7 L307.1,180.6" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M307.1,170.7 L316.9,180.6 M316.9,170.7 L307.1,180.6" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 2 streams, 10k msg/s per stream: p99.9 = 240 ns</title><path d="M246.6,205.6 L256.4,215.5 M256.4,205.6 L246.6,215.5" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M246.6,205.6 L256.4,215.5 M256.4,205.6 L246.6,215.5" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 2 streams, 10k msg/s per stream: p99.99 = 2141 ns</title><path d="M307.1,128.9 L316.9,138.8 M316.9,128.9 L307.1,138.8" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M307.1,128.9 L316.9,138.8 M316.9,128.9 L307.1,138.8" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <text class="ptitle" x="362" y="114">2 streams · 50k msg/s per stream</text>
 <line class="grid" x1="362" y1="322.0" x2="632" y2="322.0"/>
 <line class="grid" x1="362" y1="283.5" x2="632" y2="283.5"/>
@@ -136,42 +136,42 @@
 <text class="tick" x="497.0" y="340" text-anchor="middle">p99</text>
 <text class="tick" x="557.5" y="340" text-anchor="middle">p99.9</text>
 <text class="tick" x="618.0" y="340" text-anchor="middle">p99.99</text>
-<path d="M376.0,322.0 L436.5,283.5 L497.0,265.6 L557.5,253.8 L618.0,227.0" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Latest, 2 streams, 50k msg/s per stream: p50 = 10 ns</title><circle cx="376.0" cy="322.0" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 50k msg/s per stream: p90 = 30 ns</title><circle cx="436.5" cy="283.5" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M376.0,297.7 L436.5,273.4 L497.0,265.6 L557.5,259.2 L618.0,253.8" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 2 streams, 50k msg/s per stream: p50 = 20 ns</title><circle cx="376.0" cy="297.7" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 2 streams, 50k msg/s per stream: p90 = 40 ns</title><circle cx="436.5" cy="273.4" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
 <g><title>Latest, 2 streams, 50k msg/s per stream: p99 = 50 ns</title><circle cx="497.0" cy="265.6" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 50k msg/s per stream: p99.9 = 70 ns</title><circle cx="557.5" cy="253.8" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 50k msg/s per stream: p99.99 = 150 ns</title><circle cx="618.0" cy="227.0" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<path d="M376.0,297.7 L436.5,265.6 L497.0,259.2 L557.5,253.8 L618.0,202.7" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Last64, 2 streams, 50k msg/s per stream: p50 = 20 ns</title><rect x="371.5" y="293.2" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 2 streams, 50k msg/s per stream: p99.9 = 60 ns</title><circle cx="557.5" cy="259.2" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 2 streams, 50k msg/s per stream: p99.99 = 70 ns</title><circle cx="618.0" cy="253.8" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M376.0,283.5 L436.5,265.6 L497.0,259.2 L557.5,253.8 L618.0,245.0" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last64, 2 streams, 50k msg/s per stream: p50 = 30 ns</title><rect x="371.5" y="279.0" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 2 streams, 50k msg/s per stream: p90 = 50 ns</title><rect x="432.0" y="261.1" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 2 streams, 50k msg/s per stream: p99 = 60 ns</title><rect x="492.5" y="254.7" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 2 streams, 50k msg/s per stream: p99.9 = 70 ns</title><rect x="553.0" y="249.3" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 2 streams, 50k msg/s per stream: p99.99 = 300 ns</title><rect x="613.5" y="198.2" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<path d="M376.0,283.5 L436.5,259.2 L497.0,249.1 L557.5,232.1 L618.0,224.8" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last64, 2 streams, 50k msg/s per stream: p99.99 = 90 ns</title><rect x="613.5" y="240.5" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<path d="M376.0,283.5 L436.5,253.8 L497.0,249.1 L557.5,227.0 L618.0,213.6" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last128, 2 streams, 50k msg/s per stream: p50 = 30 ns</title><path d="M376.0,277.6 L381.9,283.5 L376.0,289.3 L370.1,283.5 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 50k msg/s per stream: p90 = 60 ns</title><path d="M436.5,253.3 L442.4,259.2 L436.5,265.0 L430.6,259.2 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 2 streams, 50k msg/s per stream: p90 = 70 ns</title><path d="M436.5,247.9 L442.4,253.8 L436.5,259.6 L430.6,253.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
 <g><title>Last128, 2 streams, 50k msg/s per stream: p99 = 80 ns</title><path d="M497.0,243.2 L502.9,249.1 L497.0,254.9 L491.1,249.1 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 50k msg/s per stream: p99.9 = 130 ns</title><path d="M557.5,226.2 L563.4,232.1 L557.5,237.9 L551.6,232.1 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 50k msg/s per stream: p99.99 = 160 ns</title><path d="M618.0,218.9 L623.9,224.8 L618.0,230.6 L612.1,224.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<path d="M376.0,283.5 L436.5,253.8 L497.0,245.0 L557.5,229.5 L618.0,220.7" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Last256, 2 streams, 50k msg/s per stream: p50 = 30 ns</title><path d="M376.0,277.6 L381.9,288.2 L370.1,288.2 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 2 streams, 50k msg/s per stream: p90 = 70 ns</title><path d="M436.5,247.9 L442.4,258.4 L430.6,258.4 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 2 streams, 50k msg/s per stream: p99 = 90 ns</title><path d="M497.0,239.1 L502.9,249.6 L491.1,249.6 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 2 streams, 50k msg/s per stream: p99.9 = 140 ns</title><path d="M557.5,223.6 L563.4,234.1 L551.6,234.1 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 2 streams, 50k msg/s per stream: p99.9 = 150 ns</title><path d="M557.5,221.2 L563.4,227.0 L557.5,232.9 L551.6,227.0 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 2 streams, 50k msg/s per stream: p99.99 = 220 ns</title><path d="M618.0,207.8 L623.9,213.6 L618.0,219.5 L612.1,213.6 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<path d="M376.0,273.4 L436.5,249.1 L497.0,241.3 L557.5,227.0 L618.0,220.7" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last256, 2 streams, 50k msg/s per stream: p50 = 40 ns</title><path d="M376.0,267.5 L381.9,278.1 L370.1,278.1 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<g><title>Last256, 2 streams, 50k msg/s per stream: p90 = 80 ns</title><path d="M436.5,243.2 L442.4,253.8 L430.6,253.8 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<g><title>Last256, 2 streams, 50k msg/s per stream: p99 = 100 ns</title><path d="M497.0,235.4 L502.9,245.9 L491.1,245.9 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<g><title>Last256, 2 streams, 50k msg/s per stream: p99.9 = 150 ns</title><path d="M557.5,221.2 L563.4,231.7 L551.6,231.7 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 2 streams, 50k msg/s per stream: p99.99 = 180 ns</title><path d="M618.0,214.8 L623.9,225.3 L612.1,225.3 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<path d="M376.0,273.4 L436.5,241.3 L497.0,237.9 L557.5,229.5 L618.0,220.7" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
+<path d="M376.0,273.4 L436.5,245.0 L497.0,237.9 L557.5,229.5 L618.0,224.8" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last512, 2 streams, 50k msg/s per stream: p50 = 40 ns</title><path d="M376.0,279.2 L381.9,268.7 L370.1,268.7 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 2 streams, 50k msg/s per stream: p90 = 100 ns</title><path d="M436.5,247.1 L442.4,236.6 L430.6,236.6 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 2 streams, 50k msg/s per stream: p90 = 90 ns</title><path d="M436.5,250.8 L442.4,240.3 L430.6,240.3 Z" class="f-s5 k-surface" stroke-width="2"/></g>
 <g><title>Last512, 2 streams, 50k msg/s per stream: p99 = 110 ns</title><path d="M497.0,243.8 L502.9,233.2 L491.1,233.2 Z" class="f-s5 k-surface" stroke-width="2"/></g>
 <g><title>Last512, 2 streams, 50k msg/s per stream: p99.9 = 140 ns</title><path d="M557.5,235.3 L563.4,224.8 L551.6,224.8 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 2 streams, 50k msg/s per stream: p99.99 = 180 ns</title><path d="M618.0,226.5 L623.9,216.0 L612.1,216.0 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<path d="M376.0,245.0 L436.5,232.1 L497.0,220.7 L557.5,212.1 L618.0,139.3" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last512, 2 streams, 50k msg/s per stream: p99.99 = 160 ns</title><path d="M618.0,230.6 L623.9,220.1 L612.1,220.1 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<path d="M376.0,245.0 L436.5,232.1 L497.0,220.7 L557.5,212.1 L618.0,134.0" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
 <g><title>HashSet512, 2 streams, 50k msg/s per stream: p50 = 90 ns</title><path d="M371.1,240.0 L380.9,249.9 M380.9,240.0 L371.1,249.9" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M371.1,240.0 L380.9,249.9 M380.9,240.0 L371.1,249.9" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 2 streams, 50k msg/s per stream: p90 = 130 ns</title><path d="M431.6,227.1 L441.4,237.0 M441.4,227.1 L431.6,237.0" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M431.6,227.1 L441.4,237.0 M441.4,227.1 L431.6,237.0" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 2 streams, 50k msg/s per stream: p99 = 180 ns</title><path d="M492.1,215.7 L501.9,225.6 M501.9,215.7 L492.1,225.6" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M492.1,215.7 L501.9,225.6 M501.9,215.7 L492.1,225.6" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 2 streams, 50k msg/s per stream: p99.9 = 230 ns</title><path d="M552.5,207.1 L562.5,217.0 M562.5,207.1 L552.5,217.0" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M552.5,207.1 L562.5,217.0 M562.5,207.1 L552.5,217.0" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 2 streams, 50k msg/s per stream: p99.99 = 1830 ns</title><path d="M613.0,134.4 L623.0,144.3 M623.0,134.4 L613.0,144.3" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M613.0,134.4 L623.0,144.3 M623.0,134.4 L613.0,144.3" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 2 streams, 50k msg/s per stream: p99.99 = 2130 ns</title><path d="M613.0,129.1 L623.0,139.0 M623.0,129.1 L613.0,139.0" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M613.0,129.1 L623.0,139.0 M623.0,129.1 L613.0,139.0" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <text class="ptitle" x="668" y="114">2 streams · 200k msg/s per stream</text>
 <line class="grid" x1="668" y1="322.0" x2="938" y2="322.0"/>
 <line class="grid" x1="668" y1="283.5" x2="938" y2="283.5"/>
@@ -185,42 +185,42 @@
 <text class="tick" x="803.0" y="340" text-anchor="middle">p99</text>
 <text class="tick" x="863.5" y="340" text-anchor="middle">p99.9</text>
 <text class="tick" x="924.0" y="340" text-anchor="middle">p99.99</text>
-<path d="M682.0,322.0 L742.5,273.4 L803.0,259.2 L863.5,249.1 L924.0,245.0" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
+<path d="M682.0,322.0 L742.5,283.5 L803.0,273.4 L863.5,265.6 L924.0,215.2" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Latest, 2 streams, 200k msg/s per stream: p50 = 10 ns</title><circle cx="682.0" cy="322.0" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 200k msg/s per stream: p90 = 40 ns</title><circle cx="742.5" cy="273.4" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 200k msg/s per stream: p99 = 60 ns</title><circle cx="803.0" cy="259.2" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 200k msg/s per stream: p99.9 = 80 ns</title><circle cx="863.5" cy="249.1" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 2 streams, 200k msg/s per stream: p99.99 = 90 ns</title><circle cx="924.0" cy="245.0" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<path d="M682.0,297.7 L742.5,273.4 L803.0,265.6 L863.5,253.8 L924.0,241.3" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 2 streams, 200k msg/s per stream: p90 = 30 ns</title><circle cx="742.5" cy="283.5" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 2 streams, 200k msg/s per stream: p99 = 40 ns</title><circle cx="803.0" cy="273.4" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 2 streams, 200k msg/s per stream: p99.9 = 50 ns</title><circle cx="863.5" cy="265.6" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 2 streams, 200k msg/s per stream: p99.99 = 210 ns</title><circle cx="924.0" cy="215.2" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M682.0,297.7 L742.5,273.4 L803.0,259.2 L863.5,249.1 L924.0,234.9" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last64, 2 streams, 200k msg/s per stream: p50 = 20 ns</title><rect x="677.5" y="293.2" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 2 streams, 200k msg/s per stream: p90 = 40 ns</title><rect x="738.0" y="268.9" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 2 streams, 200k msg/s per stream: p99 = 50 ns</title><rect x="798.5" y="261.1" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 2 streams, 200k msg/s per stream: p99.9 = 70 ns</title><rect x="859.0" y="249.3" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 2 streams, 200k msg/s per stream: p99.99 = 100 ns</title><rect x="919.5" y="236.8" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<path d="M682.0,297.7 L742.5,259.2 L803.0,249.1 L863.5,232.1 L924.0,217.0" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Last128, 2 streams, 200k msg/s per stream: p50 = 20 ns</title><path d="M682.0,291.8 L687.9,297.7 L682.0,303.5 L676.1,297.7 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 200k msg/s per stream: p90 = 60 ns</title><path d="M742.5,253.3 L748.4,259.2 L742.5,265.0 L736.6,259.2 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 200k msg/s per stream: p99 = 80 ns</title><path d="M803.0,243.2 L808.9,249.1 L803.0,254.9 L797.1,249.1 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 200k msg/s per stream: p99.9 = 130 ns</title><path d="M863.5,226.2 L869.4,232.1 L863.5,237.9 L857.6,232.1 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 2 streams, 200k msg/s per stream: p99.99 = 200 ns</title><path d="M924.0,211.1 L929.9,217.0 L924.0,222.8 L918.1,217.0 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<path d="M682.0,283.5 L742.5,253.8 L803.0,249.1 L863.5,229.5 L924.0,218.8" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last64, 2 streams, 200k msg/s per stream: p99 = 60 ns</title><rect x="798.5" y="254.7" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Last64, 2 streams, 200k msg/s per stream: p99.9 = 80 ns</title><rect x="859.0" y="244.6" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Last64, 2 streams, 200k msg/s per stream: p99.99 = 120 ns</title><rect x="919.5" y="230.4" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<path d="M682.0,283.5 L742.5,253.8 L803.0,245.0 L863.5,229.5 L924.0,222.7" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last128, 2 streams, 200k msg/s per stream: p50 = 30 ns</title><path d="M682.0,277.6 L687.9,283.5 L682.0,289.3 L676.1,283.5 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 2 streams, 200k msg/s per stream: p90 = 70 ns</title><path d="M742.5,247.9 L748.4,253.8 L742.5,259.6 L736.6,253.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 2 streams, 200k msg/s per stream: p99 = 90 ns</title><path d="M803.0,239.1 L808.9,245.0 L803.0,250.8 L797.1,245.0 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 2 streams, 200k msg/s per stream: p99.9 = 140 ns</title><path d="M863.5,223.6 L869.4,229.5 L863.5,235.3 L857.6,229.5 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 2 streams, 200k msg/s per stream: p99.99 = 170 ns</title><path d="M924.0,216.8 L929.9,222.7 L924.0,228.5 L918.1,222.7 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<path d="M682.0,283.5 L742.5,253.8 L803.0,245.0 L863.5,229.5 L924.0,217.0" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last256, 2 streams, 200k msg/s per stream: p50 = 30 ns</title><path d="M682.0,277.6 L687.9,288.2 L676.1,288.2 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 2 streams, 200k msg/s per stream: p90 = 70 ns</title><path d="M742.5,247.9 L748.4,258.4 L736.6,258.4 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 2 streams, 200k msg/s per stream: p99 = 80 ns</title><path d="M803.0,243.2 L808.9,253.8 L797.1,253.8 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<g><title>Last256, 2 streams, 200k msg/s per stream: p99 = 90 ns</title><path d="M803.0,239.1 L808.9,249.6 L797.1,249.6 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 2 streams, 200k msg/s per stream: p99.9 = 140 ns</title><path d="M863.5,223.6 L869.4,234.1 L857.6,234.1 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 2 streams, 200k msg/s per stream: p99.99 = 190 ns</title><path d="M924.0,212.9 L929.9,223.4 L918.1,223.4 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<path d="M682.0,283.5 L742.5,249.1 L803.0,241.3 L863.5,234.9 L924.0,227.0" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Last512, 2 streams, 200k msg/s per stream: p50 = 30 ns</title><path d="M682.0,289.3 L687.9,278.8 L676.1,278.8 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 2 streams, 200k msg/s per stream: p90 = 80 ns</title><path d="M742.5,254.9 L748.4,244.4 L736.6,244.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last256, 2 streams, 200k msg/s per stream: p99.99 = 200 ns</title><path d="M924.0,211.1 L929.9,221.6 L918.1,221.6 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<path d="M682.0,273.4 L742.5,245.0 L803.0,241.3 L863.5,229.5 L924.0,185.5" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last512, 2 streams, 200k msg/s per stream: p50 = 40 ns</title><path d="M682.0,279.2 L687.9,268.7 L676.1,268.7 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 2 streams, 200k msg/s per stream: p90 = 90 ns</title><path d="M742.5,250.8 L748.4,240.3 L736.6,240.3 Z" class="f-s5 k-surface" stroke-width="2"/></g>
 <g><title>Last512, 2 streams, 200k msg/s per stream: p99 = 100 ns</title><path d="M803.0,247.1 L808.9,236.6 L797.1,236.6 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 2 streams, 200k msg/s per stream: p99.9 = 120 ns</title><path d="M863.5,240.7 L869.4,230.2 L857.6,230.2 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 2 streams, 200k msg/s per stream: p99.99 = 150 ns</title><path d="M924.0,232.9 L929.9,222.4 L918.1,222.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<path d="M682.0,245.0 L742.5,234.9 L803.0,220.7 L863.5,212.1 L924.0,137.8" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last512, 2 streams, 200k msg/s per stream: p99.9 = 140 ns</title><path d="M863.5,235.3 L869.4,224.8 L857.6,224.8 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 2 streams, 200k msg/s per stream: p99.99 = 490 ns</title><path d="M924.0,191.4 L929.9,180.9 L918.1,180.9 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<path d="M682.0,245.0 L742.5,234.9 L803.0,220.7 L863.5,212.1 L924.0,140.1" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
 <g><title>HashSet512, 2 streams, 200k msg/s per stream: p50 = 90 ns</title><path d="M677.0,240.0 L687.0,249.9 M687.0,240.0 L677.0,249.9" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M677.0,240.0 L687.0,249.9 M687.0,240.0 L677.0,249.9" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 2 streams, 200k msg/s per stream: p90 = 120 ns</title><path d="M737.5,229.9 L747.5,239.8 M747.5,229.9 L737.5,239.8" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M737.5,229.9 L747.5,239.8 M747.5,229.9 L737.5,239.8" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 2 streams, 200k msg/s per stream: p99 = 180 ns</title><path d="M798.0,215.7 L808.0,225.6 M808.0,215.7 L798.0,225.6" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M798.0,215.7 L808.0,225.6 M808.0,215.7 L798.0,225.6" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 2 streams, 200k msg/s per stream: p99.9 = 230 ns</title><path d="M858.5,207.1 L868.5,217.0 M868.5,207.1 L858.5,217.0" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M858.5,207.1 L868.5,217.0 M868.5,207.1 L858.5,217.0" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 2 streams, 200k msg/s per stream: p99.99 = 1910 ns</title><path d="M919.0,132.9 L929.0,142.8 M929.0,132.9 L919.0,142.8" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M919.0,132.9 L929.0,142.8 M929.0,132.9 L919.0,142.8" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 2 streams, 200k msg/s per stream: p99.99 = 1790 ns</title><path d="M919.0,135.2 L929.0,145.1 M929.0,135.2 L919.0,145.1" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M919.0,135.2 L929.0,145.1 M929.0,135.2 L919.0,145.1" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <text class="ptitle" x="56" y="378">4 streams · 10k msg/s per stream</text>
 <line class="grid" x1="56" y1="586.0" x2="326" y2="586.0"/>
 <text class="tick" x="48" y="590.0" text-anchor="end">10</text>
@@ -240,42 +240,42 @@
 <text class="tick" x="191.0" y="604" text-anchor="middle">p99</text>
 <text class="tick" x="251.5" y="604" text-anchor="middle">p99.9</text>
 <text class="tick" x="312.0" y="604" text-anchor="middle">p99.99</text>
-<path d="M70.0,561.7 L130.5,537.4 L191.0,517.8 L251.5,505.3 L312.0,477.6" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Latest, 4 streams, 10k msg/s per stream: p50 = 20 ns</title><circle cx="70.0" cy="561.7" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M70.0,547.5 L130.5,537.4 L191.0,529.6 L251.5,513.1 L312.0,501.9" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 4 streams, 10k msg/s per stream: p50 = 30 ns</title><circle cx="70.0" cy="547.5" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
 <g><title>Latest, 4 streams, 10k msg/s per stream: p90 = 40 ns</title><circle cx="130.5" cy="537.4" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 10k msg/s per stream: p99 = 70 ns</title><circle cx="191.0" cy="517.8" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 10k msg/s per stream: p99.9 = 100 ns</title><circle cx="251.5" cy="505.3" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 10k msg/s per stream: p99.99 = 220 ns</title><circle cx="312.0" cy="477.6" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<path d="M70.0,537.4 L130.5,529.6 L191.0,523.2 L251.5,501.9 L312.0,491.0" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 4 streams, 10k msg/s per stream: p99 = 50 ns</title><circle cx="191.0" cy="529.6" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 4 streams, 10k msg/s per stream: p99.9 = 80 ns</title><circle cx="251.5" cy="513.1" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 4 streams, 10k msg/s per stream: p99.99 = 110 ns</title><circle cx="312.0" cy="501.9" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M70.0,537.4 L130.5,529.6 L191.0,517.8 L251.5,501.9 L312.0,493.5" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last64, 4 streams, 10k msg/s per stream: p50 = 40 ns</title><rect x="65.5" y="532.9" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 4 streams, 10k msg/s per stream: p90 = 50 ns</title><rect x="126.0" y="525.1" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 4 streams, 10k msg/s per stream: p99 = 60 ns</title><rect x="186.5" y="518.7" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Last64, 4 streams, 10k msg/s per stream: p99 = 70 ns</title><rect x="186.5" y="513.3" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 4 streams, 10k msg/s per stream: p99.9 = 110 ns</title><rect x="247.0" y="497.4" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 4 streams, 10k msg/s per stream: p99.99 = 150 ns</title><rect x="307.5" y="486.5" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<path d="M70.0,537.4 L130.5,517.8 L191.0,498.9 L251.5,488.8 L312.0,471.8" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last64, 4 streams, 10k msg/s per stream: p99.99 = 140 ns</title><rect x="307.5" y="489.0" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<path d="M70.0,537.4 L130.5,517.8 L191.0,498.9 L251.5,488.8 L312.0,473.1" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last128, 4 streams, 10k msg/s per stream: p50 = 40 ns</title><path d="M70.0,531.5 L75.8,537.4 L70.0,543.2 L64.2,537.4 Z" class="f-s3 k-surface" stroke-width="2"/></g>
 <g><title>Last128, 4 streams, 10k msg/s per stream: p90 = 70 ns</title><path d="M130.5,511.9 L136.3,517.8 L130.5,523.6 L124.7,517.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
 <g><title>Last128, 4 streams, 10k msg/s per stream: p99 = 120 ns</title><path d="M191.0,493.0 L196.8,498.9 L191.0,504.7 L185.2,498.9 Z" class="f-s3 k-surface" stroke-width="2"/></g>
 <g><title>Last128, 4 streams, 10k msg/s per stream: p99.9 = 160 ns</title><path d="M251.5,482.9 L257.4,488.8 L251.5,494.6 L245.7,488.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 4 streams, 10k msg/s per stream: p99.99 = 260 ns</title><path d="M312.0,465.9 L317.9,471.8 L312.0,477.6 L306.1,471.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<path d="M70.0,537.4 L130.5,517.8 L191.0,498.9 L251.5,488.8 L312.0,470.4" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last128, 4 streams, 10k msg/s per stream: p99.99 = 250 ns</title><path d="M312.0,467.3 L317.9,473.1 L312.0,479.0 L306.1,473.1 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<path d="M70.0,537.4 L130.5,517.8 L191.0,498.9 L251.5,488.8 L312.0,471.8" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last256, 4 streams, 10k msg/s per stream: p50 = 40 ns</title><path d="M70.0,531.5 L75.8,542.1 L64.2,542.1 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 4 streams, 10k msg/s per stream: p90 = 70 ns</title><path d="M130.5,511.9 L136.3,522.4 L124.7,522.4 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 4 streams, 10k msg/s per stream: p99 = 120 ns</title><path d="M191.0,493.0 L196.8,503.5 L185.2,503.5 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 4 streams, 10k msg/s per stream: p99.9 = 160 ns</title><path d="M251.5,482.9 L257.4,493.5 L245.7,493.5 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 4 streams, 10k msg/s per stream: p99.99 = 270 ns</title><path d="M312.0,464.6 L317.9,475.1 L306.1,475.1 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<path d="M70.0,537.4 L130.5,517.8 L191.0,501.9 L251.5,491.0 L312.0,479.2" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last256, 4 streams, 10k msg/s per stream: p99.99 = 260 ns</title><path d="M312.0,465.9 L317.9,476.4 L306.1,476.4 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<path d="M70.0,537.4 L130.5,509.0 L191.0,496.1 L251.5,488.8 L312.0,469.2" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last512, 4 streams, 10k msg/s per stream: p50 = 40 ns</title><path d="M70.0,543.2 L75.8,532.7 L64.2,532.7 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 10k msg/s per stream: p90 = 70 ns</title><path d="M130.5,523.6 L136.3,513.1 L124.7,513.1 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 10k msg/s per stream: p99 = 110 ns</title><path d="M191.0,507.8 L196.8,497.2 L185.2,497.2 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 10k msg/s per stream: p99.9 = 150 ns</title><path d="M251.5,496.9 L257.4,486.4 L245.7,486.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 10k msg/s per stream: p99.99 = 210 ns</title><path d="M312.0,485.1 L317.9,474.6 L306.1,474.6 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<path d="M70.0,505.3 L130.5,493.5 L191.0,481.0 L251.5,469.2 L312.0,440.2" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last512, 4 streams, 10k msg/s per stream: p90 = 90 ns</title><path d="M130.5,514.8 L136.3,504.3 L124.7,504.3 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 10k msg/s per stream: p99 = 130 ns</title><path d="M191.0,501.9 L196.8,491.4 L185.2,491.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 10k msg/s per stream: p99.9 = 160 ns</title><path d="M251.5,494.6 L257.4,484.1 L245.7,484.1 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 10k msg/s per stream: p99.99 = 280 ns</title><path d="M312.0,475.0 L317.9,464.5 L306.1,464.5 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<path d="M70.0,505.3 L130.5,493.5 L191.0,481.0 L251.5,469.2 L312.0,396.4" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
 <g><title>HashSet512, 4 streams, 10k msg/s per stream: p50 = 100 ns</title><path d="M65.0,500.3 L75.0,510.2 M75.0,500.3 L65.0,510.2" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M65.0,500.3 L75.0,510.2 M75.0,500.3 L65.0,510.2" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 4 streams, 10k msg/s per stream: p90 = 140 ns</title><path d="M125.5,488.5 L135.4,498.4 M135.4,488.5 L125.5,498.4" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M125.5,488.5 L135.4,498.4 M135.4,488.5 L125.5,498.4" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 4 streams, 10k msg/s per stream: p99 = 200 ns</title><path d="M186.1,476.0 L195.9,485.9 M195.9,476.0 L186.1,485.9" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M186.1,476.0 L195.9,485.9 M195.9,476.0 L186.1,485.9" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 4 streams, 10k msg/s per stream: p99.9 = 280 ns</title><path d="M246.6,464.2 L256.4,474.1 M256.4,464.2 L246.6,474.1" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M246.6,464.2 L256.4,474.1 M256.4,464.2 L246.6,474.1" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 4 streams, 10k msg/s per stream: p99.99 = 640 ns</title><path d="M307.1,435.2 L316.9,445.1 M316.9,435.2 L307.1,445.1" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M307.1,435.2 L316.9,445.1 M316.9,435.2 L307.1,445.1" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 4 streams, 10k msg/s per stream: p99.99 = 2231 ns</title><path d="M307.1,391.4 L316.9,401.3 M316.9,391.4 L307.1,401.3" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M307.1,391.4 L316.9,401.3 M316.9,391.4 L307.1,401.3" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <text class="ptitle" x="362" y="378">4 streams · 50k msg/s per stream</text>
 <line class="grid" x1="362" y1="586.0" x2="632" y2="586.0"/>
 <line class="grid" x1="362" y1="547.5" x2="632" y2="547.5"/>
@@ -289,42 +289,42 @@
 <text class="tick" x="497.0" y="604" text-anchor="middle">p99</text>
 <text class="tick" x="557.5" y="604" text-anchor="middle">p99.9</text>
 <text class="tick" x="618.0" y="604" text-anchor="middle">p99.99</text>
-<path d="M376.0,561.7 L436.5,537.4 L497.0,513.1 L557.5,505.3 L618.0,457.5" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Latest, 4 streams, 50k msg/s per stream: p50 = 20 ns</title><circle cx="376.0" cy="561.7" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M376.0,547.5 L436.5,537.4 L497.0,529.6 L557.5,513.1 L618.0,501.9" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 4 streams, 50k msg/s per stream: p50 = 30 ns</title><circle cx="376.0" cy="547.5" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
 <g><title>Latest, 4 streams, 50k msg/s per stream: p90 = 40 ns</title><circle cx="436.5" cy="537.4" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 50k msg/s per stream: p99 = 80 ns</title><circle cx="497.0" cy="513.1" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 50k msg/s per stream: p99.9 = 100 ns</title><circle cx="557.5" cy="505.3" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 50k msg/s per stream: p99.99 = 390 ns</title><circle cx="618.0" cy="457.5" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<path d="M376.0,537.4 L436.5,529.6 L497.0,523.2 L557.5,505.3 L618.0,488.8" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 4 streams, 50k msg/s per stream: p99 = 50 ns</title><circle cx="497.0" cy="529.6" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 4 streams, 50k msg/s per stream: p99.9 = 80 ns</title><circle cx="557.5" cy="513.1" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 4 streams, 50k msg/s per stream: p99.99 = 110 ns</title><circle cx="618.0" cy="501.9" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M376.0,537.4 L436.5,529.6 L497.0,523.2 L557.5,501.9 L618.0,493.5" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last64, 4 streams, 50k msg/s per stream: p50 = 40 ns</title><rect x="371.5" y="532.9" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 4 streams, 50k msg/s per stream: p90 = 50 ns</title><rect x="432.0" y="525.1" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 4 streams, 50k msg/s per stream: p99 = 60 ns</title><rect x="492.5" y="518.7" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 4 streams, 50k msg/s per stream: p99.9 = 100 ns</title><rect x="553.0" y="500.8" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 4 streams, 50k msg/s per stream: p99.99 = 160 ns</title><rect x="613.5" y="484.3" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<path d="M376.0,537.4 L436.5,517.8 L497.0,501.9 L557.5,488.8 L618.0,474.6" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last64, 4 streams, 50k msg/s per stream: p99.9 = 110 ns</title><rect x="553.0" y="497.4" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Last64, 4 streams, 50k msg/s per stream: p99.99 = 140 ns</title><rect x="613.5" y="489.0" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<path d="M376.0,537.4 L436.5,517.8 L497.0,498.9 L557.5,488.8 L618.0,476.1" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last128, 4 streams, 50k msg/s per stream: p50 = 40 ns</title><path d="M376.0,531.5 L381.9,537.4 L376.0,543.2 L370.1,537.4 Z" class="f-s3 k-surface" stroke-width="2"/></g>
 <g><title>Last128, 4 streams, 50k msg/s per stream: p90 = 70 ns</title><path d="M436.5,511.9 L442.4,517.8 L436.5,523.6 L430.6,517.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 4 streams, 50k msg/s per stream: p99 = 110 ns</title><path d="M497.0,496.1 L502.9,501.9 L497.0,507.8 L491.1,501.9 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 4 streams, 50k msg/s per stream: p99 = 120 ns</title><path d="M497.0,493.0 L502.9,498.9 L497.0,504.7 L491.1,498.9 Z" class="f-s3 k-surface" stroke-width="2"/></g>
 <g><title>Last128, 4 streams, 50k msg/s per stream: p99.9 = 160 ns</title><path d="M557.5,482.9 L563.4,488.8 L557.5,494.6 L551.6,488.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 4 streams, 50k msg/s per stream: p99.99 = 240 ns</title><path d="M618.0,468.7 L623.9,474.6 L618.0,480.4 L612.1,474.6 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<path d="M376.0,537.4 L436.5,517.8 L497.0,498.9 L557.5,488.8 L618.0,474.6" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last128, 4 streams, 50k msg/s per stream: p99.99 = 230 ns</title><path d="M618.0,470.2 L623.9,476.1 L618.0,481.9 L612.1,476.1 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<path d="M376.0,537.4 L436.5,517.8 L497.0,498.9 L557.5,488.8 L618.0,476.1" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last256, 4 streams, 50k msg/s per stream: p50 = 40 ns</title><path d="M376.0,531.5 L381.9,542.1 L370.1,542.1 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 4 streams, 50k msg/s per stream: p90 = 70 ns</title><path d="M436.5,511.9 L442.4,522.4 L430.6,522.4 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 4 streams, 50k msg/s per stream: p99 = 120 ns</title><path d="M497.0,493.0 L502.9,503.5 L491.1,503.5 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 4 streams, 50k msg/s per stream: p99.9 = 160 ns</title><path d="M557.5,482.9 L563.4,493.5 L551.6,493.5 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 4 streams, 50k msg/s per stream: p99.99 = 240 ns</title><path d="M618.0,468.7 L623.9,479.2 L612.1,479.2 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<path d="M376.0,537.4 L436.5,513.1 L497.0,498.9 L557.5,491.0 L618.0,481.0" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Last512, 4 streams, 50k msg/s per stream: p50 = 40 ns</title><path d="M376.0,543.2 L381.9,532.7 L370.1,532.7 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 50k msg/s per stream: p90 = 80 ns</title><path d="M436.5,518.9 L442.4,508.4 L430.6,508.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 50k msg/s per stream: p99 = 120 ns</title><path d="M497.0,504.7 L502.9,494.2 L491.1,494.2 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 50k msg/s per stream: p99.9 = 150 ns</title><path d="M557.5,496.9 L563.4,486.4 L551.6,486.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 50k msg/s per stream: p99.99 = 200 ns</title><path d="M618.0,486.8 L623.9,476.3 L612.1,476.3 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<path d="M376.0,509.0 L436.5,496.1 L497.0,479.2 L557.5,469.2 L618.0,398.2" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last256, 4 streams, 50k msg/s per stream: p99.99 = 230 ns</title><path d="M618.0,470.2 L623.9,480.7 L612.1,480.7 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<path d="M376.0,529.6 L436.5,509.0 L497.0,496.1 L557.5,488.8 L618.0,479.2" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last512, 4 streams, 50k msg/s per stream: p50 = 50 ns</title><path d="M376.0,535.4 L381.9,524.9 L370.1,524.9 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 50k msg/s per stream: p90 = 90 ns</title><path d="M436.5,514.8 L442.4,504.3 L430.6,504.3 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 50k msg/s per stream: p99 = 130 ns</title><path d="M497.0,501.9 L502.9,491.4 L491.1,491.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 50k msg/s per stream: p99.9 = 160 ns</title><path d="M557.5,494.6 L563.4,484.1 L551.6,484.1 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 50k msg/s per stream: p99.99 = 210 ns</title><path d="M618.0,485.1 L623.9,474.6 L612.1,474.6 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<path d="M376.0,509.0 L436.5,493.5 L497.0,479.2 L557.5,469.2 L618.0,399.0" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
 <g><title>HashSet512, 4 streams, 50k msg/s per stream: p50 = 90 ns</title><path d="M371.1,504.0 L380.9,513.9 M380.9,504.0 L371.1,513.9" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M371.1,504.0 L380.9,513.9 M380.9,504.0 L371.1,513.9" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 4 streams, 50k msg/s per stream: p90 = 130 ns</title><path d="M431.6,491.1 L441.4,501.0 M441.4,491.1 L431.6,501.0" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M431.6,491.1 L441.4,501.0 M441.4,491.1 L431.6,501.0" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 4 streams, 50k msg/s per stream: p90 = 140 ns</title><path d="M431.6,488.5 L441.4,498.4 M441.4,488.5 L431.6,498.4" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M431.6,488.5 L441.4,498.4 M441.4,488.5 L431.6,498.4" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 4 streams, 50k msg/s per stream: p99 = 210 ns</title><path d="M492.1,474.3 L501.9,484.2 M501.9,474.3 L492.1,484.2" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M492.1,474.3 L501.9,484.2 M501.9,474.3 L492.1,484.2" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 4 streams, 50k msg/s per stream: p99.9 = 280 ns</title><path d="M552.5,464.2 L562.5,474.1 M562.5,464.2 L552.5,474.1" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M552.5,464.2 L562.5,474.1 M562.5,464.2 L552.5,474.1" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 4 streams, 50k msg/s per stream: p99.99 = 2120 ns</title><path d="M613.0,393.2 L623.0,403.1 M623.0,393.2 L613.0,403.1" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M613.0,393.2 L623.0,403.1 M623.0,393.2 L613.0,403.1" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 4 streams, 50k msg/s per stream: p99.99 = 2071 ns</title><path d="M613.0,394.0 L623.0,403.9 M623.0,394.0 L613.0,403.9" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M613.0,394.0 L623.0,403.9 M623.0,394.0 L613.0,403.9" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <text class="ptitle" x="668" y="378">4 streams · 200k msg/s per stream</text>
 <line class="grid" x1="668" y1="586.0" x2="938" y2="586.0"/>
 <line class="grid" x1="668" y1="547.5" x2="938" y2="547.5"/>
@@ -338,40 +338,40 @@
 <text class="tick" x="803.0" y="604" text-anchor="middle">p99</text>
 <text class="tick" x="863.5" y="604" text-anchor="middle">p99.9</text>
 <text class="tick" x="924.0" y="604" text-anchor="middle">p99.99</text>
-<path d="M682.0,561.7 L742.5,537.4 L803.0,517.8 L863.5,509.0 L924.0,486.7" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Latest, 4 streams, 200k msg/s per stream: p50 = 20 ns</title><circle cx="682.0" cy="561.7" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M682.0,547.5 L742.5,537.4 L803.0,523.2 L863.5,517.8 L924.0,501.9" fill="none" class="k-s1" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Latest, 4 streams, 200k msg/s per stream: p50 = 30 ns</title><circle cx="682.0" cy="547.5" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
 <g><title>Latest, 4 streams, 200k msg/s per stream: p90 = 40 ns</title><circle cx="742.5" cy="537.4" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 200k msg/s per stream: p99 = 70 ns</title><circle cx="803.0" cy="517.8" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 200k msg/s per stream: p99.9 = 90 ns</title><circle cx="863.5" cy="509.0" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<g><title>Latest, 4 streams, 200k msg/s per stream: p99.99 = 170 ns</title><circle cx="924.0" cy="486.7" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
-<path d="M682.0,547.5 L742.5,537.4 L803.0,523.2 L863.5,509.0 L924.0,498.9" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Last64, 4 streams, 200k msg/s per stream: p50 = 30 ns</title><rect x="677.5" y="543.0" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 4 streams, 200k msg/s per stream: p90 = 40 ns</title><rect x="738.0" y="532.9" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 4 streams, 200k msg/s per stream: p99 = 60 ns</title><circle cx="803.0" cy="523.2" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 4 streams, 200k msg/s per stream: p99.9 = 70 ns</title><circle cx="863.5" cy="517.8" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<g><title>Latest, 4 streams, 200k msg/s per stream: p99.99 = 110 ns</title><circle cx="924.0" cy="501.9" r="4.5" class="f-s1 k-surface" stroke-width="2"/></g>
+<path d="M682.0,537.4 L742.5,529.6 L803.0,523.2 L863.5,505.3 L924.0,493.5" fill="none" class="k-s2" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last64, 4 streams, 200k msg/s per stream: p50 = 40 ns</title><rect x="677.5" y="532.9" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Last64, 4 streams, 200k msg/s per stream: p90 = 50 ns</title><rect x="738.0" y="525.1" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
 <g><title>Last64, 4 streams, 200k msg/s per stream: p99 = 60 ns</title><rect x="798.5" y="518.7" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 4 streams, 200k msg/s per stream: p99.9 = 90 ns</title><rect x="859.0" y="504.5" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<g><title>Last64, 4 streams, 200k msg/s per stream: p99.99 = 120 ns</title><rect x="919.5" y="494.4" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
-<path d="M682.0,547.5 L742.5,523.2 L803.0,501.9 L863.5,491.0 L924.0,470.4" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
-<g><title>Last128, 4 streams, 200k msg/s per stream: p50 = 30 ns</title><path d="M682.0,541.6 L687.9,547.5 L682.0,553.3 L676.1,547.5 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 4 streams, 200k msg/s per stream: p90 = 60 ns</title><path d="M742.5,517.3 L748.4,523.2 L742.5,529.0 L736.6,523.2 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 4 streams, 200k msg/s per stream: p99 = 110 ns</title><path d="M803.0,496.1 L808.9,501.9 L803.0,507.8 L797.1,501.9 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 4 streams, 200k msg/s per stream: p99.9 = 150 ns</title><path d="M863.5,485.2 L869.4,491.0 L863.5,496.9 L857.6,491.0 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<g><title>Last128, 4 streams, 200k msg/s per stream: p99.99 = 270 ns</title><path d="M924.0,464.6 L929.9,470.4 L924.0,476.3 L918.1,470.4 Z" class="f-s3 k-surface" stroke-width="2"/></g>
-<path d="M682.0,547.5 L742.5,523.2 L803.0,501.9 L863.5,493.5 L924.0,482.8" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last64, 4 streams, 200k msg/s per stream: p99.9 = 100 ns</title><rect x="859.0" y="500.8" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<g><title>Last64, 4 streams, 200k msg/s per stream: p99.99 = 140 ns</title><rect x="919.5" y="489.0" width="9.0" height="9.0" rx="1.5" class="f-s2 k-surface" stroke-width="2"/></g>
+<path d="M682.0,537.4 L742.5,517.8 L803.0,498.9 L863.5,488.8 L924.0,474.6" fill="none" class="k-s3" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last128, 4 streams, 200k msg/s per stream: p50 = 40 ns</title><path d="M682.0,531.5 L687.9,537.4 L682.0,543.2 L676.1,537.4 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 4 streams, 200k msg/s per stream: p90 = 70 ns</title><path d="M742.5,511.9 L748.4,517.8 L742.5,523.6 L736.6,517.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 4 streams, 200k msg/s per stream: p99 = 120 ns</title><path d="M803.0,493.0 L808.9,498.9 L803.0,504.7 L797.1,498.9 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 4 streams, 200k msg/s per stream: p99.9 = 160 ns</title><path d="M863.5,482.9 L869.4,488.8 L863.5,494.6 L857.6,488.8 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<g><title>Last128, 4 streams, 200k msg/s per stream: p99.99 = 240 ns</title><path d="M924.0,468.7 L929.9,474.6 L924.0,480.4 L918.1,474.6 Z" class="f-s3 k-surface" stroke-width="2"/></g>
+<path d="M682.0,547.5 L742.5,523.2 L803.0,501.9 L863.5,491.0 L924.0,481.0" fill="none" class="k-s4" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last256, 4 streams, 200k msg/s per stream: p50 = 30 ns</title><path d="M682.0,541.6 L687.9,552.2 L676.1,552.2 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 4 streams, 200k msg/s per stream: p90 = 60 ns</title><path d="M742.5,517.3 L748.4,527.9 L736.6,527.9 Z" class="f-s4 k-surface" stroke-width="2"/></g>
 <g><title>Last256, 4 streams, 200k msg/s per stream: p99 = 110 ns</title><path d="M803.0,496.1 L808.9,506.6 L797.1,506.6 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 4 streams, 200k msg/s per stream: p99.9 = 140 ns</title><path d="M863.5,487.6 L869.4,498.1 L857.6,498.1 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<g><title>Last256, 4 streams, 200k msg/s per stream: p99.99 = 190 ns</title><path d="M924.0,476.9 L929.9,487.4 L918.1,487.4 Z" class="f-s4 k-surface" stroke-width="2"/></g>
-<path d="M682.0,537.4 L742.5,513.1 L803.0,498.9 L863.5,491.0 L924.0,464.5" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
+<g><title>Last256, 4 streams, 200k msg/s per stream: p99.9 = 150 ns</title><path d="M863.5,485.2 L869.4,495.7 L857.6,495.7 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<g><title>Last256, 4 streams, 200k msg/s per stream: p99.99 = 200 ns</title><path d="M924.0,475.1 L929.9,485.6 L918.1,485.6 Z" class="f-s4 k-surface" stroke-width="2"/></g>
+<path d="M682.0,537.4 L742.5,509.0 L803.0,496.1 L863.5,488.8 L924.0,477.6" fill="none" class="k-s5" stroke-width="2" stroke-linejoin="round"/>
 <g><title>Last512, 4 streams, 200k msg/s per stream: p50 = 40 ns</title><path d="M682.0,543.2 L687.9,532.7 L676.1,532.7 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 200k msg/s per stream: p90 = 80 ns</title><path d="M742.5,518.9 L748.4,508.4 L736.6,508.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 200k msg/s per stream: p99 = 120 ns</title><path d="M803.0,504.7 L808.9,494.2 L797.1,494.2 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 200k msg/s per stream: p99.9 = 150 ns</title><path d="M863.5,496.9 L869.4,486.4 L857.6,486.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<g><title>Last512, 4 streams, 200k msg/s per stream: p99.99 = 320 ns</title><path d="M924.0,470.3 L929.9,459.8 L918.1,459.8 Z" class="f-s5 k-surface" stroke-width="2"/></g>
-<path d="M682.0,509.0 L742.5,493.5 L803.0,479.2 L863.5,469.2 L924.0,400.0" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
-<g><title>HashSet512, 4 streams, 200k msg/s per stream: p50 = 90 ns</title><path d="M677.0,504.0 L687.0,513.9 M687.0,504.0 L677.0,513.9" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M677.0,504.0 L687.0,513.9 M687.0,504.0 L677.0,513.9" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>Last512, 4 streams, 200k msg/s per stream: p90 = 90 ns</title><path d="M742.5,514.8 L748.4,504.3 L736.6,504.3 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 200k msg/s per stream: p99 = 130 ns</title><path d="M803.0,501.9 L808.9,491.4 L797.1,491.4 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 200k msg/s per stream: p99.9 = 160 ns</title><path d="M863.5,494.6 L869.4,484.1 L857.6,484.1 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<g><title>Last512, 4 streams, 200k msg/s per stream: p99.99 = 220 ns</title><path d="M924.0,483.5 L929.9,472.9 L918.1,472.9 Z" class="f-s5 k-surface" stroke-width="2"/></g>
+<path d="M682.0,505.3 L742.5,493.5 L803.0,477.6 L863.5,467.9 L924.0,397.4" fill="none" class="k-s6" stroke-width="2" stroke-linejoin="round"/>
+<g><title>HashSet512, 4 streams, 200k msg/s per stream: p50 = 100 ns</title><path d="M677.0,500.3 L687.0,510.2 M687.0,500.3 L677.0,510.2" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M677.0,500.3 L687.0,510.2 M687.0,500.3 L677.0,510.2" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 <g><title>HashSet512, 4 streams, 200k msg/s per stream: p90 = 140 ns</title><path d="M737.5,488.5 L747.5,498.4 M747.5,488.5 L737.5,498.4" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M737.5,488.5 L747.5,498.4 M747.5,488.5 L737.5,498.4" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 4 streams, 200k msg/s per stream: p99 = 210 ns</title><path d="M798.0,474.3 L808.0,484.2 M808.0,474.3 L798.0,484.2" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M798.0,474.3 L808.0,484.2 M808.0,474.3 L798.0,484.2" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 4 streams, 200k msg/s per stream: p99.9 = 280 ns</title><path d="M858.5,464.2 L868.5,474.1 M868.5,464.2 L858.5,474.1" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M858.5,464.2 L868.5,474.1 M868.5,464.2 L858.5,474.1" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
-<g><title>HashSet512, 4 streams, 200k msg/s per stream: p99.99 = 2010 ns</title><path d="M919.0,395.1 L929.0,405.0 M929.0,395.1 L919.0,405.0" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M919.0,395.1 L929.0,405.0 M929.0,395.1 L919.0,405.0" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 4 streams, 200k msg/s per stream: p99 = 220 ns</title><path d="M798.0,472.7 L808.0,482.6 M808.0,472.7 L798.0,482.6" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M798.0,472.7 L808.0,482.6 M808.0,472.7 L798.0,482.6" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 4 streams, 200k msg/s per stream: p99.9 = 290 ns</title><path d="M858.5,463.0 L868.5,472.9 M868.5,463.0 L858.5,472.9" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M858.5,463.0 L868.5,472.9 M868.5,463.0 L858.5,472.9" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
+<g><title>HashSet512, 4 streams, 200k msg/s per stream: p99.99 = 2170 ns</title><path d="M919.0,392.4 L929.0,402.3 M929.0,392.4 L919.0,402.3" class="k-surface" fill="none" stroke-width="5" stroke-linecap="round"/><path d="M919.0,392.4 L929.0,402.3 M929.0,392.4 L919.0,402.3" class="k-s6" fill="none" stroke-width="2.5" stroke-linecap="round"/></g>
 </svg>

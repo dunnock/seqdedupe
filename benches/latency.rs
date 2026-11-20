@@ -38,6 +38,8 @@ const FIRST: u64 = 1_000_000;
 #[derive(Clone, Copy)]
 enum Target {
     D(Window),
+    /// A mode with a non-default header load (experiment).
+    T(Window, HeaderLoad, &'static str),
     HashSet(u64),
 }
 
@@ -45,6 +47,7 @@ impl Target {
     fn label(&self) -> String {
         match self {
             Target::D(w) => format!("{w:?}"),
+            Target::T(w, _, suffix) => format!("{w:?}{suffix}"),
             Target::HashSet(n) => format!("HashSet{n}"),
         }
     }
@@ -250,6 +253,8 @@ fn main() {
 
     let targets = [
         Target::D(Window::Latest),
+        // The first design, kept for the blog's before/after comparison.
+        Target::T(Window::Latest, HeaderLoad::Avx, "Plain"),
         Target::D(Window::Last64),
         Target::D(Window::Last128),
         Target::D(Window::Last256),
@@ -275,6 +280,15 @@ fn main() {
                 let res = match t {
                     Target::D(w) => {
                         let ws = new_workers(w, NonZeroUsize::new(streams).unwrap(), 0, FIRST)
+                            .unwrap();
+                        run(ws, &scheds, cores, clock.tpn, warmup_ns)
+                    }
+                    Target::T(w, header_load, _) => {
+                        let tuning = Tuning {
+                            header_load,
+                            ..Tuning::default()
+                        };
+                        let ws = new_workers_with(w, NonZeroUsize::new(streams).unwrap(), 0, FIRST, tuning)
                             .unwrap();
                         run(ws, &scheds, cores, clock.tpn, warmup_ns)
                     }

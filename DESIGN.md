@@ -40,13 +40,13 @@
 | Choice | Why | Alternative kept as a `Tuning` knob |
 |---|---|---|
 | Inline-asm `LOCK CMPXCHG16B` for the 128-bit CAS | `AtomicU128` is unstable; the CAS must be one locked instruction | none |
-| `Last64` loads its header with `LOCK CMPXCHG16B` | Tuned for concurrency: almost every load is followed by a CAS on the same line, and the locked load cuts the 2–4-thread p99 by 2–3×, at the cost of 35–50% of the throughput | `Avx`, `PrefetchwAvx` |
+| `Latest` and `Last64` load the header with a locked RMW (`LOCK CMPXCHG` / `LOCK CMPXCHG16B`) | Tuned for concurrency: almost every load is followed by a CAS on the same line, and the locked load cuts the 2–4-thread p99 by 1.4–2.7×. It costs 40–60% of the single-thread throughput, and 6–11% (`Latest`) or a third (`Last64`) under contention | `Avx` (plain load), `PrefetchwAvx` |
 | The slot modes load the header with aligned `VMOVDQA` | Single-copy atomic on AVX CPUs (Intel SDM, AMD APM) and 1.6–1.9× faster than a locked load; the `Duplicate` validation reload must not write | `LockCmpxchg16b`, `PrefetchwAvx` |
 | `Last64` keeps its history inline in the header | The whole update is one CAS on one line | none |
 | Larger windows keep an immutable bitmap in a preallocated slot, swapped in by CAS | The history cannot fit in the 128-bit atomic | none |
-| Optimistic validation (seqlock-style, made sound by invariant 2) | No hazard `XCHG` and no reclaim scans; 5–13% faster single-threaded, 43–62% lower p99 when 4 threads advance | `SlotProtection::Hazard`: one hazard per participant with publish-and-revalidate, `pre_protect`, `reclaim_batch` |
+| Optimistic validation (seqlock-style, made sound by invariant 2) | No hazard `XCHG` and no reclaim scans; 4–14% faster single-threaded, 43–59% lower p99 when 4 threads advance | `SlotProtection::Hazard`: one hazard per participant with publish-and-revalidate, `pre_protect`, `reclaim_batch` |
 | Pool of `R` slots per participant (`P - 1 + R` with hazards) | Allocation never waits. With hazards, at most `P - 1` slots are pinned, so each scan frees at least `R` | `reclaim_batch` (default 8) |
-| Last512 shift: AVX-512 VBMI2 in one zmm register (`VPERMQ` + `VPSHLDVQ`), else AVX2; scalar for smaller windows | +4–5% on Seq and +11–14% on Gaps for Last512; no gain for Last256 | `ShiftImpl` |
+| Last512 shift: AVX-512 VBMI2 in one zmm register (`VPERMQ` + `VPSHLDVQ`), else AVX2; scalar for smaller windows | +5–6% on Seq and +14–15% on Gaps for Last512; no gain for Last256 | `ShiftImpl` |
 | Branch-free `Last64` advance (`unbounded_shl`, `d` clamped to 65) | No branch mispredicts on random jump sizes | none |
 | `seq == high + 1` fast path for the slot modes | +2–5% for one writer | `delta1_fast_path` |
 | Header and hazard entries are `align(128)` | Avoids false sharing through the adjacent-line prefetcher | none |

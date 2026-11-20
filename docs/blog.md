@@ -65,7 +65,7 @@ impl Dedupe for Latest {
 }
 ```
 
-![Window::Latest: time per register() call, p50, p99 and p99.9 for saturated arbitration with 1, 2 and 4 threads, and for the live feed with 2 and 4 streams](blog-watermark.svg)
+![Window::Latest with a plain load: time per register() call, p50, p99 and p99.9 for saturated arbitration with 1, 2 and 4 threads, and for the live feed with 2 and 4 streams](blog-watermark.svg)
 
 The problem is every message that arrives behind the newest one is rejected, 
 whether or not anyone processed it:
@@ -81,33 +81,28 @@ about 0.7 cache-to-cache line transfers per call:
 
 ```
 $ perf stat -e cycles,instructions,L1-dcache-load-misses,ls_dmnd_fills_from_sys.local_ccx -- \
-    register --only main --targets Latest --loads Dups --threads 4 --reps 3
+    register --only load --targets Latest --variants plain --loads Dups --threads 4 --reps 3
 
-       18140945121      cycles
-       12543996369      instructions
-          42423496      L1-dcache-load-misses
-          27747011      ls_dmnd_fills_from_sys.local_ccx
+       18452433484      cycles
+       12644235459      instructions
+          43393121      L1-dcache-load-misses
+          28933137      ls_dmnd_fills_from_sys.local_ccx
 ```
 
 `ls_dmnd_fills_from_sys.local_ccx` counts demand fills served by the L3 or by another core's L2 in the same CCX. 
-The run makes 40 M `register` calls (5 passes × 4 threads × 2 M), so that is 0.69 cache-to-cache fills 
+The run makes 40 M `register` calls (5 passes × 4 threads × 2 M), so that is 0.72 cache-to-cache fills 
 and 1.1 L1 misses per call.
 
 **The harness notes**
 
-- Each thread is pinned to its own physical core. It spins for 100 ms so the
-  core reaches full clock, and then all threads start together from a
-  spinning barrier.
+- Each thread is pinned to its own physical core. It warms up for 100 ms so the
+  core reaches full clock spinning all threads on a barrier.
 - Each `register` call is timed with `lfence; rdtsc`. The samples go into 
   per-thread HDR histograms, which are merged afterwards.
 - Timer resolution limits the smallest readings. The TSC runs at 2.1 GHz,
   but on this Zen 5c it advances in steps of 21 ticks, so a reading moves in
   10 ns steps. The empty `lfence; rdtsc` pair itself reads 20 ns, and that
-  overhead is subtracted. An uncontended call then reads one step, shown as
-  <10 ns; two steps are shown as <20 ns. Timing 1000 calls in a block gives
-  the true cost: about 6 ns per call, the same as 1 / throughput. Tails
-  and contended calls span many steps, so the ±10 ns quantization barely
-  affects them.
+  overhead is subtracted.
 - Throughput comes from a separate, untimed pass, and every run starts from
   a fresh deduper.
 - The saturation workloads are:
@@ -117,6 +112,38 @@ and 1.1 L1 misses per call.
   - **Dups:** every thread sees every message.
 - The live-feed simulation paces 2 or 4 streams at 10k–200k msg/s each, with
   Poisson bursts and 1% loss.
+
+#### Cutting the `Latest` tail
+
+A call that advances the watermark loads it and then CASes it. A plain
+load fetches the line shared, and the CAS must fetch it again exclusive. When
+another core's CAS lands in between, the call pays an extra transfer or a
+retry. Reading with a locked RMW takes the line exclusive once:
+
+```rust
+let mut cur = match wm.compare_exchange(0, 0, AcqRel, Acquire) {
+    Ok(v) | Err(v) => v,                 // LOCK CMPXCHG used as a load
+};
+```
+
+(`fetch_add(0)` would not do: LLVM lowers it to `mfence; mov`.)
+
+| | Plain load | Locked load |
+|---|---|---|
+| Dups, 1 thread: M ops/s | 270 | 110 |
+| Dups, 2 threads: M ops/s, all threads | 76 | 68 |
+| Dups, 2 threads: mean / p99 / p99.9 per call | 47 / 70 / 90 ns | 35 / 50 / 60 ns |
+| Dups, 4 threads: M ops/s, all threads | 72 | 68 |
+| Dups, 4 threads: mean / p99 / p99.9 per call | 59 / 160 / 170 ns | 56 / 60 / 60 ns |
+| Dups, 4 threads: L1 misses / cross-core fills per call | 1.1 / 0.72 | 0.95 / 0.62 |
+| Seq, 4 threads: CAS retries per call | 0.26 | 0.07 |
+| Live feed, 2 streams: mean / p99 / p99.9 | 15–22 / 40–70 / 70–100 ns | 17–23 / 40–50 / 50–60 ns |
+| Live feed, 4 streams: mean / p99 / p99.9 | 20–24 / 60–70 / 100 ns | 24–27 / 50–60 / 70–80 ns |
+
+One thread pays for it: a locked RMW is slower than a load. With 2 and 4
+threads, throughput drops 6–11%, but the p99 falls from 70 to 50 ns and from
+160 to 60 ns, CAS retries drop 4×. In the live feed the mean is a few ns
+higher, and p99 and p99.9 drop by up to 50 ns, therefore I would keep this solution.
 
 ### Remembering the tail with a hash set
 
@@ -136,19 +163,19 @@ describe the same calls.
 
 | | Latest | HashSet64 |
 |---|---|---|
-| Seq, 1 thread: M ops/s | 156 | 21 |
-| Gaps, 1 thread: p50 / p99 per call | <10 / <10 ns | 50 / 2,300 ns |
-| Dups, 2 threads: M ops/s, all threads | 73 | 13 |
-| Dups, 2 threads: mean / p99 / p99.9 per call | 49 / 90 / 100 ns | 150 / 300 / 390 ns |
-| Dups, 4 threads: M ops/s, all threads | 71 | 16 |
-| Dups, 4 threads: mean / p99 / p99.9 per call | 59 / 120 / 140 ns | 220 / 820 / 1,530 ns |
-| Dups, 2 threads: L1 misses / cross-core fills per call | 1.0 / 0.68 | 6.3 / 5.0 |
-| Dups, 4 threads: L1 misses / cross-core fills per call | 1.1 / 0.69 | 7.4 / 6.0 |
+| Seq, 1 thread: M ops/s | 85 | 21 |
+| Gaps, 1 thread: p50 / p99 per call | <10 / <20 ns | 50 / 2,300 ns |
+| Dups, 2 threads: M ops/s, all threads | 63 | 12 |
+| Dups, 2 threads: mean / p99 / p99.9 per call | 38 / 40 / 50 ns | 150 / 310 / 410 ns |
+| Dups, 4 threads: M ops/s, all threads | 74 | 16 |
+| Dups, 4 threads: mean / p99 / p99.9 per call | 49 / 50 / 50 ns | 230 / 820 / 1,530 ns |
+| Dups, 2 threads: L1 misses / cross-core fills per call | 1.0 / 0.69 | 6.3 / 5.0 |
+| Dups, 4 threads: L1 misses / cross-core fills per call | 0.95 / 0.62 | 7.4 / 6.0 |
 
 > [!NOTE]
 > The timer reads in 10 ns steps, so `<10 ns` means "one step or less" and
-> `<20 ns` "two steps or less". An uncontended `Latest` call really takes
-> about 6 ns (1 / 156 M ops/s).
+> `<20 ns` "two steps or less". Throughput gives the true uncontended cost:
+> 12 ns per `Latest` call with the locked load (1 / 85 M ops/s).
 
 Two very different things cause the tail.
 
@@ -232,39 +259,35 @@ Two practical notes:
   [target.x86_64-unknown-linux-gnu]
   rustflags = ["-C", "target-feature=+cmpxchg16b"]
   ```
-- **The header is read with a locked load.** A 128-bit `VMOVDQA` would also
-  be atomic on AVX-capable CPUs and on one thread it is ~2× faster than `LOCK CMPXCHG16B`
-  used as a load. But this design is for several threads, and here almost
-  every load is followed by a CAS on the same line. The locked load holds
-  the line for the whole read-modify-write instead of fetching it shared
-  and then upgrading it for the CAS. With 2 and 4 threads in the
-  arbitration workload it cuts the p99 from 90 and 160 ns to 40 and 50 ns,
-  and the CAS retries on Seq by 6–20×, for 35% less throughput.
+- **The header is read with `LOCK CMPXCHG16B`,** the same trick as for
+  `Latest`. An aligned `VMOVDQA` is also atomic (Intel SDM, AMD APM) and
+  about 2× faster on one thread. But in arbitration the locked load cuts
+  p99 from 90 to 40 ns with 2 threads and from 160 to 60 ns with 4, for
+  about a third less throughput. On Seq, CAS retries drop 8–13×.
 
 Compared with the hash set:
 
 | Dups (arbitration) | HashSet64 | Last64 |
 |---|---|---|
-| 1 thread: M ops/s | 28 | 96 |
-| 2 threads: M ops/s, all threads | 13 | 34 |
-| 2 threads: mean / p99 / p99.9 per call | 150 / 300 / 390 ns | 39 / 40 / 50 ns |
+| 1 thread: M ops/s | 28 | 98 |
+| 2 threads: M ops/s, all threads | 12 | 34 |
+| 2 threads: mean / p99 / p99.9 per call | 150 / 310 / 410 ns | 39 / 50 / 50 ns |
 | 4 threads: M ops/s, all threads | 16 | 35 |
-| 4 threads: mean / p99 / p99.9 per call | 220 / 820 / 1,530 ns | 68 / 70 / 70 ns |
+| 4 threads: mean / p99 / p99.9 per call | 230 / 820 / 1,530 ns | 43 / 50 / 50 ns |
 | 2 threads: L1 misses / cross-core fills per call | 6.3 / 5.0 | 1.3 / 1.0 |
 | 4 threads: L1 misses / cross-core fills per call | 7.4 / 6.0 | 1.4 / 1.0 |
 
 > [!NOTE]
 > The timed pass puts about 20 ns of timer and histogram work between
 > calls, which lowers contention. Back to back, a 4-thread `Last64` call
-> takes 114 ns (4 / 35 M ops/s), against a timed mean of 68 ns. The
+> takes 114 ns (4 / 35 M ops/s), against a timed mean of 43 ns. The
 > live-feed simulation below paces the calls like a real feed.
 
 In the Gaps workload, p99 drops from 2.3 µs to <20 ns, because a jump is
-just a shift. Compared with the plain watermark, the 64-bit history costs
-about 0.3 extra cache-to-cache fills per call. In the live-feed simulation,
-`Last64` and `Latest` are within 20 ns of each other at p99 and p99.9. With 4
-streams `Last64` has the higher p50 (30–40 vs <20 ns, the locked load) and
-the lower p99 (60 vs 70–80 ns).
+just a shift. Compared with the watermark, the 64-bit history costs
+0.3–0.4 extra cache-to-cache fills per call. In the live-feed simulation,
+`Last64` is 10–20 ns slower than `Latest` at p99 and 20–30 ns at p99.9:
+both use the locked load, and `Last64` does more work.
 
 The limit is 64 messages. At 200k msg/s, that covers only 320 µs of skew
 between feeds.
@@ -299,13 +322,13 @@ slot to follow.
 | | Last64 | Last128 | Last256 | Last512 | HashSet512 |
 |---|---|---|---|---|---|
 | History | in the AtomicU128 | 128-bit slot | 256-bit slot | 512-bit slot (L1 line) | `scc::HashSet` entries |
-| Seq, 1 thread: M ops/s | 75 | 99 | 93 | 89 | 21 |
-| Dups, 1 thread: M ops/s | 96 | 166 | 154 | 141 | 28 |
-| Dups, 2 threads: M ops/s, all threads | 34 | 42 | 42 | 32 | 14 |
-| Dups, 2 threads: mean / p99 per call | 39 / 40 ns | 55 / 120 ns | 54 / 110 ns | 62 / 120 ns | 143 / 280 ns |
-| Dups, 4 threads: M ops/s, all threads | 35 | 28 | 33 | 35 | 18 |
-| Dups, 4 threads: mean / p99 per call | 68 / 70 ns | 95 / 210 ns | 90 / 220 ns | 88 / 170 ns | 205 / 570 ns |
-| Live feed, 4 streams: p99 per call | 60 ns | 110–120 ns | 110–120 ns | 110–120 ns | 200–210 ns |
+| Seq, 1 thread: M ops/s | 75 | 99 | 94 | 89 | 21 |
+| Dups, 1 thread: M ops/s | 98 | 165 | 155 | 141 | 28 |
+| Dups, 2 threads: M ops/s, all threads | 34 | 37 | 41 | 37 | 14 |
+| Dups, 2 threads: mean / p99 per call | 39 / 50 ns | 53 / 110 ns | 54 / 120 ns | 64 / 120 ns | 145 / 290 ns |
+| Dups, 4 threads: M ops/s, all threads | 35 | 34 | 34 | 34 | 18 |
+| Dups, 4 threads: mean / p99 per call | 43 / 50 ns | 94 / 220 ns | 89 / 240 ns | 84 / 180 ns | 208 / 600 ns |
+| Live feed, 4 streams: mean / p99 per call | 32–34 / 60–70 ns | 37–38 / 120 ns | 35–40 / 110–120 ns | 44–45 / 130 ns | 96–98 / 200–220 ns |
 
 Last512 makes 1.9 L1 misses and 1.5 cross-core fills per call with 2
 threads, and 2.9 and 2.4 with 4, against 1.3 / 1.0 and 1.4 / 1.0 for
@@ -329,24 +352,24 @@ each other in the live-feed test. The cost is the extra cache line, not the
 width of the shift.
 
 The hash set goes the other way: `HashSet512` is slightly faster than
-`HashSet64` under contention (4 threads: 18 vs 16 M ops/s, p99 570 vs 820 ns;
+`HashSet64` under contention (4 threads: 18 vs 16 M ops/s, p99 600 vs 820 ns;
 8 threads: p99 1.4 vs 2.5 µs). This might be attributed to more buckets would
 imply less contention.
 
-![p99 latency per mode and rate, for 2 and 4 streams](latency-p99.svg)
+![p50, mean and p99 latency per mode at 50k msg/s, for 2 and 4 streams](latency-summary.svg)
 
 The weak spot is several threads advancing the same watermark at full
-speed (Seq). With 4 threads, the slot modes drop to 9–10 M ops/s with a
-p99 of 0.85–1.0 µs, and every call retries its CAS 2.6–2.9 times: the window
+speed (Seq). With 4 threads, the slot modes drop to 9.5–11 M ops/s with a
+p99 of 0.84–0.91 µs, and every call retries its CAS 2.5–2.9 times: the window
 between reading the header and the CAS (read the slot, write the new one) is
-long enough for another thread to get in. Last64 holds 35 M ops/s with a
-p99 of 50 ns. With 2 threads the gap is smaller: 18–25 vs 34 M ops/s.
+long enough for another thread to get in. Last64 holds 34 M ops/s with a
+p99 of 50 ns. With 2 threads the gap is smaller: 18–29 vs 34 M ops/s.
 
 ### Profiling, and what AVX-512 bought us
 
 The first version of the slot modes used hazard pointers instead of
 optimistic validation, and shifted the 512-bit history with eight scalar
-`SHLD`s. It ran Seq at 75 M ops/s on one thread. The top lines of
+`SHLD`s. It ran Seq at 80 M ops/s on one thread. The top lines of
 `perf annotate`:
 
 ```
@@ -366,8 +389,9 @@ That led to two changes.
 
 **1. Drop the hazards.** Once the header was ABA-free, the optimistic
 validation described above became sound. It needs no `XCHG`, no hazard
-array and no reclamation scans. That alone gave +12–13% on one thread and
-cut the 4-thread Seq p99 by 43–62%.
+array and no reclamation scans. On one thread that alone gave +4% for
+Last512 and +12% for Last128 and Last256, and it cut the 4-thread Seq p99 by
+43–59%.
 
 **2. Shift the whole history in one register.** With AVX-512 VBMI2, all 512
 bits fit in one `zmm` register. A masked `VPERMQ` does the 64-bit word
@@ -404,19 +428,20 @@ the two options (M ops/s, all threads; p99 per call):
 
 | | 1 thread | 2 threads | 4 threads |
 |---|---|---|---|
-| Seq | 75 → **89** | 16 → 19 (p99 280 → 180 ns) | 7.9 → 9.1 (p99 2.1 → **1.0 µs**) |
-| Gaps | 64 → **82** | 20 → 26 | 14 → 12 (p99 1.6 → **0.9 µs**) |
-| Dups | 123 → **142** | 34 → 39 | 32 → 32 (p99 260 → **180 ns**) |
+| Seq | 80 → **89** | 17 → 18 (p99 250 → 170 ns) | 9.5 → 8.9 (p99 1.6 → **0.87 µs**) |
+| Gaps | 68 → **81** | 23 → 26 | 14 → 13 (p99 1.6 → **0.94 µs**) |
+| Dups | 124 → **141** | 33 → 39 | 32 → 32 (p99 260 → **180 ns**) |
 
-Most of the gain is from dropping the hazards. Seq on one thread goes 75 M
-ops/s with hazards and the scalar shift, 81 with hazards and VBMI2, 85 with
-optimistic validation and the scalar shift, and 89 with both. With 2 or 4
+Neither change does much alone; together they add 11%. Seq on one thread
+goes 80 M ops/s with hazards and the scalar shift, 82 with hazards and
+VBMI2, 83 with optimistic validation and the scalar shift, and 89 with
+both. With 2 or 4
 threads, throughput varies by about ±20% between runs, so only the p99
 improvements are clearly above noise. There the shift no longer shows up in
 the profile at all: what is left is the slot line, the CAS and the header
 line from the previous chapter.
 
-In the live-feed simulation, the final Last512 is 2–3× faster than the
+In the live-feed simulation, the final Last512 is about 2× faster than the
 hash set at p50 and 1.5–1.8× faster at p99, with 8× the history of Last64:
 
 ![register() latency percentiles per mode; rows are 2 and 4 streams, columns are rates](latency-tails.svg)
