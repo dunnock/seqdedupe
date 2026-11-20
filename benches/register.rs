@@ -13,7 +13,7 @@
 mod common;
 
 use common::*;
-use seqdedupe::naive;
+use common::naive;
 use seqdedupe::*;
 use std::hint::black_box;
 use std::io::Write as _;
@@ -120,12 +120,12 @@ struct Pass {
     wall: Duration,
     counts: [u64; 3],
     retries: u64,
-    lats: Vec<u32>,
+    lats: Hist,
 }
 
 fn run_pass<R: Reg>(workers: Vec<R>, streams: &[Vec<u64>], cores: &[usize], timed: bool) -> Pass {
     let bar = SpinBarrier::new(workers.len());
-    let results: Vec<(Duration, [u64; 3], u64, Vec<u32>)> = std::thread::scope(|sc| {
+    let results: Vec<(Duration, [u64; 3], u64, Hist)> = std::thread::scope(|sc| {
         let hs: Vec<_> = workers
             .into_iter()
             .enumerate()
@@ -134,7 +134,7 @@ fn run_pass<R: Reg>(workers: Vec<R>, streams: &[Vec<u64>], cores: &[usize], time
                 sc.spawn(move || {
                     pin(cpu);
                     let mut counts = [0u64; 3];
-                    let mut lats = Vec::with_capacity(if timed { stream.len() } else { 0 });
+                    let mut lats = hist();
                     // Spin so the core is at full clock (schedutil ramps over
                     // tens of ms), then a spinning barrier so nobody sleeps.
                     let t = Instant::now();
@@ -148,7 +148,7 @@ fn run_pass<R: Reg>(workers: Vec<R>, streams: &[Vec<u64>], cores: &[usize], time
                             let a = tsc();
                             let r = w.reg(s);
                             let b = tsc();
-                            lats.push((b - a).min(u32::MAX as u64) as u32);
+                            lats.saturating_record(b - a);
                             counts[r as usize] += 1;
                         }
                     } else {
@@ -166,7 +166,7 @@ fn run_pass<R: Reg>(workers: Vec<R>, streams: &[Vec<u64>], cores: &[usize], time
         wall: Duration::ZERO,
         counts: [0; 3],
         retries: 0,
-        lats: vec![],
+        lats: hist(),
     };
     for (d, c, r, l) in results {
         p.wall = p.wall.max(d);
@@ -174,7 +174,7 @@ fn run_pass<R: Reg>(workers: Vec<R>, streams: &[Vec<u64>], cores: &[usize], time
             p.counts[k] += c[k];
         }
         p.retries += r;
-        p.lats.extend(l);
+        p.lats.add(&l).unwrap();
     }
     p
 }
@@ -204,8 +204,7 @@ struct Ctx {
     /// Extra throughput-only passes (for profiling: `--reps N`).
     reps: usize,
     ops: usize,
-    tpn: f64,
-    overhead: u64,
+    clock: Clock,
     csv: std::fs::File,
 }
 
@@ -246,12 +245,8 @@ fn measure(ctx: &mut Ctx, exp: &str, variant: &str, t: Target, load: Load, threa
             return;
         }
     };
-    let mut lat = build(t, threads).unwrap()(&streams, cores, true);
-    lat.lats.sort_unstable();
-    let pct = |q: f64| {
-        let c = lat.lats[((lat.lats.len() - 1) as f64 * q) as usize] as u64;
-        c.saturating_sub(ctx.overhead) as f64 / ctx.tpn
-    };
+    let lat = build(t, threads).unwrap()(&streams, cores, true);
+    let pct = |q: f64| ctx.clock.q(&lat.lats, q);
     let total: u64 = thr.counts.iter().sum();
     let mops = total as f64 / thr.wall.as_secs_f64() / 1e6;
     let ns_per_op = thr.wall.as_nanos() as f64 / (total as f64 / threads as f64);
@@ -304,8 +299,8 @@ fn main() {
         .find(|l| l.starts_with("model name"))
         .map(|l| l.split(':').nth(1).unwrap().trim().to_string())
         .unwrap_or_default();
-    let tpn = tsc_per_ns();
-    let overhead = timer_overhead();
+    let clock = Clock::measure();
+    let (tpn, overhead) = (clock.tpn, clock.overhead);
     println!(
         "# {cpu} — {} physical cores, TSC {tpn:.3} GHz, timer overhead {overhead} cycles (subtracted)",
         cores.len()
@@ -323,8 +318,7 @@ fn main() {
         loads: arg("--loads").map(split),
         reps: arg("--reps").map(|s| s.parse().unwrap()).unwrap_or(0),
         ops,
-        tpn,
-        overhead,
+        clock,
         csv,
     };
     let def = Tuning::default();

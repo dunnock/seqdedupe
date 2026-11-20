@@ -4,7 +4,13 @@
 //! and the progress argument.
 
 mod atomic128;
-pub mod naive;
+// The scc baseline lives with the benchmarks (scc is a dev-dependency); the
+// unit tests compare against it too.
+#[cfg(test)]
+extern crate self as seqdedupe;
+#[cfg(test)]
+#[path = "../benches/common/naive.rs"]
+mod naive;
 mod shift;
 #[cfg(test)]
 mod tests;

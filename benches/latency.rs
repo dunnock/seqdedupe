@@ -1,6 +1,6 @@
 //! Live-feed latency benchmark.
 //!
-//! `S` redundant streams (default 4, one pinned thread each) deliver the same
+//! `S` redundant streams (default 2 and 4, one pinned thread each) deliver the same
 //! sequence of message ids, in order, at a fixed average rate per stream. The
 //! timing models live market or telemetry events:
 //!
@@ -17,17 +17,17 @@
 //!   `--loss`; another stream fills it in.
 //!
 //! Each thread spins until a message's scheduled time, then times the
-//! `register` call alone with `RDTSC` (timer overhead subtracted). The first
-//! `--warmup-ms` of the schedule are not recorded.
+//! `register` call alone with `RDTSC` (timer overhead subtracted) into an
+//! HDR histogram. The first `--warmup-ms` of the schedule are not recorded.
 //!
-//! cargo bench --bench latency -- [--rates 10,50,200] [--streams 4] [--secs 5]
+//! cargo bench --bench latency -- [--rates 10,50,200] [--streams 2,4] [--secs 5]
 //!     [--burst-mean 8] [--gap-ns 1000] [--jitter-ns 2000] [--loss 0.01]
 //!     [--targets Bits512,naive-scc/512] [--out bench-results/latency-HOST]
 
 mod common;
 
 use common::*;
-use seqdedupe::naive;
+use common::naive;
 use seqdedupe::*;
 use std::io::Write as _;
 use std::num::NonZeroUsize;
@@ -115,9 +115,9 @@ fn schedules(p: &Params) -> Vec<Schedule> {
 
 struct Result {
     /// Service latency of each recorded `register` call, in cycles.
-    lats: Vec<u32>,
+    lats: Hist,
     /// Completion minus scheduled time (includes any backlog), in cycles.
-    lateness: Vec<u32>,
+    lateness: Hist,
     counts: [u64; 3],
 }
 
@@ -149,8 +149,8 @@ fn run<R: Reg>(
                     bar.wait();
                     let start = t0.load(Ordering::Acquire);
                     let mut r = Result {
-                        lats: Vec::with_capacity(sched.len()),
-                        lateness: Vec::with_capacity(sched.len()),
+                        lats: hist(),
+                        lateness: hist(),
                         counts: [0; 3],
                     };
                     for &(at, id) in sched {
@@ -162,8 +162,8 @@ fn run<R: Reg>(
                         let reg = w.reg(id);
                         let b = tsc();
                         if at >= warmup_ns {
-                            r.lats.push((b - a).min(u32::MAX as u64) as u32);
-                            r.lateness.push((b - due).min(u32::MAX as u64) as u32);
+                            r.lats.saturating_record(b - a);
+                            r.lateness.saturating_record(b - due);
                             r.counts[reg as usize] += 1;
                         }
                     }
@@ -187,20 +187,24 @@ fn main() {
             .and_then(|i| args.get(i + 1).cloned())
     };
     let num = |name: &str, d: f64| arg(name).map(|s| s.parse().unwrap()).unwrap_or(d);
-    let rates: Vec<f64> = arg("--rates")
-        .map(|s| s.split(',').map(|x| x.parse().unwrap()).collect())
-        .unwrap_or_else(|| vec![10.0, 50.0, 200.0]);
-    let streams = num("--streams", 4.0) as usize;
+    let list = |name: &str, d: &str| -> Vec<f64> {
+        arg(name)
+            .unwrap_or_else(|| d.to_string())
+            .split(',')
+            .map(|x| x.parse().unwrap())
+            .collect()
+    };
+    let rates = list("--rates", "10,50,200");
+    let stream_counts: Vec<usize> = list("--streams", "2,4").iter().map(|&s| s as usize).collect();
     let targets_filter: Option<Vec<String>> =
         arg("--targets").map(|s| s.split(',').map(String::from).collect());
     let host = std::fs::read_to_string("/proc/sys/kernel/hostname").unwrap_or_default();
     let out = arg("--out").unwrap_or_else(|| format!("target/latency-{}", host.trim()));
 
-    let cores = physical_cores();
-    assert!(cores.len() >= streams, "need {streams} physical cores");
-    let cores = &cores[..streams];
-    let tpn = tsc_per_ns();
-    let overhead = timer_overhead();
+    let all_cores = physical_cores();
+    let max_streams = *stream_counts.iter().max().unwrap();
+    assert!(all_cores.len() >= max_streams, "need {max_streams} physical cores");
+    let clock = Clock::measure();
     let cpu = std::fs::read_to_string("/proc/cpuinfo")
         .unwrap_or_default()
         .lines()
@@ -210,7 +214,7 @@ fn main() {
 
     let base = Params {
         rate_kps: 0.0,
-        streams,
+        streams: 0,
         secs: num("--secs", 5.0),
         warmup_ms: num("--warmup-ms", 200.0),
         burst_mean: num("--burst-mean", 8.0),
@@ -220,7 +224,10 @@ fn main() {
         seed: num("--seed", 7.0) as u64,
     };
     println!(
-        "# {cpu}; {streams} streams on cores {cores:?}; TSC {tpn:.3} GHz; timer overhead {overhead} cycles (subtracted)"
+        "# {cpu}; cores {:?}; TSC {:.3} GHz; timer overhead {} cycles (subtracted)",
+        &all_cores[..max_streams],
+        clock.tpn,
+        clock.overhead
     );
     println!(
         "# {} s per run after {} ms warm-up; bursts: mean {} msgs, gap {} ns, per-stream jitter {} ns; loss {}",
@@ -228,9 +235,9 @@ fn main() {
     );
     println!("# latency = one register() call, ns\n");
     println!(
-        "| target | kps/stream | samples | p50 | p90 | p99 | p99.9 | p99.99 | max | lateness p99 | New/Dup/Old % |"
+        "| target | streams | kps/stream | samples | p50 | p90 | p99 | p99.9 | p99.99 | max | lateness p99 | New/Dup/Old % |"
     );
-    println!("|---|---|---|---|---|---|---|---|---|---|---|");
+    println!("|---|---|---|---|---|---|---|---|---|---|---|---|");
 
     let mut summary = std::fs::File::create(format!("{out}.csv")).unwrap();
     writeln!(
@@ -239,7 +246,7 @@ fn main() {
     )
     .unwrap();
     let mut curves = std::fs::File::create(format!("{out}-curves.csv")).unwrap();
-    writeln!(curves, "target,rate_kps,quantile,ns").unwrap();
+    writeln!(curves, "target,streams,rate_kps,quantile,ns").unwrap();
 
     let targets = [
         Target::D(Window::WatermarkOnly),
@@ -249,90 +256,82 @@ fn main() {
         Target::D(Window::Bits512),
         Target::Naive(512),
     ];
-    for &rate in &rates {
-        let p = Params {
-            rate_kps: rate,
-            ..base
-        };
-        let scheds = schedules(&p);
-        let warmup_ns = (p.warmup_ms * 1e6) as u64;
-        for t in targets {
-            if let Some(f) = &targets_filter
-                && !f.iter().any(|x| *x == t.label())
-            {
-                continue;
-            }
-            let res = match t {
-                Target::D(w) => {
-                    let ws = new_workers(w, NonZeroUsize::new(streams).unwrap(), 0, FIRST).unwrap();
-                    run(ws, &scheds, cores, tpn, warmup_ns)
-                }
-                Target::Naive(n) => {
-                    let ws = naive::new_workers(n, streams, 0, FIRST);
-                    run(ws, &scheds, cores, tpn, warmup_ns)
-                }
+    for &streams in &stream_counts {
+        let cores = &all_cores[..streams];
+        for &rate in &rates {
+            let p = Params {
+                rate_kps: rate,
+                streams,
+                ..base
             };
-            let mut lats: Vec<u32> = res.iter().flat_map(|r| r.lats.iter().copied()).collect();
-            let mut late: Vec<u32> = res
-                .iter()
-                .flat_map(|r| r.lateness.iter().copied())
-                .collect();
-            let mut counts = [0u64; 3];
-            for r in &res {
-                for k in 0..3 {
-                    counts[k] += r.counts[k];
+            let scheds = schedules(&p);
+            let warmup_ns = (p.warmup_ms * 1e6) as u64;
+            for t in targets {
+                if let Some(f) = &targets_filter
+                    && !f.iter().any(|x| *x == t.label())
+                {
+                    continue;
                 }
-            }
-            lats.sort_unstable();
-            late.sort_unstable();
-            let ns = |v: &[u32], q: f64| {
-                let c = v[((v.len() - 1) as f64 * q).round() as usize] as u64;
-                c.saturating_sub(overhead) as f64 / tpn
-            };
-            let mean = lats
-                .iter()
-                .map(|&c| (c as u64).saturating_sub(overhead) as f64)
-                .sum::<f64>()
-                / lats.len() as f64
-                / tpn;
-            let total: u64 = counts.iter().sum();
-            let mix = counts.map(|c| 100.0 * c as f64 / total as f64);
-            println!(
-                "| {} | {rate} | {} | {:.0} | {:.0} | {:.0} | {:.0} | {:.0} | {:.0} | {:.0} | {:.0}/{:.0}/{:.0} |",
-                t.label(),
-                lats.len(),
-                ns(&lats, 0.5),
-                ns(&lats, 0.9),
-                ns(&lats, 0.99),
-                ns(&lats, 0.999),
-                ns(&lats, 0.9999),
-                ns(&lats, 1.0),
-                ns(&late, 0.99),
-                mix[0],
-                mix[1],
-                mix[2],
-            );
-            writeln!(
-                summary,
-                "{},{rate},{streams},{},{mean:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.2},{:.2},{:.2}",
-                t.label(),
-                lats.len(),
-                ns(&lats, 0.5),
-                ns(&lats, 0.9),
-                ns(&lats, 0.99),
-                ns(&lats, 0.999),
-                ns(&lats, 0.9999),
-                ns(&lats, 1.0),
-                ns(&late, 0.5),
-                ns(&late, 0.99),
-                ns(&late, 0.999),
-                mix[0],
-                mix[1],
-                mix[2],
-            )
-            .unwrap();
-            for q in QS {
-                writeln!(curves, "{},{rate},{q},{:.1}", t.label(), ns(&lats, q)).unwrap();
+                let res = match t {
+                    Target::D(w) => {
+                        let ws = new_workers(w, NonZeroUsize::new(streams).unwrap(), 0, FIRST)
+                            .unwrap();
+                        run(ws, &scheds, cores, clock.tpn, warmup_ns)
+                    }
+                    Target::Naive(n) => {
+                        let ws = naive::new_workers(n, streams, 0, FIRST);
+                        run(ws, &scheds, cores, clock.tpn, warmup_ns)
+                    }
+                };
+                let (mut lats, mut late, mut counts) = (hist(), hist(), [0u64; 3]);
+                for r in &res {
+                    lats.add(&r.lats).unwrap();
+                    late.add(&r.lateness).unwrap();
+                    for k in 0..3 {
+                        counts[k] += r.counts[k];
+                    }
+                }
+                let q = |h: &Hist, x: f64| clock.q(h, x);
+                let total: u64 = counts.iter().sum();
+                let mix = counts.map(|c| 100.0 * c as f64 / total as f64);
+                println!(
+                    "| {} | {streams} | {rate} | {} | {:.0} | {:.0} | {:.0} | {:.0} | {:.0} | {:.0} | {:.0} | {:.0}/{:.0}/{:.0} |",
+                    t.label(),
+                    lats.len(),
+                    q(&lats, 0.5),
+                    q(&lats, 0.9),
+                    q(&lats, 0.99),
+                    q(&lats, 0.999),
+                    q(&lats, 0.9999),
+                    q(&lats, 1.0),
+                    q(&late, 0.99),
+                    mix[0],
+                    mix[1],
+                    mix[2],
+                );
+                writeln!(
+                    summary,
+                    "{},{rate},{streams},{},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.1},{:.2},{:.2},{:.2}",
+                    t.label(),
+                    lats.len(),
+                    clock.mean(&lats),
+                    q(&lats, 0.5),
+                    q(&lats, 0.9),
+                    q(&lats, 0.99),
+                    q(&lats, 0.999),
+                    q(&lats, 0.9999),
+                    q(&lats, 1.0),
+                    q(&late, 0.5),
+                    q(&late, 0.99),
+                    q(&late, 0.999),
+                    mix[0],
+                    mix[1],
+                    mix[2],
+                )
+                .unwrap();
+                for x in QS {
+                    writeln!(curves, "{},{streams},{rate},{x},{:.1}", t.label(), q(&lats, x)).unwrap();
+                }
             }
         }
     }

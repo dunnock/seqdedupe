@@ -2,7 +2,9 @@
 //! abstraction over the bitmap deduper and the scc baseline.
 #![allow(dead_code)]
 
-use seqdedupe::naive::NaiveWorker;
+pub mod naive;
+
+use naive::NaiveWorker;
 use seqdedupe::*;
 use std::collections::BTreeSet;
 use std::hint::black_box;
@@ -130,9 +132,43 @@ pub fn physical_cores() -> Vec<usize> {
 }
 
 pub fn pin(cpu: usize) {
-    unsafe {
-        let mut set: libc::cpu_set_t = std::mem::zeroed();
-        libc::CPU_SET(cpu, &mut set);
-        libc::sched_setaffinity(0, std::mem::size_of::<libc::cpu_set_t>(), &set);
+    assert!(
+        core_affinity::set_for_current(core_affinity::CoreId { id: cpu }),
+        "cannot pin to cpu {cpu}"
+    );
+}
+
+/// Latency histogram in TSC cycles, preallocated so recording never
+/// allocates (3 significant digits, up to 2^32 cycles).
+pub type Hist = hdrhistogram::Histogram<u64>;
+
+pub fn hist() -> Hist {
+    Hist::new_with_bounds(1, u32::MAX as u64, 3).unwrap()
+}
+
+/// Cycle-to-ns conversion with the timer overhead subtracted.
+#[derive(Clone, Copy)]
+pub struct Clock {
+    pub tpn: f64,
+    pub overhead: u64,
+}
+
+impl Clock {
+    pub fn measure() -> Self {
+        Clock {
+            tpn: tsc_per_ns(),
+            overhead: timer_overhead(),
+        }
+    }
+    pub fn ns(&self, cycles: u64) -> f64 {
+        cycles.saturating_sub(self.overhead) as f64 / self.tpn
+    }
+    /// Quantile `q` of `h`, in ns.
+    pub fn q(&self, h: &Hist, q: f64) -> f64 {
+        self.ns(h.value_at_quantile(q))
+    }
+    /// Mean of `h`, in ns.
+    pub fn mean(&self, h: &Hist) -> f64 {
+        (h.mean() - self.overhead as f64).max(0.0) / self.tpn
     }
 }

@@ -1,4 +1,4 @@
-//! Naive baseline for benchmarking: an `scc::HashSet<u64>` of seen sequence
+//! Naive baseline for benchmarks and tests (not part of the library): an `scc::HashSet<u64>` of seen sequence
 //! numbers plus an `AtomicU64` watermark. Entries that fall `N` below the
 //! watermark are rotated out by whichever thread advanced it.
 //!
@@ -7,7 +7,7 @@
 //! the window (its insert raced with the rotation), and `snapshot()` is not a
 //! single logical instant (it probes the set after reading the watermark).
 
-use crate::Registration;
+use seqdedupe::Registration;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU64, Ordering};
 

@@ -45,7 +45,7 @@ worst-case contention microbenchmarks, and run-to-run variance is about ±30%.
 
 **Baseline.** `naive-scc/N` is an `scc::HashSet<u64>` plus an `AtomicU64`
 watermark. The thread that advances the watermark removes the entries that
-fall out of the window (`src/naive.rs`). It gives the same answers when there
+fall out of the window (`benches/common/naive.rs`). It gives the same answers when there
 are no races, but weaker ones under races:
 
 * a late arrival can be reported `New` after it has fallen out of the window;
@@ -316,7 +316,7 @@ successful updates.
 
 ## Live-feed latency
 
-The paced, latency-focused benchmark (4 redundant streams at 10k, 50k and
+The paced, latency-focused benchmark (2 and 4 redundant streams at 10k, 50k and
 200k msg/s, Poisson bursts synchronized across streams) is described with
 charts in `README.md` under "Latency under live-feed traffic". The source is
 `benches/latency.rs`; the data is in `bench-results/latency-epyc-9845*.csv`.

@@ -110,7 +110,9 @@ the CAS proves the slot did not change.
   100 ms before a spinning start barrier, so it measures a core at full clock
   rather than the frequency ramp.
 * **Timing.** `lfence; rdtsc` around each call, with the measured timer
-  overhead subtracted. The resolution is about 10 ns.
+  overhead subtracted, recorded into preallocated per-thread HDR histograms
+  (`hdrhistogram`, 3 significant digits) that are merged after the run. The
+  resolution is about 10 ns.
 * **Throughput (`benches/register.rs`).**
   * Saturation workloads: Seq, Gaps, Late, and Dups (every thread sees every
     sequence).
@@ -122,7 +124,7 @@ the CAS proves the slot did not change.
   * Run-to-run variance is about ±20–30% when many threads advance one
     watermark.
 * **Live-feed latency (`benches/latency.rs`).**
-  * 4 redundant streams at 10k, 50k and 200k msg/s each, with 1% loss.
+  * 2 and 4 redundant streams at 10k, 50k and 200k msg/s each, with 1% loss.
   * Poisson bursts with the same message ids on every stream, but per-stream
     exponential jitter and gaps.
   * Each thread times `register()` alone at the scheduled time.
@@ -131,7 +133,7 @@ the CAS proves the slot did not change.
 * **Profiling.** `--targets`/`--loads`/`--reps` isolate one configuration
   for `perf record`/`annotate`. Raw PMC counters
   (`LsDmndFillsFromSys`) measure cache-to-cache transfers.
-* **Baseline.** `seqdedupe::naive` (an `scc::HashSet` plus an `AtomicU64`
+* **Baseline.** `benches/common/naive.rs` (an `scc::HashSet` plus an `AtomicU64`
   watermark) gives the same answers when there are no races. It is not
   lock-free.
 * **Hardware.** Results come from a Zen 2 laptop and a Zen 5c server; the
