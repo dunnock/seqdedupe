@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" role="img" aria-label="Window::Last64 vs a bounded hash set (HashSet64): mean, p99 and p99.9 per register() call, HashSet64 vs Last64, for Dups, 1 thread, Dups, 2 threads, Dups, 4 threads">
+
+<style>
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .title { font-size: 15px; font-weight: 600; }
+  .sub { font-size: 12px; }
+  .tick { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .ptitle { font-size: 12px; font-weight: 600; }
+  .leg { font-size: 12px; }
+  .val { font-size: 10px; font-variant-numeric: tabular-nums; }
+  .grid, .axis { stroke-width: 1; }
+  .bg{fill:#fcfcfb}
+  .title{fill:#0b0b0b}
+  .ptitle{fill:#0b0b0b}
+  .sub,.leg,.val{fill:#52514e}
+  .tick{fill:#898781}
+  .grid{stroke:#e1e0d9}
+  .axis{stroke:#c3c2b7}
+  .k-surface{stroke:#fcfcfb}
+  .f-s1{fill:#2a78d6} .k-s1{stroke:#2a78d6}
+  .f-s2{fill:#eb6834} .k-s2{stroke:#eb6834}
+  .f-s3{fill:#1baf7a} .k-s3{stroke:#1baf7a}
+  .f-s4{fill:#eda100} .k-s4{stroke:#eda100}
+  .f-s5{fill:#e87ba4} .k-s5{stroke:#e87ba4}
+  .f-s6{fill:#008300} .k-s6{stroke:#008300}
+  .f-r1{fill:#86b6ef} .k-r1{stroke:#86b6ef}
+  .f-r2{fill:#2a78d6} .k-r2{stroke:#2a78d6}
+  .f-r3{fill:#104281} .k-r3{stroke:#104281}
+  @media (prefers-color-scheme: dark) {
+  .bg{fill:#1a1a19}
+  .title{fill:#f0efec}
+  .ptitle{fill:#f0efec}
+  .sub,.leg,.val{fill:#c3c2b7}
+  .tick{fill:#898781}
+  .grid{stroke:#2c2c2a}
+  .axis{stroke:#383835}
+  .k-surface{stroke:#1a1a19}
+  .f-s1{fill:#3987e5} .k-s1{stroke:#3987e5}
+  .f-s2{fill:#d95926} .k-s2{stroke:#d95926}
+  .f-s3{fill:#199e70} .k-s3{stroke:#199e70}
+  .f-s4{fill:#c98500} .k-s4{stroke:#c98500}
+  .f-s5{fill:#d55181} .k-s5{stroke:#d55181}
+  .f-s6{fill:#0ca30c} .k-s6{stroke:#0ca30c}
+  .f-r1{fill:#184f95} .k-r1{stroke:#184f95}
+  .f-r2{fill:#3987e5} .k-r2{stroke:#3987e5}
+  .f-r3{fill:#86b6ef} .k-r3{stroke:#86b6ef}
+  }
+</style>
+
+<rect class="bg" width="760" height="400" rx="8"/>
+<text class="title" x="64" y="30">Window::Last64 vs a bounded hash set (HashSet64)</text>
+<text class="sub" x="64" y="50">ns per register() call on an EPYC 9845; lower is better.</text>
+<rect x="64" y="68" width="12" height="12" rx="3" class="f-s2"/>
+<text class="leg" x="82" y="78">HashSet64</text>
+<rect x="170.8" y="68" width="12" height="12" rx="3" class="f-s3"/>
+<text class="leg" x="188.8" y="78">Last64</text>
+<line class="axis" x1="64" y1="320.0" x2="736" y2="320.0"/>
+<text class="tick" x="56" y="324.0" text-anchor="end">0</text>
+<line class="grid" x1="64" y1="270.0" x2="736" y2="270.0"/>
+<text class="tick" x="56" y="274.0" text-anchor="end">500</text>
+<line class="grid" x1="64" y1="220.0" x2="736" y2="220.0"/>
+<text class="tick" x="56" y="224.0" text-anchor="end">1,000</text>
+<line class="grid" x1="64" y1="170.0" x2="736" y2="170.0"/>
+<text class="tick" x="56" y="174.0" text-anchor="end">1,500</text>
+<line class="grid" x1="64" y1="120.0" x2="736" y2="120.0"/>
+<text class="tick" x="56" y="124.0" text-anchor="end">2,000</text>
+<text class="ptitle" x="176.0" y="358" text-anchor="middle">Dups, 1 thread</text>
+<text class="tick" x="101.3" y="338" text-anchor="middle">mean</text>
+<g><title>Dups, 1 thread, mean, HashSet64: 38 ns</title><path d="M82.3,320.0 L82.3,318.1 Q82.3,316.2 84.2,316.2 L98.4,316.2 Q100.3,316.2 100.3,318.1 L100.3,320.0 Z" class="f-s2"/></g>
+<text class="val" x="91.3" y="312.2" text-anchor="middle">38</text>
+<g><title>Dups, 1 thread, mean, Last64: &lt;20 ns</title><path d="M102.3,320.0 L102.3,319.0 Q102.3,318.0 103.3,318.0 L119.3,318.0 Q120.3,318.0 120.3,319.0 L120.3,320.0 Z" class="f-s3"/></g>
+<text class="val" x="111.3" y="314.0" text-anchor="middle">&lt;20</text>
+<text class="tick" x="176.0" y="338" text-anchor="middle">p99</text>
+<g><title>Dups, 1 thread, p99, HashSet64: 50 ns</title><path d="M157.0,320.0 L157.0,317.5 Q157.0,315.0 159.5,315.0 L172.5,315.0 Q175.0,315.0 175.0,317.5 L175.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="166.0" y="311.0" text-anchor="middle">50</text>
+<g><title>Dups, 1 thread, p99, Last64: &lt;20 ns</title><path d="M177.0,320.0 L177.0,319.0 Q177.0,318.0 178.0,318.0 L194.0,318.0 Q195.0,318.0 195.0,319.0 L195.0,320.0 Z" class="f-s3"/></g>
+<text class="val" x="186.0" y="314.0" text-anchor="middle">&lt;20</text>
+<text class="tick" x="250.7" y="338" text-anchor="middle">p99.9</text>
+<g><title>Dups, 1 thread, p99.9, HashSet64: 60 ns</title><path d="M231.7,320.0 L231.7,317.0 Q231.7,314.0 234.7,314.0 L246.7,314.0 Q249.7,314.0 249.7,317.0 L249.7,320.0 Z" class="f-s2"/></g>
+<text class="val" x="240.7" y="310.0" text-anchor="middle">60</text>
+<g><title>Dups, 1 thread, p99.9, Last64: &lt;20 ns</title><path d="M251.7,320.0 L251.7,319.0 Q251.7,318.0 252.7,318.0 L268.7,318.0 Q269.7,318.0 269.7,319.0 L269.7,320.0 Z" class="f-s3"/></g>
+<text class="val" x="260.7" y="314.0" text-anchor="middle">&lt;20</text>
+<text class="ptitle" x="400.0" y="358" text-anchor="middle">Dups, 2 threads</text>
+<text class="tick" x="325.3" y="338" text-anchor="middle">mean</text>
+<g><title>Dups, 2 threads, mean, HashSet64: 154 ns</title><path d="M306.3,320.0 L306.3,308.6 Q306.3,304.6 310.3,304.6 L320.3,304.6 Q324.3,304.6 324.3,308.6 L324.3,320.0 Z" class="f-s2"/></g>
+<text class="val" x="315.3" y="300.6" text-anchor="middle">154</text>
+<g><title>Dups, 2 threads, mean, Last64: 39 ns</title><path d="M326.3,320.0 L326.3,318.0 Q326.3,316.1 328.3,316.1 L342.4,316.1 Q344.3,316.1 344.3,318.0 L344.3,320.0 Z" class="f-s3"/></g>
+<text class="val" x="335.3" y="312.1" text-anchor="middle">39</text>
+<text class="tick" x="400.0" y="338" text-anchor="middle">p99</text>
+<g><title>Dups, 2 threads, p99, HashSet64: 310 ns</title><path d="M381.0,320.0 L381.0,293.0 Q381.0,289.0 385.0,289.0 L395.0,289.0 Q399.0,289.0 399.0,293.0 L399.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="390.0" y="285.0" text-anchor="middle">310</text>
+<g><title>Dups, 2 threads, p99, Last64: 50 ns</title><path d="M401.0,320.0 L401.0,317.5 Q401.0,315.0 403.5,315.0 L416.5,315.0 Q419.0,315.0 419.0,317.5 L419.0,320.0 Z" class="f-s3"/></g>
+<text class="val" x="410.0" y="311.0" text-anchor="middle">50</text>
+<text class="tick" x="474.7" y="338" text-anchor="middle">p99.9</text>
+<g><title>Dups, 2 threads, p99.9, HashSet64: 410 ns</title><path d="M455.7,320.0 L455.7,283.0 Q455.7,279.0 459.7,279.0 L469.7,279.0 Q473.7,279.0 473.7,283.0 L473.7,320.0 Z" class="f-s2"/></g>
+<text class="val" x="464.7" y="275.0" text-anchor="middle">410</text>
+<g><title>Dups, 2 threads, p99.9, Last64: 50 ns</title><path d="M475.7,320.0 L475.7,317.5 Q475.7,315.0 478.2,315.0 L491.2,315.0 Q493.7,315.0 493.7,317.5 L493.7,320.0 Z" class="f-s3"/></g>
+<text class="val" x="484.7" y="311.0" text-anchor="middle">50</text>
+<text class="ptitle" x="624.0" y="358" text-anchor="middle">Dups, 4 threads</text>
+<text class="tick" x="549.3" y="338" text-anchor="middle">mean</text>
+<g><title>Dups, 4 threads, mean, HashSet64: 226 ns</title><path d="M530.3,320.0 L530.3,301.4 Q530.3,297.4 534.3,297.4 L544.3,297.4 Q548.3,297.4 548.3,301.4 L548.3,320.0 Z" class="f-s2"/></g>
+<text class="val" x="539.3" y="293.4" text-anchor="middle">226</text>
+<g><title>Dups, 4 threads, mean, Last64: 43 ns</title><path d="M550.3,320.0 L550.3,317.8 Q550.3,315.7 552.5,315.7 L566.2,315.7 Q568.3,315.7 568.3,317.8 L568.3,320.0 Z" class="f-s3"/></g>
+<text class="val" x="559.3" y="311.7" text-anchor="middle">43</text>
+<text class="tick" x="624.0" y="338" text-anchor="middle">p99</text>
+<g><title>Dups, 4 threads, p99, HashSet64: 820 ns</title><path d="M605.0,320.0 L605.0,242.0 Q605.0,238.0 609.0,238.0 L619.0,238.0 Q623.0,238.0 623.0,242.0 L623.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="614.0" y="234.0" text-anchor="middle">820</text>
+<g><title>Dups, 4 threads, p99, Last64: 50 ns</title><path d="M625.0,320.0 L625.0,317.5 Q625.0,315.0 627.5,315.0 L640.5,315.0 Q643.0,315.0 643.0,317.5 L643.0,320.0 Z" class="f-s3"/></g>
+<text class="val" x="634.0" y="311.0" text-anchor="middle">50</text>
+<text class="tick" x="698.7" y="338" text-anchor="middle">p99.9</text>
+<g><title>Dups, 4 threads, p99.9, HashSet64: 1,530 ns</title><path d="M679.7,320.0 L679.7,171.0 Q679.7,167.0 683.7,167.0 L693.7,167.0 Q697.7,167.0 697.7,171.0 L697.7,320.0 Z" class="f-s2"/></g>
+<text class="val" x="688.7" y="163.0" text-anchor="middle">1,530</text>
+<g><title>Dups, 4 threads, p99.9, Last64: 50 ns</title><path d="M699.7,320.0 L699.7,317.5 Q699.7,315.0 702.2,315.0 L715.2,315.0 Q717.7,315.0 717.7,317.5 L717.7,320.0 Z" class="f-s3"/></g>
+<text class="val" x="708.7" y="311.0" text-anchor="middle">50</text>
+<text class="ptitle" x="68.0" y="116">Saturated arbitration (Dups): every thread sees every id</text>
+<text class="sub" x="64" y="386">Throughput, all threads, HashSet64 vs Last64: 28 vs 98 M ops/s on 1 thread, 12 vs 34 on 2, 16 vs 35 on 4.</text>
+</svg>

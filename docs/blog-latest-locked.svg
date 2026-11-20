@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" role="img" aria-label="Window::Latest: plain vs locked load of the watermark: mean, p99 and p99.9 per register() call, Plain load vs Locked load, for 2 threads, 4 threads, 2 streams, 4 streams">
+
+<style>
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .title { font-size: 15px; font-weight: 600; }
+  .sub { font-size: 12px; }
+  .tick { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .ptitle { font-size: 12px; font-weight: 600; }
+  .leg { font-size: 12px; }
+  .val { font-size: 10px; font-variant-numeric: tabular-nums; }
+  .grid, .axis { stroke-width: 1; }
+  .bg{fill:#fcfcfb}
+  .title{fill:#0b0b0b}
+  .ptitle{fill:#0b0b0b}
+  .sub,.leg,.val{fill:#52514e}
+  .tick{fill:#898781}
+  .grid{stroke:#e1e0d9}
+  .axis{stroke:#c3c2b7}
+  .k-surface{stroke:#fcfcfb}
+  .f-s1{fill:#2a78d6} .k-s1{stroke:#2a78d6}
+  .f-s2{fill:#eb6834} .k-s2{stroke:#eb6834}
+  .f-s3{fill:#1baf7a} .k-s3{stroke:#1baf7a}
+  .f-s4{fill:#eda100} .k-s4{stroke:#eda100}
+  .f-s5{fill:#e87ba4} .k-s5{stroke:#e87ba4}
+  .f-s6{fill:#008300} .k-s6{stroke:#008300}
+  .f-r1{fill:#86b6ef} .k-r1{stroke:#86b6ef}
+  .f-r2{fill:#2a78d6} .k-r2{stroke:#2a78d6}
+  .f-r3{fill:#104281} .k-r3{stroke:#104281}
+  @media (prefers-color-scheme: dark) {
+  .bg{fill:#1a1a19}
+  .title{fill:#f0efec}
+  .ptitle{fill:#f0efec}
+  .sub,.leg,.val{fill:#c3c2b7}
+  .tick{fill:#898781}
+  .grid{stroke:#2c2c2a}
+  .axis{stroke:#383835}
+  .k-surface{stroke:#1a1a19}
+  .f-s1{fill:#3987e5} .k-s1{stroke:#3987e5}
+  .f-s2{fill:#d95926} .k-s2{stroke:#d95926}
+  .f-s3{fill:#199e70} .k-s3{stroke:#199e70}
+  .f-s4{fill:#c98500} .k-s4{stroke:#c98500}
+  .f-s5{fill:#d55181} .k-s5{stroke:#d55181}
+  .f-s6{fill:#0ca30c} .k-s6{stroke:#0ca30c}
+  .f-r1{fill:#184f95} .k-r1{stroke:#184f95}
+  .f-r2{fill:#3987e5} .k-r2{stroke:#3987e5}
+  .f-r3{fill:#86b6ef} .k-r3{stroke:#86b6ef}
+  }
+</style>
+
+<rect class="bg" width="760" height="400" rx="8"/>
+<text class="title" x="64" y="30">Window::Latest: plain vs locked load of the watermark</text>
+<text class="sub" x="64" y="50">ns per register() call on an EPYC 9845; lower is better.</text>
+<rect x="64" y="68" width="12" height="12" rx="3" class="f-s2"/>
+<text class="leg" x="82" y="78">Plain load</text>
+<rect x="178.0" y="68" width="12" height="12" rx="3" class="f-s1"/>
+<text class="leg" x="196.0" y="78">Locked load</text>
+<line class="axis" x1="64" y1="320.0" x2="736" y2="320.0"/>
+<text class="tick" x="56" y="324.0" text-anchor="end">0</text>
+<line class="grid" x1="64" y1="270.0" x2="736" y2="270.0"/>
+<text class="tick" x="56" y="274.0" text-anchor="end">50</text>
+<line class="grid" x1="64" y1="220.0" x2="736" y2="220.0"/>
+<text class="tick" x="56" y="224.0" text-anchor="end">100</text>
+<line class="grid" x1="64" y1="170.0" x2="736" y2="170.0"/>
+<text class="tick" x="56" y="174.0" text-anchor="end">150</text>
+<line class="grid" x1="64" y1="120.0" x2="736" y2="120.0"/>
+<text class="tick" x="56" y="124.0" text-anchor="end">200</text>
+<text class="ptitle" x="148.0" y="358" text-anchor="middle">2 threads</text>
+<text class="tick" x="92.0" y="338" text-anchor="middle">mean</text>
+<g><title>2 threads, mean, Plain load: 47 ns</title><path d="M73.0,320.0 L73.0,277.2 Q73.0,273.2 77.0,273.2 L87.0,273.2 Q91.0,273.2 91.0,277.2 L91.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="82.0" y="269.2" text-anchor="middle">47</text>
+<g><title>2 threads, mean, Locked load: 35 ns</title><path d="M93.0,320.0 L93.0,289.1 Q93.0,285.1 97.0,285.1 L107.0,285.1 Q111.0,285.1 111.0,289.1 L111.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="102.0" y="281.1" text-anchor="middle">35</text>
+<text class="tick" x="148.0" y="338" text-anchor="middle">p99</text>
+<g><title>2 threads, p99, Plain load: 70 ns</title><path d="M129.0,320.0 L129.0,254.0 Q129.0,250.0 133.0,250.0 L143.0,250.0 Q147.0,250.0 147.0,254.0 L147.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="138.0" y="246.0" text-anchor="middle">70</text>
+<g><title>2 threads, p99, Locked load: 50 ns</title><path d="M149.0,320.0 L149.0,274.0 Q149.0,270.0 153.0,270.0 L163.0,270.0 Q167.0,270.0 167.0,274.0 L167.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="158.0" y="266.0" text-anchor="middle">50</text>
+<text class="tick" x="204.0" y="338" text-anchor="middle">p99.9</text>
+<g><title>2 threads, p99.9, Plain load: 90 ns</title><path d="M185.0,320.0 L185.0,234.0 Q185.0,230.0 189.0,230.0 L199.0,230.0 Q203.0,230.0 203.0,234.0 L203.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="194.0" y="226.0" text-anchor="middle">90</text>
+<g><title>2 threads, p99.9, Locked load: 60 ns</title><path d="M205.0,320.0 L205.0,264.0 Q205.0,260.0 209.0,260.0 L219.0,260.0 Q223.0,260.0 223.0,264.0 L223.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="214.0" y="256.0" text-anchor="middle">60</text>
+<text class="ptitle" x="316.0" y="358" text-anchor="middle">4 threads</text>
+<text class="tick" x="260.0" y="338" text-anchor="middle">mean</text>
+<g><title>4 threads, mean, Plain load: 59 ns</title><path d="M241.0,320.0 L241.0,264.7 Q241.0,260.7 245.0,260.7 L255.0,260.7 Q259.0,260.7 259.0,264.7 L259.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="250.0" y="256.7" text-anchor="middle">59</text>
+<g><title>4 threads, mean, Locked load: 56 ns</title><path d="M261.0,320.0 L261.0,268.4 Q261.0,264.4 265.0,264.4 L275.0,264.4 Q279.0,264.4 279.0,268.4 L279.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="270.0" y="260.4" text-anchor="middle">56</text>
+<text class="tick" x="316.0" y="338" text-anchor="middle">p99</text>
+<g><title>4 threads, p99, Plain load: 160 ns</title><path d="M297.0,320.0 L297.0,164.0 Q297.0,160.0 301.0,160.0 L311.0,160.0 Q315.0,160.0 315.0,164.0 L315.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="306.0" y="156.0" text-anchor="middle">160</text>
+<g><title>4 threads, p99, Locked load: 60 ns</title><path d="M317.0,320.0 L317.0,264.0 Q317.0,260.0 321.0,260.0 L331.0,260.0 Q335.0,260.0 335.0,264.0 L335.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="326.0" y="256.0" text-anchor="middle">60</text>
+<text class="tick" x="372.0" y="338" text-anchor="middle">p99.9</text>
+<g><title>4 threads, p99.9, Plain load: 170 ns</title><path d="M353.0,320.0 L353.0,154.0 Q353.0,150.0 357.0,150.0 L367.0,150.0 Q371.0,150.0 371.0,154.0 L371.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="362.0" y="146.0" text-anchor="middle">170</text>
+<g><title>4 threads, p99.9, Locked load: 60 ns</title><path d="M373.0,320.0 L373.0,264.0 Q373.0,260.0 377.0,260.0 L387.0,260.0 Q391.0,260.0 391.0,264.0 L391.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="382.0" y="256.0" text-anchor="middle">60</text>
+<text class="ptitle" x="484.0" y="358" text-anchor="middle">2 streams</text>
+<text class="tick" x="428.0" y="338" text-anchor="middle">mean</text>
+<g><title>2 streams, mean, Plain load: &lt;20 ns</title><path d="M409.0,320.0 L409.0,309.2 Q409.0,305.2 413.0,305.2 L423.0,305.2 Q427.0,305.2 427.0,309.2 L427.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="418.0" y="301.2" text-anchor="middle">&lt;20</text>
+<g><title>2 streams, mean, Locked load: 23 ns</title><path d="M429.0,320.0 L429.0,301.3 Q429.0,297.3 433.0,297.3 L443.0,297.3 Q447.0,297.3 447.0,301.3 L447.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="438.0" y="293.3" text-anchor="middle">23</text>
+<text class="tick" x="484.0" y="338" text-anchor="middle">p99</text>
+<g><title>2 streams, p99, Plain load: 50 ns</title><path d="M465.0,320.0 L465.0,274.0 Q465.0,270.0 469.0,270.0 L479.0,270.0 Q483.0,270.0 483.0,274.0 L483.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="474.0" y="266.0" text-anchor="middle">50</text>
+<g><title>2 streams, p99, Locked load: 50 ns</title><path d="M485.0,320.0 L485.0,274.0 Q485.0,270.0 489.0,270.0 L499.0,270.0 Q503.0,270.0 503.0,274.0 L503.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="494.0" y="266.0" text-anchor="middle">50</text>
+<text class="tick" x="540.0" y="338" text-anchor="middle">p99.9</text>
+<g><title>2 streams, p99.9, Plain load: 70 ns</title><path d="M521.0,320.0 L521.0,254.0 Q521.0,250.0 525.0,250.0 L535.0,250.0 Q539.0,250.0 539.0,254.0 L539.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="530.0" y="246.0" text-anchor="middle">70</text>
+<g><title>2 streams, p99.9, Locked load: 60 ns</title><path d="M541.0,320.0 L541.0,264.0 Q541.0,260.0 545.0,260.0 L555.0,260.0 Q559.0,260.0 559.0,264.0 L559.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="550.0" y="256.0" text-anchor="middle">60</text>
+<text class="ptitle" x="652.0" y="358" text-anchor="middle">4 streams</text>
+<text class="tick" x="596.0" y="338" text-anchor="middle">mean</text>
+<g><title>4 streams, mean, Plain load: 24 ns</title><path d="M577.0,320.0 L577.0,300.1 Q577.0,296.1 581.0,296.1 L591.0,296.1 Q595.0,296.1 595.0,300.1 L595.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="586.0" y="292.1" text-anchor="middle">24</text>
+<g><title>4 streams, mean, Locked load: 25 ns</title><path d="M597.0,320.0 L597.0,298.8 Q597.0,294.8 601.0,294.8 L611.0,294.8 Q615.0,294.8 615.0,298.8 L615.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="606.0" y="290.8" text-anchor="middle">25</text>
+<text class="tick" x="652.0" y="338" text-anchor="middle">p99</text>
+<g><title>4 streams, p99, Plain load: 70 ns</title><path d="M633.0,320.0 L633.0,254.0 Q633.0,250.0 637.0,250.0 L647.0,250.0 Q651.0,250.0 651.0,254.0 L651.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="642.0" y="246.0" text-anchor="middle">70</text>
+<g><title>4 streams, p99, Locked load: 50 ns</title><path d="M653.0,320.0 L653.0,274.0 Q653.0,270.0 657.0,270.0 L667.0,270.0 Q671.0,270.0 671.0,274.0 L671.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="662.0" y="266.0" text-anchor="middle">50</text>
+<text class="tick" x="708.0" y="338" text-anchor="middle">p99.9</text>
+<g><title>4 streams, p99.9, Plain load: 100 ns</title><path d="M689.0,320.0 L689.0,224.0 Q689.0,220.0 693.0,220.0 L703.0,220.0 Q707.0,220.0 707.0,224.0 L707.0,320.0 Z" class="f-s2"/></g>
+<text class="val" x="698.0" y="216.0" text-anchor="middle">100</text>
+<g><title>4 streams, p99.9, Locked load: 80 ns</title><path d="M709.0,320.0 L709.0,244.0 Q709.0,240.0 713.0,240.0 L723.0,240.0 Q727.0,240.0 727.0,244.0 L727.0,320.0 Z" class="f-s1"/></g>
+<text class="val" x="718.0" y="236.0" text-anchor="middle">80</text>
+<text class="ptitle" x="68.0" y="116">Saturated arbitration (Dups)</text>
+<line class="axis" x1="400.0" y1="106" x2="400.0" y2="364" stroke-dasharray="3 3"/>
+<text class="ptitle" x="410.0" y="116">Live feed, 50k msg/s per stream</text>
+<text class="sub" x="64" y="386">Throughput, all threads, plain → locked: 270 → 110 M ops/s on 1 thread, 76 → 68 on 2, 72 → 68 on 4.</text>
+</svg>

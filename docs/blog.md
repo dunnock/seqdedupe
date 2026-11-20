@@ -140,6 +140,8 @@ let mut cur = match wm.compare_exchange(0, 0, AcqRel, Acquire) {
 | Live feed, 2 streams: mean / p99 / p99.9 | 15–22 / 40–70 / 70–100 ns | 17–23 / 40–50 / 50–60 ns |
 | Live feed, 4 streams: mean / p99 / p99.9 | 20–24 / 60–70 / 100 ns | 24–27 / 50–60 / 70–80 ns |
 
+![Window::Latest, plain vs locked load of the watermark: mean, p99 and p99.9 per call for Dups on 2 and 4 threads and the live feed with 2 and 4 streams](blog-latest-locked.svg)
+
 One thread pays for it: a locked RMW is slower than a load. With 2 and 4
 threads, throughput drops 6–11%, but the p99 falls from 70 to 50 ns and from
 160 to 60 ns, CAS retries drop 4×. In the live feed the mean is a few ns
@@ -176,6 +178,8 @@ describe the same calls.
 > The timer reads in 10 ns steps, so `<10 ns` means "one step or less" and
 > `<20 ns` "two steps or less". Throughput gives the true uncontended cost:
 > 12 ns per `Latest` call with the locked load (1 / 85 M ops/s).
+
+![Window::Latest vs HashSet64: mean, p99 and p99.9 per call for Gaps on 1 thread and Dups on 2 and 4 threads](blog-hashset.svg)
 
 Two very different things cause the tail.
 
@@ -277,6 +281,8 @@ Compared with the hash set:
 | 2 threads: L1 misses / cross-core fills per call | 6.3 / 5.0 | 1.3 / 1.0 |
 | 4 threads: L1 misses / cross-core fills per call | 7.4 / 6.0 | 1.4 / 1.0 |
 
+![Window::Last64 vs HashSet64: mean, p99 and p99.9 per call for Dups on 1, 2 and 4 threads](blog-last64.svg)
+
 > [!NOTE]
 > The timed pass puts about 20 ns of timer and histogram work between
 > calls, which lowers contention. Back to back, a 4-thread `Last64` call
@@ -321,7 +327,7 @@ slot to follow.
 
 | | Last64 | Last128 | Last256 | Last512 | HashSet512 |
 |---|---|---|---|---|---|
-| History | in the AtomicU128 | 128-bit slot | 256-bit slot | 512-bit slot (L1 line) | `scc::HashSet` entries |
+| History | AtomicU128 | 128-bit slot | 256-bit slot | 512-bit slot | `scc::HashSet` entries |
 | Seq, 1 thread: M ops/s | 75 | 99 | 94 | 89 | 21 |
 | Dups, 1 thread: M ops/s | 98 | 165 | 155 | 141 | 28 |
 | Dups, 2 threads: M ops/s, all threads | 34 | 37 | 41 | 37 | 14 |
